@@ -9,6 +9,10 @@ Build/
 Build.meta
 Builds/
 Builds.meta
+Logs/
+Logs.meta
+UserSettings/
+UserSettings.meta
 
 # Unity generated files
 *.csproj
