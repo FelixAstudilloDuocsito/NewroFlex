@@ -5,20 +5,26 @@ using UnityEngine.Events;
 
 public class MemoryGameManager : MonoBehaviour
 {
-    [Header("Lista de Cartas en Tablero")]
+    [Header("Configuración de Cartas")]
     public List<MemoryCard> allCards = new List<MemoryCard>();
 
-    [Header("Tiempos")]
-    [Tooltip("Tiempo que se quedan visibles si son distintas antes de voltearse de nuevo")]
-    public float tiempoMemorizacion = 1.2f;
+    [Header("Tiempos de Juego")]
+    [Tooltip("Tiempo en segundos que se muestran las cartas al iniciar la partida")]
+    public float tiempoVistaPrevia = 2.0f;
+    [Tooltip("Tiempo que permanecen volteadas si el par es incorrecto")]
+    public float tiempoMemorizacion = 1.0f;
+
+    [Header("Efecto de Acierto")]
+    public GameObject prefabEstrella;
 
     [Header("Eventos")]
     public UnityEvent onPairMatched;
     public UnityEvent onGameWon;
 
-    private MemoryCard firstCard = null;
-    private MemoryCard secondCard = null;
+    private MemoryCard firstCard;
+    private MemoryCard secondCard;
     private bool isEvaluating = false;
+    private bool isPreviewActive = false; // Bloquea la interacción durante la muestra inicial
     private int pairsFound = 0;
     private int totalPairs;
 
@@ -26,57 +32,83 @@ public class MemoryGameManager : MonoBehaviour
     {
         totalPairs = allCards.Count / 2;
 
-        // 1. Inicializar cartas con sus IDs
+        // Arrancamos la rutina de presentación inicial
+        StartCoroutine(RutinaInicioJuego());
+    }
+
+    private IEnumerator RutinaInicioJuego()
+    {
+        isPreviewActive = true;
+
+        // 1. Inicializar cartas
         for (int i = 0; i < allCards.Count; i++)
         {
             allCards[i].InitCard(this, allCards[i].cardID);
         }
 
-        // 2. Barajar sus posiciones en el tablero
+        // 2. Barajar posiciones
         ShufflePositions();
-    }
 
+        // Pequeña pausa opcional (0.3s) para que el jugador se acomode
+        yield return new WaitForSeconds(0.3f);
+
+        // 3. Voltear todas las cartas boca arriba (mostrar caras)
+        for (int i = 0; i < allCards.Count; i++)
+        {
+            allCards[i].FlipCard(true);
+        }
+
+        // 4. Esperar el tiempo configurable (por defecto 2 segundos)
+        yield return new WaitForSeconds(tiempoVistaPrevia);
+
+        // 5. Voltear todas las cartas boca abajo (ocultar caras)
+        for (int i = 0; i < allCards.Count; i++)
+        {
+            allCards[i].FlipCard(false);
+        }
+
+        // Esperar a que terminen de voltearse boca abajo antes de habilitar los clics
+        yield return new WaitForSeconds(0.4f);
+
+        // 6. El jugador ya puede interactuar libremente
+        isPreviewActive = false;
+    }
 
     public bool CanFlipCard(MemoryCard card)
     {
-        // No permitir voltear si ya estamos comparando dos cartas o si es la misma primera carta
-        return !isEvaluating && card != firstCard;
+        // No permite voltear si la vista previa inicial está activa o si se está evaluando un par
+        if (isPreviewActive || isEvaluating) return false;
+        if (card == firstCard) return false;
+        if (secondCard != null) return false;
+
+        return true;
     }
 
     public void OnCardFlipped(MemoryCard card)
     {
         if (firstCard == null)
         {
-            // Primera carta seleccionada
             firstCard = card;
         }
         else if (secondCard == null)
         {
-            // Segunda carta seleccionada: evaluar par
             secondCard = card;
             StartCoroutine(EvaluarJugada());
         }
     }
 
-
-    [Header("Efecto de Acierto")]
-    public GameObject prefabEstrella;
-
     private IEnumerator EvaluarJugada()
     {
         isEvaluating = true;
 
-        // Esperar a que termine de girar
         yield return new WaitForSeconds(0.4f);
 
         if (firstCard.cardID == secondCard.cardID)
         {
-            // ¡Son iguales!
             firstCard.isMatched = true;
             secondCard.isMatched = true;
             pairsFound++;
 
-            // Lanzar las estrellas en ambas cartas
             LanzarEstrellas(firstCard.transform);
             LanzarEstrellas(secondCard.transform);
 
@@ -90,29 +122,25 @@ public class MemoryGameManager : MonoBehaviour
         }
         else
         {
-            // Son distintas: dejamos que las memoricen un momento y las volteamos de nuevo
             yield return new WaitForSeconds(tiempoMemorizacion);
 
             firstCard.FlipCard(false);
             secondCard.FlipCard(false);
         }
 
-        // Reiniciar turno
         firstCard = null;
         secondCard = null;
         isEvaluating = false;
     }
-    
+
     private void ShufflePositions()
     {
-        // Guardamos todas las posiciones originales de la cuadrícula
         List<Vector3> originalPositions = new List<Vector3>();
         for (int i = 0; i < allCards.Count; i++)
         {
             originalPositions.Add(allCards[i].transform.position);
         }
 
-        // Barajamos la lista de posiciones (Fisher-Yates)
         for (int i = 0; i < originalPositions.Count; i++)
         {
             int randomIndex = Random.Range(i, originalPositions.Count);
@@ -121,7 +149,6 @@ public class MemoryGameManager : MonoBehaviour
             originalPositions[randomIndex] = temp;
         }
 
-        // Asignamos las nuevas posiciones aleatorias a cada carta
         for (int i = 0; i < allCards.Count; i++)
         {
             allCards[i].transform.position = originalPositions[i];
@@ -132,26 +159,17 @@ public class MemoryGameManager : MonoBehaviour
     {
         if (prefabEstrella == null || cartaTransform == null) return;
 
-        // Aparece ligeramente arriba de la carta
         Vector3 spawnPos = cartaTransform.position + Vector3.up * 0.1f;
 
-        // Direcciones relativas a la vista del mundo / cámara (Izquierda, Centro, Derecha)
         Vector3 dirIzquierda = (Vector3.up + Vector3.left * 0.6f).normalized;
         Vector3 dirCentro    = Vector3.up;
         Vector3 dirDerecha   = (Vector3.up + Vector3.right * 0.6f).normalized;
 
         Vector3[] direcciones = new Vector3[] { dirIzquierda, dirCentro, dirDerecha };
 
-        // Rotación inicial mirando a la cámara
-        Quaternion rotInicial = Quaternion.identity;
-        if (Camera.main != null)
-        {
-            rotInicial = Quaternion.LookRotation(spawnPos - Camera.main.transform.position);
-        }
-
         for (int i = 0; i < direcciones.Length; i++)
         {
-            GameObject estrella = Instantiate(prefabEstrella, spawnPos, rotInicial);
+            GameObject estrella = Instantiate(prefabEstrella, spawnPos, Quaternion.identity);
 
             StarFeedback script = estrella.GetComponent<StarFeedback>();
             if (script != null)

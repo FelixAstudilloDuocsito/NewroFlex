@@ -328,7 +328,7 @@ MonoBehaviour:
   - {fileID: 836191709}
   - {fileID: 758430676}
   puzzleVisuales: {fileID: 992467852}
-  pregunta: "\xBFDe que color es el cielo del puzzle anterior?"
+  pregunta: "\xBFQue animales estan jugando a las cartas?"
   opciones:
   - Perros
   - Patos
