@@ -1,65 +1,50 @@
-using System.Reflection;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 
-public class DropMe : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointerExitHandler
+public class EscenarioButtonVR : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
-	public Image containerImage;
-	public Image receivingImage;
-	private Color normalColor;
-	public Color highlightColor = Color.yellow;
-	
-	public void OnEnable ()
-	{
-		if (containerImage != null)
-			normalColor = containerImage.color;
-	}
-	
-	public void OnDrop(PointerEventData data)
-	{
-		containerImage.color = normalColor;
-		
-		if (receivingImage == null)
-			return;
-		
-		Sprite dropSprite = GetDropSprite (data);
-		if (dropSprite != null)
-			receivingImage.overrideSprite = dropSprite;
-	}
+    [Header("Configuración del Escenario")]
+    [Tooltip("Nombre exacto de la escena a la que debe viajar")]
+    public string nombreEscenaCargar;
 
-	public void OnPointerEnter(PointerEventData data)
-	{
-		if (containerImage == null)
-			return;
-		
-		Sprite dropSprite = GetDropSprite (data);
-		if (dropSprite != null)
-			containerImage.color = highlightColor;
-	}
+    [Header("Referencias de UI")]
+    [Tooltip("La imagen del borde/contenedor que cambiará de color")]
+    public Image containerImage;
+    public Color normalColor = Color.white;
+    public Color highlightColor = Color.yellow;
 
-	public void OnPointerExit(PointerEventData data)
-	{
-		if (containerImage == null)
-			return;
-		
-		containerImage.color = normalColor;
-	}
-	
-	private Sprite GetDropSprite(PointerEventData data)
-	{
-		var originalObj = data.pointerDrag;
-		if (originalObj == null)
-			return null;
-		
-		var dragMe = originalObj.GetComponent<DragMe>();
-		if (dragMe == null)
-			return null;
-		
-		var srcImage = originalObj.GetComponent<Image>();
-		if (srcImage == null)
-			return null;
-		
-		return srcImage.sprite;
-	}
+    private void OnEnable()
+    {
+        if (containerImage != null)
+            containerImage.color = normalColor;
+    }
+
+    // Resaltar borde cuando el rayo XR pasa por encima
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        if (containerImage != null)
+            containerImage.color = highlightColor;
+    }
+
+    // Restaurar borde cuando el rayo sale del marco
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        if (containerImage != null)
+            containerImage.color = normalColor;
+    }
+
+    // Al presionar con el gatillo del control VR sobre la foto
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if (!string.IsNullOrEmpty(nombreEscenaCargar))
+        {
+            SceneManager.LoadScene(nombreEscenaCargar);
+        }
+        else
+        {
+            Debug.LogWarning("¡No se ha asignado el nombre de la escena en el Inspector!");
+        }
+    }
 }

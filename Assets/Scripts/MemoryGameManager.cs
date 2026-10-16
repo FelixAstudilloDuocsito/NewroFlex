@@ -28,11 +28,25 @@ public class MemoryGameManager : MonoBehaviour
     private int pairsFound = 0;
     private int totalPairs;
 
-    private void Start()
+    [Header("Control de Flujo")]
+    [Tooltip("Marcar si este nivel espera a que se cierre el video tutorial. Desmarcar si debe arrancar solo al activarse.")]
+    public bool esperarTutorial = false;
+
+    private void OnEnable()
     {
         totalPairs = allCards.Count / 2;
 
-        // Arrancamos la rutina de presentación inicial
+        // Si NO necesita esperar tutorial, arranca de inmediato al activarse el objeto
+        if (!esperarTutorial)
+        {
+            IniciarJuego();
+        }
+    }
+
+    public void IniciarJuego()
+    {
+        // Detener corrutinas previas por seguridad para evitar solapamientos
+        StopAllCoroutines();
         StartCoroutine(RutinaInicioJuego());
     }
 

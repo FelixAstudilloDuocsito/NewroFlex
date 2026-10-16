@@ -5,6 +5,10 @@ using UnityEngine.Events;
 
 public class SwapPuzzleManager : MonoBehaviour
 {
+    [Header("Control de Flujo")]
+    [Tooltip("Marca esto si esta dificultad debe esperar a que se cierre el video tutorial.")]
+    public bool esperarTutorial = false;
+
     [Header("Casillas (Slots)")]
     public Transform[] slots;
 
@@ -20,8 +24,21 @@ public class SwapPuzzleManager : MonoBehaviour
 
     private bool isSwapping = false;
 
-    private void Start()
+    private void OnEnable()
     {
+        // Si NO espera tutorial (ej. dificultades intermedia/difícil que se activan solas), arranca directo
+        if (!esperarTutorial)
+        {
+            IniciarMinijuego();
+        }
+    }
+
+    // Este método lo llama el OnEnable() o el botón del Panel Tutorial
+    public void IniciarMinijuego()
+    {
+        StopAllCoroutines();
+        isSwapping = false;
+
         // Ubicar las piezas inicialmente en cada slot
         for (int i = 0; i < pieces.Count; i++)
         {

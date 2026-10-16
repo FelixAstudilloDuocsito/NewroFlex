@@ -172,27 +172,27 @@ MonoBehaviour:
   m_Name: Standalone
   m_EditorClassIdentifier: Unity.XR.OpenXR::UnityEngine.XR.OpenXR.OpenXRSettings
   features:
-  - {fileID: 7362629241288414657}
-  - {fileID: -8527395157114113272}
-  - {fileID: 5943032814306601874}
-  - {fileID: 4661133908077941282}
-  - {fileID: -8853407826843533302}
-  - {fileID: -1169152778796585910}
   - {fileID: 2141979681127528130}
-  - {fileID: 5542708606103980086}
-  - {fileID: -7112706481201301748}
-  - {fileID: 227038597547079105}
-  - {fileID: -221282379390149034}
-  - {fileID: -767428829865329595}
-  - {fileID: 1343037139515968245}
-  - {fileID: -6465969497698037224}
+  - {fileID: 5943032814306601874}
+  - {fileID: -1169152778796585910}
   - {fileID: -1116300698537256814}
-  - {fileID: 1205157298475115889}
-  - {fileID: -4611759918602685122}
-  - {fileID: -7400485809283690856}
-  - {fileID: 3246198592030591201}
   - {fileID: 1238175812732632881}
+  - {fileID: -8853407826843533302}
+  - {fileID: -7112706481201301748}
+  - {fileID: 3246198592030591201}
+  - {fileID: 227038597547079105}
+  - {fileID: 5542708606103980086}
+  - {fileID: -7400485809283690856}
+  - {fileID: 1343037139515968245}
+  - {fileID: -767428829865329595}
   - {fileID: 3894950204692682}
+  - {fileID: 1205157298475115889}
+  - {fileID: -8527395157114113272}
+  - {fileID: -221282379390149034}
+  - {fileID: -6465969497698037224}
+  - {fileID: 7362629241288414657}
+  - {fileID: 4661133908077941282}
+  - {fileID: -4611759918602685122}
   customLoaderName: 
   m_renderMode: 1
   m_latencyOptimization: 0
@@ -582,7 +582,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: feeef8d85de8db242bdda70cc7ff5acd, type: 3}
   m_Name: OculusTouchControllerProfile Standalone
   m_EditorClassIdentifier: Unity.XR.OpenXR::UnityEngine.XR.OpenXR.Features.Interactions.OculusTouchControllerProfile
-  m_enabled: 0
+  m_enabled: 1
   nameUi: Oculus Touch Controller Profile
   version: 0.0.1
   featureIdInternal: com.unity.openxr.feature.input.oculustouch
@@ -722,7 +722,7 @@ MonoBehaviour:
   lateLatchingDebug: 0
   optimizeMultiviewRenderRegions: 0
   m_multiviewRenderRegionsOptimizationMode: 0
-  m_hasMigratedMultiviewRenderRegions: 0
+  m_hasMigratedMultiviewRenderRegions: 1
   spacewarpMotionVectorTextureFormat: 0
 --- !u!114 &637814188868903343
 MonoBehaviour:
@@ -794,7 +794,7 @@ MonoBehaviour:
   m_symmetricProjection: 0
   m_optimizeMultiviewRenderRegions: 0
   m_multiviewRenderRegionsOptimizationMode: 0
-  m_hasMigratedMultiviewRenderRegionSetting: 0
+  m_hasMigratedMultiviewRenderRegionSetting: 1
   m_foveatedRenderingApi: 1
   m_useOpenXRPredictedTime: 1
 --- !u!114 &1181311453381750152
