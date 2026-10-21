@@ -2070,7 +2070,7 @@ GameObject:
   - component: {fileID: 1142634130}
   - component: {fileID: 1142634129}
   m_Layer: 5
-  m_Name: Canvas
+  m_Name: Pantalla en negro
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
 public class SwapPuzzleManager : MonoBehaviour
 {
@@ -21,6 +22,17 @@ public class SwapPuzzleManager : MonoBehaviour
 
     [Header("Eventos")]
     public UnityEvent onPuzzleSolved;
+
+    [Header("Dificultad y Estado")]
+    [Tooltip("Nivel actual de dificultad (1, 2 o 3)")]
+    public int nivelActual = 1;
+    public int nivelMaximo = 3;
+
+    [Header("UI de Victoria")]
+    [Tooltip("Panel que contiene el mensaje de felicitaciones y el botón de salir")]
+    public GameObject panelVictoria;
+
+    private bool puzzleCompletado = false;
 
     private bool isSwapping = false;
 
@@ -140,5 +152,55 @@ public class SwapPuzzleManager : MonoBehaviour
 
         Debug.Log("¡Puzzle Completado!");
         onPuzzleSolved?.Invoke();
+    }
+
+    private void Start()
+    {
+        if (panelVictoria != null)
+            panelVictoria.SetActive(false);
+    }
+
+    // Este método lo llamas cuando el jugador ordena la última pieza con éxito
+    public void VerificarVictoria()
+    {
+        if (EsPuzzleCorrecto())
+        {
+            puzzleCompletado = true;
+            Debug.Log($"¡Nivel {nivelActual} completado!");
+
+            if (nivelActual >= nivelMaximo)
+            {
+                MostrarPantallaVictoria();
+            }
+            else
+            {
+                // Aquí va tu lógica para avanzar al siguiente nivel (ej. Nivel 2 -> Nivel 3)
+                AvanzarSiguienteNivel();
+            }
+        }
+    }
+
+    private bool EsPuzzleCorrecto()
+    {
+        // Tu lógica existente que comprueba si todas las piezas están en su lugar
+        return true; 
+    }
+
+    private void AvanzarSiguienteNivel()
+    {
+        nivelActual++;
+        // Cargar/Reiniciar las piezas para la nueva dificultad...
+    }
+
+    private void MostrarPantallaVictoria()
+    {
+        if (panelVictoria != null)
+        {
+            panelVictoria.SetActive(true);
+        }
+        else
+        {
+            Debug.LogWarning("No se asignó el Panel de Victoria en el Inspector.");
+        }
     }
 }
