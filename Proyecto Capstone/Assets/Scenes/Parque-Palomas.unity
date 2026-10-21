@@ -1169,6 +1169,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: parklow
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: a1c7a85f93b76a828946b10bac52d3dc, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3725102176391765030, guid: a1c7a85f93b76a828946b10bac52d3dc, type: 3}
       propertyPath: m_Intensity
       value: 0
