@@ -1,0 +1,254 @@
+{
+  "experiment": {
+    "timestamp": "2026-10-07_17-31-39",
+    "llm": "qwen3:8b",
+    "temperature": 0.2,
+    "selected_seeds": [
+      "S001",
+      "S002",
+      "S003"
+    ]
+  },
+  "test_case": {
+    "id": "T002",
+    "name": "Metricas estables"
+  },
+  "input": {
+    "sessions": [
+      {
+        "session_number": 1,
+        "difficulty": "medium",
+        "metrics": {
+          "accuracy_percentage": 70,
+          "average_response_time_ms": 5000,
+          "gaze_deviation_percentage": 16,
+          "controller_tremor_index": 0.2,
+          "session_duration_seconds": 500
+        }
+      },
+      {
+        "session_number": 2,
+        "difficulty": "medium",
+        "metrics": {
+          "accuracy_percentage": 71,
+          "average_response_time_ms": 4950,
+          "gaze_deviation_percentage": 16.2,
+          "controller_tremor_index": 0.2,
+          "session_duration_seconds": 505
+        }
+      },
+      {
+        "session_number": 3,
+        "difficulty": "medium",
+        "metrics": {
+          "accuracy_percentage": 70,
+          "average_response_time_ms": 5010,
+          "gaze_deviation_percentage": 15.9,
+          "controller_tremor_index": 0.21,
+          "session_duration_seconds": 498
+        }
+      }
+    ],
+    "processed_data": {
+      "number_of_sessions": 3,
+      "has_temporal_comparison": true,
+      "accuracy": {
+        "first": 70,
+        "last": 70,
+        "unit": "%",
+        "change": {
+          "type": "absolute",
+          "value": 0,
+          "unit": "percentage_points"
+        }
+      },
+      "response_time": {
+        "first": 5000,
+        "last": 5010,
+        "unit": "ms",
+        "change": {
+          "type": "percentage",
+          "value": 0.2,
+          "unit": "%"
+        }
+      },
+      "gaze_deviation": {
+        "first": 16,
+        "last": 15.9,
+        "unit": "%",
+        "change": {
+          "type": "absolute",
+          "value": -0.1,
+          "unit": "percentage_points"
+        }
+      },
+      "controller_tremor": {
+        "first": 0.2,
+        "last": 0.21,
+        "unit": "index",
+        "change": {
+          "type": "absolute",
+          "value": 0.01,
+          "unit": "index"
+        }
+      },
+      "session_duration": {
+        "first": 500,
+        "last": 498,
+        "unit": "seconds",
+        "change": {
+          "type": "percentage",
+          "value": -0.4,
+          "unit": "%"
+        }
+      }
+    }
+  },
+  "summary": {
+    "total_seeds": 3,
+    "valid_outputs": 3,
+    "validation_errors": 0
+  },
+  "results": [
+    {
+      "seed_id": "S001",
+      "seed_name": "Estricto v1",
+      "seed_file": "S001_estricto_v1.txt",
+      "seed_hash": "c5daa17def0e",
+      "success": true,
+      "validation": {
+        "valid": true,
+        "error_count": 0,
+        "errors": []
+      },
+      "output": {
+        "resumen": "Se registraron tres sesiones con comparación temporal. Las métricas mostraron cambios mínimos en la mayoría de los parámetros, con variaciones absolutas o porcentuales pequeñas.",
+        "cambios_observados": [
+          {
+            "metrica": "response_time",
+            "cambio": "Aumento del 0.2% (5000 ms → 5010 ms)"
+          },
+          {
+            "metrica": "gaze_deviation",
+            "cambio": "Disminución de 0.1 puntos porcentuales (16% → 15.9%)"
+          },
+          {
+            "metrica": "controller_tremor",
+            "cambio": "Aumento de 0.01 en índice (0.2 → 0.21)"
+          },
+          {
+            "metrica": "session_duration",
+            "cambio": "Disminución del 0.4% (500 s → 498 s)"
+          }
+        ],
+        "observaciones": [
+          "La precisión (accuracy) permaneció sin cambios al 70%.",
+          "Los cambios en todas las métricas son menores a 0.5% o 0.1 puntos porcentuales."
+        ],
+        "conclusion": "No se observaron cambios significativos en las métricas registradas entre las sesiones.",
+        "advertencias": [
+          "Los datos corresponden a solo 3 sesiones, lo que limita la capacidad de detectar patrones.",
+          "Los cambios absolutos son menores a los umbrales típicos de relevancia clínica."
+        ]
+      }
+    },
+    {
+      "seed_id": "S002",
+      "seed_name": "Analítico v1",
+      "seed_file": "S002_analitico_v1.txt",
+      "seed_hash": "04b04166f551",
+      "success": true,
+      "validation": {
+        "valid": true,
+        "error_count": 0,
+        "errors": []
+      },
+      "output": {
+        "resumen": "Se presentan los cambios observados en las métricas de las sesiones. No se detectaron cambios significativos en la mayoría de las métricas, aunque se registraron variaciones mínimas en algunas.",
+        "cambios_observados": [
+          {
+            "metrica": "accuracy",
+            "tipo_cambio": "absoluto",
+            "valor": 0,
+            "unidad": "puntos_porcentuales"
+          },
+          {
+            "metrica": "response_time",
+            "tipo_cambio": "porcentaje",
+            "valor": 0.2,
+            "unidad": "%"
+          },
+          {
+            "metrica": "gaze_deviation",
+            "tipo_cambio": "absoluto",
+            "valor": -0.1,
+            "unidad": "puntos_porcentuales"
+          },
+          {
+            "metrica": "controller_tremor",
+            "tipo_cambio": "absoluto",
+            "valor": 0.01,
+            "unidad": "index"
+          },
+          {
+            "metrica": "session_duration",
+            "tipo_cambio": "porcentaje",
+            "valor": -0.4,
+            "unidad": "%"
+          }
+        ],
+        "observaciones": [
+          "La precisión (accuracy) permaneció sin cambio entre la primera y última medición.",
+          "El tiempo de respuesta mostró un incremento absoluto de 10 ms, lo que representa un 0.2% de cambio relativo.",
+          "La desviación de mirada (gaze_deviation) disminuyó en 0.1 puntos porcentuales.",
+          "El índice de temblor del controlador (controller_tremor) aumentó en 0.01 unidades."
+        ],
+        "conclusion": "No se observaron tendencias claras o cambios significativos en las métricas entre la primera y última medición. Las variaciones registradas son mínimas y requieren más datos para establecer su relevancia.",
+        "advertencias": [
+          "Los cambios porcentuales deben interpretarse con cuidado debido a la posible escala de las métricas originales.",
+          "La muestra de 3 sesiones es limitada para inferir patrones estadísticamente significativos.",
+          "No se puede determinar la relación entre los cambios observados y factores externos sin información adicional."
+        ]
+      }
+    },
+    {
+      "seed_id": "S003",
+      "seed_name": "Profesional conciso v1",
+      "seed_file": "S003_profesional_conciso_v1.txt",
+      "seed_hash": "b3f80a2bc6df",
+      "success": true,
+      "validation": {
+        "valid": true,
+        "error_count": 0,
+        "errors": []
+      },
+      "output": {
+        "resumen": "Se presentan resultados de 3 sesiones con comparación temporal. Las métricas muestran variaciones mínimas.",
+        "cambios_observados": [
+          {
+            "metrica": "response_time",
+            "valor": "aumento del 0.2%"
+          },
+          {
+            "metrica": "gaze_deviation",
+            "valor": "disminución de 0.1 puntos porcentuales"
+          },
+          {
+            "metrica": "controller_tremor",
+            "valor": "aumento de 0.01 en el índice"
+          },
+          {
+            "metrica": "session_duration",
+            "valor": "disminución del 0.4%"
+          }
+        ],
+        "observaciones": [
+          "La precisión (70%) permaneció estable entre sesiones",
+          "Los cambios en todas las métricas son menores a 0.5% o 0.1 puntos porcentuales"
+        ],
+        "conclusion": "Las métricas registran variaciones menores sin evidencia de tendencia clara.",
+        "advertencias": []
+      }
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "id": "T002",
+  "name": "Metricas estables",
+  "sessions": [
+    {
+      "session_number": 1,
+      "difficulty": "medium",
+      "metrics": {
+        "accuracy_percentage": 70,
+        "average_response_time_ms": 5000,
+        "gaze_deviation_percentage": 16,
+        "controller_tremor_index": 0.2,
+        "session_duration_seconds": 500
+      }
+    },
+    {
+      "session_number": 2,
+      "difficulty": "medium",
+      "metrics": {
+        "accuracy_percentage": 71,
+        "average_response_time_ms": 4950,
+        "gaze_deviation_percentage": 16.2,
+        "controller_tremor_index": 0.2,
+        "session_duration_seconds": 505
+      }
+    },
+    {
+      "session_number": 3,
+      "difficulty": "medium",
+      "metrics": {
+        "accuracy_percentage": 70,
+        "average_response_time_ms": 5010,
+        "gaze_deviation_percentage": 15.9,
+        "controller_tremor_index": 0.21,
+        "session_duration_seconds": 498
+      }
+    }
+  ]
+}

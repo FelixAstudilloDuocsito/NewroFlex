@@ -1,0 +1,15 @@
+{
+  "status": "passed",
+  "case_id": "v2-base_cero-p5-v1",
+  "package": "D:\\NeuroFlex\\releases\\neuroflex-resumen-v0.2-candidate",
+  "manifest_sha256": "d280a4bd28c41555540ef2f3c5f8e2833572620a0ee4abe6cef090524e76e600",
+  "verified_files": 39,
+  "previous_package_unchanged": true,
+  "same_trained_weights": true,
+  "gpu_regression_passed": true,
+  "summary_trace": {
+    "summary_source": "deterministic_fallback",
+    "summary_replaced": true,
+    "policy": "exact_template_v1"
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "id": "T006",
+  "name": "Cambio de dificultad",
+  "description": "Caso donde la dificultad cambia entre sesiones y limita la comparación directa.",
+  "sessions": [
+    {
+      "session_number": 1,
+      "difficulty": "easy",
+      "metrics": {
+        "accuracy_percentage": 88.0,
+        "average_response_time_ms": 3900,
+        "gaze_deviation_percentage": 11.0,
+        "controller_tremor_index": 0.17,
+        "session_duration_seconds": 420
+      }
+    },
+    {
+      "session_number": 2,
+      "difficulty": "easy",
+      "metrics": {
+        "accuracy_percentage": 90.0,
+        "average_response_time_ms": 3700,
+        "gaze_deviation_percentage": 10.5,
+        "controller_tremor_index": 0.16,
+        "session_duration_seconds": 410
+      }
+    },
+    {
+      "session_number": 3,
+      "difficulty": "medium",
+      "metrics": {
+        "accuracy_percentage": 76.0,
+        "average_response_time_ms": 4700,
+        "gaze_deviation_percentage": 14.0,
+        "controller_tremor_index": 0.20,
+        "session_duration_seconds": 500
+      }
+    },
+    {
+      "session_number": 4,
+      "difficulty": "hard",
+      "metrics": {
+        "accuracy_percentage": 65.0,
+        "average_response_time_ms": 5900,
+        "gaze_deviation_percentage": 18.0,
+        "controller_tremor_index": 0.26,
+        "session_duration_seconds": 590
+      }
+    }
+  ]
+}

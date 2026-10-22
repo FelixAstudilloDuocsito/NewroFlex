@@ -1,0 +1,21 @@
+{
+  "version": "v2-reviewed-ai",
+  "reviewer": "Codex (AI)",
+  "human_review": "not_performed",
+  "training_ready": false,
+  "used_for_training": false,
+  "files": {
+    "train.jsonl": {
+      "count": 120,
+      "sha256": "ec6b3cd84c689e17c57448b23c4740665795c8e41822770a87cb544b385bb03d"
+    },
+    "validation.jsonl": {
+      "count": 30,
+      "sha256": "261ec375995c807798a6a01bb235de5e85c494647e345f1619257cfabfee9d3a"
+    },
+    "test.jsonl": {
+      "count": 30,
+      "sha256": "e2cbb1fb8deba4656ff00a357c1aa3ff25f0b861115308c3b0c3af17007984a4"
+    }
+  }
+}

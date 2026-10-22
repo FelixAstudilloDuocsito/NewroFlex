@@ -1,0 +1,18 @@
+{
+  "status": "passed",
+  "package": "D:\\NeuroFlex\\releases\\neuroflex-scenes-v1-candidate",
+  "verified_files": 39,
+  "manifest_sha256": "b0242203bbbb4d286513221045da8206f2891786d6c839be17edb90873902491",
+  "gpu_scenarios_checked": [
+    "puzzle",
+    "memory",
+    "pigeons"
+  ],
+  "sources": [
+    "model_verified_template",
+    "model_verified_template",
+    "deterministic_fallback"
+  ],
+  "output_schema_valid": true,
+  "metrics_and_summary_match": true
+}

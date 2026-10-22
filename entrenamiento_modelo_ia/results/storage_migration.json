@@ -1,0 +1,110 @@
+﻿{
+    "destination":  "D:\\NeuroFlex\\cache-training",
+    "verified":  [
+                     {
+                         "path":  "hub\\CACHEDIR.TAG",
+                         "sha256":  "E8893E2DCB3F4545EF67A0A5B7B769113D38EEF1AA61C7C7BA14659B02AF955F",
+                         "bytes":  195
+                     },
+                     {
+                         "path":  "hub\\models--Qwen--Qwen3-4B\\.no_exist\\1cfa9a7208912126459214e8b04321603b3df60c\\adapter_config.json",
+                         "sha256":  "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+                         "bytes":  0
+                     },
+                     {
+                         "path":  "hub\\models--Qwen--Qwen3-4B\\.no_exist\\1cfa9a7208912126459214e8b04321603b3df60c\\added_tokens.json",
+                         "sha256":  "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+                         "bytes":  0
+                     },
+                     {
+                         "path":  "hub\\models--Qwen--Qwen3-4B\\.no_exist\\1cfa9a7208912126459214e8b04321603b3df60c\\chat_template.jinja",
+                         "sha256":  "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+                         "bytes":  0
+                     },
+                     {
+                         "path":  "hub\\models--Qwen--Qwen3-4B\\.no_exist\\1cfa9a7208912126459214e8b04321603b3df60c\\model.safetensors",
+                         "sha256":  "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+                         "bytes":  0
+                     },
+                     {
+                         "path":  "hub\\models--Qwen--Qwen3-4B\\.no_exist\\1cfa9a7208912126459214e8b04321603b3df60c\\special_tokens_map.json",
+                         "sha256":  "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+                         "bytes":  0
+                     },
+                     {
+                         "path":  "hub\\models--Qwen--Qwen3-4B\\refs\\main",
+                         "sha256":  "C0AA7F98BCE7F5CFED644838701E5F65C2BA650AA61825D7107648FAE9E1E8BA",
+                         "bytes":  40
+                     },
+                     {
+                         "path":  "hub\\models--Qwen--Qwen3-4B\\snapshots\\1cfa9a7208912126459214e8b04321603b3df60c\\config.json",
+                         "sha256":  "8BA006F74FECFAAEB392872A60F4A480E7EC9860153D2E1B769EC81F9A147F8A",
+                         "bytes":  726
+                     },
+                     {
+                         "path":  "hub\\models--Qwen--Qwen3-4B\\snapshots\\1cfa9a7208912126459214e8b04321603b3df60c\\generation_config.json",
+                         "sha256":  "2325DA0F15BB848E018C5AE071B7943332E9F871D6B60E2ED22CA97D4CB993D2",
+                         "bytes":  239
+                     },
+                     {
+                         "path":  "hub\\models--Qwen--Qwen3-4B\\snapshots\\1cfa9a7208912126459214e8b04321603b3df60c\\merges.txt",
+                         "sha256":  "8831E4F1A044471340F7C0A83D7BD71306A5B867E95FD870F74D0C5308A904D5",
+                         "bytes":  1671853
+                     },
+                     {
+                         "path":  "hub\\models--Qwen--Qwen3-4B\\snapshots\\1cfa9a7208912126459214e8b04321603b3df60c\\model-00001-of-00003.safetensors",
+                         "sha256":  "328A91D3122359D5547F9D79521205BC0A46E1F79A792DFE650E99FC2D651223",
+                         "bytes":  3957900840
+                     },
+                     {
+                         "path":  "hub\\models--Qwen--Qwen3-4B\\snapshots\\1cfa9a7208912126459214e8b04321603b3df60c\\model-00002-of-00003.safetensors",
+                         "sha256":  "6CD087B316306A68C562436B5492EDBCF6E16C6DBA3A1308279CAA5A58E21CA5",
+                         "bytes":  3987450520
+                     },
+                     {
+                         "path":  "hub\\models--Qwen--Qwen3-4B\\snapshots\\1cfa9a7208912126459214e8b04321603b3df60c\\model-00003-of-00003.safetensors",
+                         "sha256":  "E4BF436957184F4EEB86A80E9DB394503F1F56446B2E6B7EDEAC5B81470F4CA1",
+                         "bytes":  99630640
+                     },
+                     {
+                         "path":  "hub\\models--Qwen--Qwen3-4B\\snapshots\\1cfa9a7208912126459214e8b04321603b3df60c\\model.safetensors.index.json",
+                         "sha256":  "6DC0981B8829FEAD746441F68F38F24C5CA4A3A66351F652C26C6DF0EFC43AB2",
+                         "bytes":  32819
+                     },
+                     {
+                         "path":  "hub\\models--Qwen--Qwen3-4B\\snapshots\\1cfa9a7208912126459214e8b04321603b3df60c\\tokenizer.json",
+                         "sha256":  "AEB13307A71ACD8FE81861D94AD54AB689DF773318809EED3CBE794B4492DAE4",
+                         "bytes":  11422654
+                     },
+                     {
+                         "path":  "hub\\models--Qwen--Qwen3-4B\\snapshots\\1cfa9a7208912126459214e8b04321603b3df60c\\tokenizer_config.json",
+                         "sha256":  "D5D09F07B48C3086C508B30D1C9114BD1189145B74E982A265350C923ACD8101",
+                         "bytes":  9732
+                     },
+                     {
+                         "path":  "hub\\models--Qwen--Qwen3-4B\\snapshots\\1cfa9a7208912126459214e8b04321603b3df60c\\vocab.json",
+                         "sha256":  "CA10D7E9FB3ED18575DD1E277A2579C16D108E32F27439684AFA0E10B1440910",
+                         "bytes":  2776833
+                     },
+                     {
+                         "path":  "hub\\models--Qwen--Qwen3-4B\\trees\\1cfa9a7208912126459214e8b04321603b3df60c.json",
+                         "sha256":  "074D92135BA1C02561DF48534929E26674E15A68D4E64581F2FEA928D6FDA062",
+                         "bytes":  2283
+                     },
+                     {
+                         "path":  "xet\\logs\\xet_20261020T175817848-0300_16672.log",
+                         "sha256":  "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+                         "bytes":  0
+                     },
+                     {
+                         "path":  "xet\\logs\\xet_20261020T175850530-0300_5900.log",
+                         "sha256":  "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+                         "bytes":  0
+                     }
+                 ],
+    "source":  "C:\\Users\\debaz\\OneDrive\\Documentos\\GitHub\\NeuroFlex_ModeloIA\\.cache-training",
+    "discarded_incomplete":  [
+                                 "C:\\Users\\debaz\\OneDrive\\Documentos\\GitHub\\NeuroFlex_ModeloIA\\.cache-training\\hub\\models--Qwen--Qwen3-4B\\blobs\\328a91d3122359d5547f9d79521205bc0a46e1f79a792dfe650e99fc2d651223.aa5f5521.incomplete",
+                                 "C:\\Users\\debaz\\OneDrive\\Documentos\\GitHub\\NeuroFlex_ModeloIA\\.cache-training\\hub\\models--Qwen--Qwen3-4B\\blobs\\6cd087b316306a68c562436b5492edbcf6e16c6dba3a1308279caa5a58e21ca5.c28f2cd6.incomplete"
+                             ]
+}

@@ -1,0 +1,54 @@
+{
+  "stage": "experimental_frozen_candidate",
+  "approved_for_deployment": false,
+  "human_review": "pending",
+  "base_model": "Qwen/Qwen3-4B",
+  "base_revision": "1cfa9a7208912126459214e8b04321603b3df60c",
+  "training_source_sha256": "6ee7e8f517f4705f4aa0535aca2256341c52e0dc7a77f30b0dfee1d37ac6238d",
+  "evaluation_summary": {
+    "base": {
+      "total": 30,
+      "automatic_pass": 30,
+      "parse_errors": 0
+    },
+    "adapted": {
+      "total": 30,
+      "automatic_pass": 30,
+      "parse_errors": 0
+    }
+  },
+  "files": {
+    "evaluation.json": "b3ddb0fee37322dfb5ba630029d0f2e94b9446597a4153e3af71690e40e8a482",
+    "example_input.json": "e3e86138fe71e3f7e4b1f5a79f46f972d4a2d3b8751d83fc02fb527f81b0d15d",
+    "infer.py": "e30e314eab39c0d3bc55b1d15297325a903781a9e3d32f79262aa37a7f3859ac",
+    "model_card.md": "2771eb0bc7fca62c500652d49cb5b75eee2363caa165641feeb54e9fc51e0c6b",
+    "README.md": "0eade645540048a3a3f954a080aa3b9e1ed46d191583907d48dc51e7e6918ec5",
+    "requirements-lock.txt": "fd73757d5ad83bf84721a697ec905f205a7a10a9097b56c7301b04350edc6ffd",
+    "system.txt": "b303063e2dda91a32120982baa5a9474eb14b9ee0e958b4e21b00eb30cdd6be1",
+    "training.json": "6ee7e8f517f4705f4aa0535aca2256341c52e0dc7a77f30b0dfee1d37ac6238d",
+    "validation.json": "15605069972ee24d9801764936c3e0fc90fdcdd8eb5306a4ed9904d19c6092ef",
+    "adapter/adapter_config.json": "8b0dbaedbf8583f8be2f0023f09ca91df2abf114b6d74357c7e24d80b774ad88",
+    "adapter/adapter_model.safetensors": "2bf436a80ab6f83b91af0fa643bfab375d9d535c0863f54cc5c14b3a085b9542",
+    "adapter/README.md": "7306d160b9c181599434df827eb4abe9e2f62c614c979923ea120465b12551db",
+    "evaluation/baseline_system.txt": "b303063e2dda91a32120982baa5a9474eb14b9ee0e958b4e21b00eb30cdd6be1",
+    "evaluation/contracts.py": "737b8d5dd8325fdc2518a1ea62c3e3b61e6038df2cf2b2774e4d16b493f22875",
+    "evaluation/evaluate.py": "fcf4bdd8b355d9d930e5c22d83612bad19e98208bed84d07441c75dd3bee6d96",
+    "evaluation/__init__.py": "bf1cbf7e9613f416bc434085ff2dd0c0c75ad4ef6095e6b8e2eb946dd8f0ff54",
+    "schemas/entrada.schema.json": "4d303887b6476a51dacfe847f5e3caa468b3c53e4c020d702fc1661f8b73af9f",
+    "schemas/salida.schema.json": "cbbab3487bc92db762fda88f304949f0b88e3e458d7c28517a26247b66ed111d",
+    "tokenizer/chat_template.jinja": "51fa65c79bb57f058dc7ef8734884bd325fe9d45bb03a61bfef59785d3bc2da9",
+    "tokenizer/tokenizer.json": "be75606093db2094d7cd20f3c2f385c212750648bd6ea4fb2bf507a6a4c55506",
+    "tokenizer/tokenizer_config.json": "bd667337917f3d3de225e9407258aa66fea87985bbed9cfb84d00adea253034a",
+    "training/evaluate_adapter.py": "c72c0cbbd8104e091c9a7879aa6c83a4c6713d1a23c90d96fae3067699e7a4b3",
+    "training/run.py": "c2ed1742c745a5416d754d7176e726d6ba3fc05067e810e9e605c6de870fb449",
+    "training/__init__.py": "9bafed164cdc041daa46ccb4863ef5f30eba416d01b26b244651add366e59369",
+    "data/sft_v2_draft/manifest.json": "852e05336fb2e28bf148b8ed68009817069f33a195585866d03972c2dd48fd14",
+    "data/sft_v2_draft/revision.csv": "8556933c1586aafe63a63c19d33af416be137d47e82e948859f200e25380e6a7",
+    "data/sft_v2_draft/train.jsonl": "35482a1d645a4e7d3fe8e221213a9c437596185fed5f1f899cae12979298a0ce",
+    "data/sft_v2_draft/validation.jsonl": "c6ad14205768eabf107e88a3dcb3593355fa29cec6e4602536a53d49b6991d3d",
+    "data/v2/manifest.json": "64960509a59dc2a3c8b6e64beb08bb4e7f84b431e9401669c4bcca2ff066bae3",
+    "data/v2/test.jsonl": "db5086c5a8460484dd9b8a8eeebf8ced841541ed7392e813ab9503d4ebb433ae",
+    "data/v2/train.jsonl": "881a0f00a4eba2c55452dd6cdfb45fa80675d3fa7bc886c9ea13f5329d312392",
+    "data/v2/validation.jsonl": "2f776239dca8584112dc1053a6e76fad1e5b1df5c15664363e76da86eec55ff8"
+  }
+}

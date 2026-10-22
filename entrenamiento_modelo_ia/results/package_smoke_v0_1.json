@@ -1,0 +1,43 @@
+{
+  "resumen": "Se registraron 4 sesiones. Precisión: pasó de 51.897 % a 58.807 % (aumentó). Cambio: 6.91 puntos porcentuales. Tiempo de respuesta: pasó de 5943.87 ms a 6396.97 ms (aumentó). Cambio: 7.62 % respecto al valor inicial. Desviación de mirada: pasó de 45.087 % a 52.342 % (aumentó). Cambio: 7.255 puntos porcentuales. Índice de temblor: pasó de 0.416 unidades de índice a 0.433 unidades de índice (aumentó). Cambio: 0.017 unidades de índice. Duración: pasó de 645.354 s a 672.541 s (aumentó). Cambio: 4.21 % respecto al valor inicial. El resumen describe métricas y no establece conclusiones clínicas. La comparación de extremos no demuestra una tendencia continua.",
+  "cambios_observados": [
+    {
+      "metrica": "accuracy_percentage",
+      "inicial": 51.897,
+      "final": 58.807,
+      "valor": 6.91,
+      "unidad": "puntos_porcentuales"
+    },
+    {
+      "metrica": "average_response_time_ms",
+      "inicial": 5943.872,
+      "final": 6396.969,
+      "valor": 7.62,
+      "unidad": "%"
+    },
+    {
+      "metrica": "gaze_deviation_percentage",
+      "inicial": 45.087,
+      "final": 52.342,
+      "valor": 7.255,
+      "unidad": "puntos_porcentuales"
+    },
+    {
+      "metrica": "controller_tremor_index",
+      "inicial": 0.416,
+      "final": 0.433,
+      "valor": 0.017,
+      "unidad": "indice"
+    },
+    {
+      "metrica": "session_duration_seconds",
+      "inicial": 645.354,
+      "final": 672.541,
+      "valor": 4.21,
+      "unidad": "%"
+    }
+  ],
+  "advertencias": [
+    "sin_inferencia_clinica"
+  ]
+}

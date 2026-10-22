@@ -1,0 +1,51 @@
+{
+  "id": "T005",
+  "name": "Valor atipico",
+  "description": "Caso con una sesión intermedia claramente anómala.",
+  "sessions": [
+    {
+      "session_number": 1,
+      "difficulty": "medium",
+      "metrics": {
+        "accuracy_percentage": 71.0,
+        "average_response_time_ms": 4900,
+        "gaze_deviation_percentage": 15.0,
+        "controller_tremor_index": 0.21,
+        "session_duration_seconds": 500
+      }
+    },
+    {
+      "session_number": 2,
+      "difficulty": "medium",
+      "metrics": {
+        "accuracy_percentage": 73.0,
+        "average_response_time_ms": 4800,
+        "gaze_deviation_percentage": 14.7,
+        "controller_tremor_index": 0.20,
+        "session_duration_seconds": 495
+      }
+    },
+    {
+      "session_number": 3,
+      "difficulty": "medium",
+      "metrics": {
+        "accuracy_percentage": 28.0,
+        "average_response_time_ms": 9200,
+        "gaze_deviation_percentage": 33.0,
+        "controller_tremor_index": 0.48,
+        "session_duration_seconds": 780
+      }
+    },
+    {
+      "session_number": 4,
+      "difficulty": "medium",
+      "metrics": {
+        "accuracy_percentage": 74.0,
+        "average_response_time_ms": 4750,
+        "gaze_deviation_percentage": 14.4,
+        "controller_tremor_index": 0.19,
+        "session_duration_seconds": 490
+      }
+    }
+  ]
+}

@@ -1,0 +1,108 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "sessions": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "items": {
+        "type": "object",
+        "properties": {
+          "session_number": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "difficulty": {
+            "type": "string",
+            "enum": [
+              "easy",
+              "medium",
+              "hard"
+            ]
+          },
+          "metrics": {
+            "type": "object",
+            "properties": {
+              "accuracy_percentage": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "average_response_time_ms": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "gaze_deviation_percentage": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "controller_tremor_index": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "session_duration_seconds": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "accuracy_percentage",
+              "average_response_time_ms",
+              "gaze_deviation_percentage",
+              "controller_tremor_index",
+              "session_duration_seconds"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "session_number",
+          "difficulty",
+          "metrics"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "sessions"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,51 @@
+{
+  "id": "T003",
+  "name": "Metricas mixtas",
+  "description": "Caso con cambios en direcciones diferentes entre métricas.",
+  "sessions": [
+    {
+      "session_number": 1,
+      "difficulty": "medium",
+      "metrics": {
+        "accuracy_percentage": 62.0,
+        "average_response_time_ms": 4800,
+        "gaze_deviation_percentage": 18.0,
+        "controller_tremor_index": 0.24,
+        "session_duration_seconds": 470
+      }
+    },
+    {
+      "session_number": 2,
+      "difficulty": "medium",
+      "metrics": {
+        "accuracy_percentage": 67.0,
+        "average_response_time_ms": 5000,
+        "gaze_deviation_percentage": 16.5,
+        "controller_tremor_index": 0.26,
+        "session_duration_seconds": 490
+      }
+    },
+    {
+      "session_number": 3,
+      "difficulty": "medium",
+      "metrics": {
+        "accuracy_percentage": 72.0,
+        "average_response_time_ms": 5300,
+        "gaze_deviation_percentage": 14.0,
+        "controller_tremor_index": 0.29,
+        "session_duration_seconds": 510
+      }
+    },
+    {
+      "session_number": 4,
+      "difficulty": "medium",
+      "metrics": {
+        "accuracy_percentage": 76.0,
+        "average_response_time_ms": 5500,
+        "gaze_deviation_percentage": 12.5,
+        "controller_tremor_index": 0.31,
+        "session_duration_seconds": 525
+      }
+    }
+  ]
+}

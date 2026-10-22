@@ -1,0 +1,50 @@
+{
+  "id": "T001",
+  "name": "Progreso regular",
+  "sessions": [
+    {
+      "session_number": 1,
+      "difficulty": "medium",
+      "metrics": {
+        "accuracy_percentage": 61,
+        "average_response_time_ms": 6100,
+        "gaze_deviation_percentage": 21.4,
+        "controller_tremor_index": 0.31,
+        "session_duration_seconds": 540
+      }
+    },
+    {
+      "session_number": 2,
+      "difficulty": "medium",
+      "metrics": {
+        "accuracy_percentage": 68,
+        "average_response_time_ms": 5400,
+        "gaze_deviation_percentage": 19.1,
+        "controller_tremor_index": 0.28,
+        "session_duration_seconds": 520
+      }
+    },
+    {
+      "session_number": 3,
+      "difficulty": "medium",
+      "metrics": {
+        "accuracy_percentage": 74,
+        "average_response_time_ms": 4800,
+        "gaze_deviation_percentage": 16.5,
+        "controller_tremor_index": 0.23,
+        "session_duration_seconds": 500
+      }
+    },
+    {
+      "session_number": 4,
+      "difficulty": "medium",
+      "metrics": {
+        "accuracy_percentage": 82,
+        "average_response_time_ms": 4200,
+        "gaze_deviation_percentage": 13.2,
+        "controller_tremor_index": 0.18,
+        "session_duration_seconds": 480
+      }
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "id": "T004",
+  "name": "Una sola sesion",
+  "description": "Caso con una única sesión; no debe inferirse tendencia temporal.",
+  "sessions": [
+    {
+      "session_number": 1,
+      "difficulty": "medium",
+      "metrics": {
+        "accuracy_percentage": 73.0,
+        "average_response_time_ms": 5100,
+        "gaze_deviation_percentage": 15.4,
+        "controller_tremor_index": 0.22,
+        "session_duration_seconds": 505
+      }
+    }
+  ]
+}

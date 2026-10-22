@@ -1,0 +1,31 @@
+{
+  "models": [
+    {
+      "id": "S001",
+      "name": "Estricto v1",
+      "file": "S001_estricto_v1.txt",
+      "created_at": "2026-10-07T16:00:00",
+      "uses": 9,
+      "description": "Semilla restrictiva enfocada en reducir alucinaciones e inferencias no justificadas.",
+      "active": true
+    },
+    {
+      "id": "S002",
+      "name": "Analítico v1",
+      "file": "S002_analitico_v1.txt",
+      "created_at": "2026-10-07T16:05:00",
+      "uses": 9,
+      "description": "Semilla orientada al análisis descriptivo de las métricas.",
+      "active": true
+    },
+    {
+      "id": "S003",
+      "name": "Profesional conciso v1",
+      "file": "S003_profesional_conciso_v1.txt",
+      "created_at": "2026-10-07T16:10:00",
+      "uses": 9,
+      "description": "Semilla diseñada para producir respuestas breves para el dashboard.",
+      "active": true
+    }
+  ]
+}

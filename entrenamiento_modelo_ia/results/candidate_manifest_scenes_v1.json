@@ -1,0 +1,84 @@
+{
+  "stage": "experimental_frozen_candidate",
+  "contractVersion": "scenes-v1",
+  "approved_for_deployment": false,
+  "reviewer": "Codex (AI)",
+  "human_review": "not_performed",
+  "base_model": "Qwen/Qwen3-4B",
+  "base_revision": "1cfa9a7208912126459214e8b04321603b3df60c",
+  "evaluation": {
+    "validation": {
+      "base": {
+        "total": 24,
+        "json_valid": 24,
+        "raw_exact_reference": 0,
+        "fallback_count": 24,
+        "delivered_exact_reference": 24
+      },
+      "adapted": {
+        "total": 24,
+        "json_valid": 24,
+        "raw_exact_reference": 18,
+        "fallback_count": 6,
+        "delivered_exact_reference": 24
+      }
+    },
+    "test": {
+      "base": {
+        "total": 24,
+        "json_valid": 24,
+        "raw_exact_reference": 0,
+        "fallback_count": 24,
+        "delivered_exact_reference": 24
+      },
+      "adapted": {
+        "total": 24,
+        "json_valid": 24,
+        "raw_exact_reference": 18,
+        "fallback_count": 6,
+        "delivered_exact_reference": 24
+      }
+    }
+  },
+  "files": {
+    "infer.py": "d8b2c9a8882a4d1a8c177a179437ceed660f83868cc275c2ed6088e85a976fbc",
+    "metricas_unity.md": "0fdf75b707f840ad95acdd18e56ea4719660dbdb8526199192006452a2725448",
+    "model_card.md": "d9cb270423772b94d8a6db0cfc5606b37472efa0ad617aa046d78d53d87aca3e",
+    "README.md": "4e0b5a72aabfea0d44a0702382ea2db7d06cc09f28adf6c6432a02d39a5d6c2e",
+    "requirements-lock.txt": "fd73757d5ad83bf84721a697ec905f205a7a10a9097b56c7301b04350edc6ffd",
+    "test.json": "4d8fd07d0218eda7a08332cc471ff9cc2e822ede2e9bb36982511f8d09828a88",
+    "validation.json": "409677a44fe8bdbdcad3944d6f254a2d9f05e7d7493d45d387158c3bc6a69ff6",
+    "evaluation/contracts.py": "737b8d5dd8325fdc2518a1ea62c3e3b61e6038df2cf2b2774e4d16b493f22875",
+    "evaluation/__init__.py": "bf1cbf7e9613f416bc434085ff2dd0c0c75ad4ef6095e6b8e2eb946dd8f0ff54",
+    "model/run.json": "b1f5c5767b43a224bdbdd434109192a2a5845de4c5261584168b1e359c5721b2",
+    "scenes/contracts.py": "6f70a39ce7b56d38b246962939825fa2cf924025f0daa49fade334f6791ebbad",
+    "scenes/dataset.py": "5b5c43244789b6e9ef9a780be384717a4d533fd3be7294ac01374faae110c65f",
+    "scenes/evaluate.py": "007f010777bad78be73dfeaad6d216ad7362cb33380b401ac750afb46eb561c2",
+    "scenes/infer.py": "682e16e35c9f1cf59920b2516745e67b22b64f0b2126d5d46ee6624445c8c990",
+    "scenes/output_schema.py": "c34343c58e7ecfded122c4d2acf5464609826c5ac700dea38769aaea7b094aa2",
+    "scenes/package.py": "f7af7d17f9ba42d4c11e43a72de2bd8803ab11696016974fa6843202604205eb",
+    "scenes/runtime.py": "8db9ab353b2b3ecf07605b13484b619a82909259103d1cbde484048450ffe22c",
+    "scenes/summaries.py": "50de3bbed35a03f07d1c5bd6d08ede21da55afb40762e7d17b17e266ef4a255a",
+    "scenes/test_scenes.py": "ed5f350d34db030766576aed76b6f62f527926a7753f5149756037830627267c",
+    "scenes/__init__.py": "110164c6d3d83e27a826285b2a0cd50efcfe8d6157d39a8892502dfa8d8fcee6",
+    "schemas/scenes-input.schema.json": "a4cd6d41929aa1ad1d6da8a4817c6c5a06c278db66d090d2e7127dee34fa1b3f",
+    "schemas/scenes-output.schema.json": "8568b4483c1573884ad3170c832a872d4cddbb8bcda9526a2bd567070cc771f0",
+    "training/run.py": "c2ed1742c745a5416d754d7176e726d6ba3fc05067e810e9e605c6de870fb449",
+    "training/__init__.py": "9bafed164cdc041daa46ccb4863ef5f30eba416d01b26b244651add366e59369",
+    "model/adapter/adapter_config.json": "8b0dbaedbf8583f8be2f0023f09ca91df2abf114b6d74357c7e24d80b774ad88",
+    "model/adapter/adapter_model.safetensors": "eba85dc6d223573f3d687964e3a0a808765b814478584b63134623c05c9b8683",
+    "model/adapter/README.md": "7306d160b9c181599434df827eb4abe9e2f62c614c979923ea120465b12551db",
+    "model/tokenizer/chat_template.jinja": "51fa65c79bb57f058dc7ef8734884bd325fe9d45bb03a61bfef59785d3bc2da9",
+    "model/tokenizer/tokenizer.json": "be75606093db2094d7cd20f3c2f385c212750648bd6ea4fb2bf507a6a4c55506",
+    "model/tokenizer/tokenizer_config.json": "bd667337917f3d3de225e9407258aa66fea87985bbed9cfb84d00adea253034a",
+    "data/scenes_v1_1/example_request.json": "5c7299afd922cb7a327851222f74595aa1e22c8d79d595cdd1dab75773b6b13a",
+    "data/scenes_v1_1/example_response.json": "8cc93183fb900cc00f39b7b23b7735fd4b98fc501513ee5607cefcf36cd314ee",
+    "data/scenes_v1_1/manifest.json": "66e504dcbe183495320efeae787422f3ba366037f2a814643ce2a5283900811e",
+    "data/scenes_v1_1/test.jsonl": "d26056faeaf5f7f56902287c748e62add4bc059aa365770ff1adbcaab65ee42a",
+    "data/scenes_v1_1/train.jsonl": "3bf469152579a6ec16b7ce71f5a97b7f3aee9095b845e27dfc244b4acf75d810",
+    "data/scenes_v1_1/validation.jsonl": "1096c1f0e2f7af410ee9af8939f590c107c46d2f5568d8ed5a315447c4d9888b",
+    "data/sft_scenes_v1_1/manifest.json": "bde63eb7045b38d143f747a351586a6a0cbe5a20dbab65ec21cf8a45a63b8a0f",
+    "data/sft_scenes_v1_1/train.jsonl": "902a8c27bf2cc006a9f17beb54acb9755884925555e9b45c9451cd0c9a041bbf",
+    "data/sft_scenes_v1_1/validation.jsonl": "85a1e55fb17184812323d71560029f2639acf3f4e89f5b09e709f0d99258e34d"
+  }
+}

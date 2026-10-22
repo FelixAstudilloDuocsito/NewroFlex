@@ -1,0 +1,21 @@
+{
+  "version": "candidate-v2",
+  "seed": 20261021,
+  "human_review": "pending",
+  "clinical_validity": false,
+  "generator_sha256": "cf3b9072d778b9b806688a48b52dd3e866a947b78506a73eb2db3e5e454327d3",
+  "files": {
+    "train.jsonl": {
+      "count": 120,
+      "sha256": "881a0f00a4eba2c55452dd6cdfb45fa80675d3fa7bc886c9ea13f5329d312392"
+    },
+    "validation.jsonl": {
+      "count": 30,
+      "sha256": "2f776239dca8584112dc1053a6e76fad1e5b1df5c15664363e76da86eec55ff8"
+    },
+    "test.jsonl": {
+      "count": 30,
+      "sha256": "db5086c5a8460484dd9b8a8eeebf8ced841541ed7392e813ab9503d4ebb433ae"
+    }
+  }
+}

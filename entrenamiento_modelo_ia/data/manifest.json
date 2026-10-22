@@ -1,0 +1,39 @@
+{
+  "version": "pilot-v1",
+  "seed": 20261020,
+  "origin": "synthetic_deterministic",
+  "human_review": "pending",
+  "clinical_validity": false,
+  "files": {
+    "train.jsonl": {
+      "count": 24,
+      "groups": [
+        "ascenso",
+        "descenso",
+        "estable",
+        "mixto",
+        "unica",
+        "dificultad",
+        "faltantes",
+        "base_cero"
+      ],
+      "sha256": "ebbaacf27250b9e62b1e5973ca368a159bf50c8f19860b7dc1a44763503c2a5f"
+    },
+    "validation.jsonl": {
+      "count": 6,
+      "groups": [
+        "oscilacion",
+        "extremos"
+      ],
+      "sha256": "2cf949084d3864cb96f4c9cd3908a4364cd4574dfd75562d83b7c7670018528b"
+    },
+    "test.jsonl": {
+      "count": 6,
+      "groups": [
+        "faltantes_dificultad",
+        "ceros_estables"
+      ],
+      "sha256": "36d3b58f62bb9026c233cab02de5d11eee91c38640a9e4466bd9de46019558d3"
+    }
+  }
+}

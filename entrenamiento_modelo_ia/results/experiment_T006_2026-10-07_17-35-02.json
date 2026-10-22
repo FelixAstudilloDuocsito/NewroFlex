@@ -1,0 +1,292 @@
+{
+  "experiment": {
+    "timestamp": "2026-10-07_17-35-02",
+    "llm": "qwen3:8b",
+    "temperature": 0.2,
+    "selected_seeds": [
+      "S001",
+      "S002",
+      "S003"
+    ]
+  },
+  "test_case": {
+    "id": "T006",
+    "name": "Cambio de dificultad"
+  },
+  "input": {
+    "sessions": [
+      {
+        "session_number": 1,
+        "difficulty": "easy",
+        "metrics": {
+          "accuracy_percentage": 88.0,
+          "average_response_time_ms": 3900,
+          "gaze_deviation_percentage": 11.0,
+          "controller_tremor_index": 0.17,
+          "session_duration_seconds": 420
+        }
+      },
+      {
+        "session_number": 2,
+        "difficulty": "easy",
+        "metrics": {
+          "accuracy_percentage": 90.0,
+          "average_response_time_ms": 3700,
+          "gaze_deviation_percentage": 10.5,
+          "controller_tremor_index": 0.16,
+          "session_duration_seconds": 410
+        }
+      },
+      {
+        "session_number": 3,
+        "difficulty": "medium",
+        "metrics": {
+          "accuracy_percentage": 76.0,
+          "average_response_time_ms": 4700,
+          "gaze_deviation_percentage": 14.0,
+          "controller_tremor_index": 0.2,
+          "session_duration_seconds": 500
+        }
+      },
+      {
+        "session_number": 4,
+        "difficulty": "hard",
+        "metrics": {
+          "accuracy_percentage": 65.0,
+          "average_response_time_ms": 5900,
+          "gaze_deviation_percentage": 18.0,
+          "controller_tremor_index": 0.26,
+          "session_duration_seconds": 590
+        }
+      }
+    ],
+    "processed_data": {
+      "number_of_sessions": 4,
+      "has_temporal_comparison": true,
+      "accuracy": {
+        "first": 88.0,
+        "last": 65.0,
+        "unit": "%",
+        "change": {
+          "type": "absolute",
+          "value": -23.0,
+          "unit": "percentage_points"
+        }
+      },
+      "response_time": {
+        "first": 3900,
+        "last": 5900,
+        "unit": "ms",
+        "change": {
+          "type": "percentage",
+          "value": 51.28,
+          "unit": "%"
+        }
+      },
+      "gaze_deviation": {
+        "first": 11.0,
+        "last": 18.0,
+        "unit": "%",
+        "change": {
+          "type": "absolute",
+          "value": 7.0,
+          "unit": "percentage_points"
+        }
+      },
+      "controller_tremor": {
+        "first": 0.17,
+        "last": 0.26,
+        "unit": "index",
+        "change": {
+          "type": "absolute",
+          "value": 0.09,
+          "unit": "index"
+        }
+      },
+      "session_duration": {
+        "first": 420,
+        "last": 590,
+        "unit": "seconds",
+        "change": {
+          "type": "percentage",
+          "value": 40.48,
+          "unit": "%"
+        }
+      }
+    }
+  },
+  "summary": {
+    "total_seeds": 3,
+    "valid_outputs": 3,
+    "validation_errors": 0
+  },
+  "results": [
+    {
+      "seed_id": "S001",
+      "seed_name": "Estricto v1",
+      "seed_file": "S001_estricto_v1.txt",
+      "seed_hash": "c5daa17def0e",
+      "success": true,
+      "validation": {
+        "valid": true,
+        "error_count": 0,
+        "errors": []
+      },
+      "output": {
+        "resumen": "Se registraron cambios en múltiples métricas durante las sesiones. La precisión disminuyó en 23 puntos porcentuales, el tiempo de respuesta aumentó en un 51.28%, la desviación de mirada subió en 7 puntos porcentuales, el temblor del controlador aumentó en 0.09 en escala de índice y la duración de la sesión creció en un 40.48%.",
+        "cambios_observados": [
+          {
+            "metrica": "accuracy",
+            "tipo": "absoluto",
+            "valor": -23.0,
+            "unidad": "puntos_porcentuales"
+          },
+          {
+            "metrica": "response_time",
+            "tipo": "porcentaje",
+            "valor": 51.28,
+            "unidad": "%"
+          },
+          {
+            "metrica": "gaze_deviation",
+            "tipo": "absoluto",
+            "valor": 7.0,
+            "unidad": "puntos_porcentuales"
+          },
+          {
+            "metrica": "controller_tremor",
+            "tipo": "absoluto",
+            "valor": 0.09,
+            "unidad": "indice"
+          },
+          {
+            "metrica": "session_duration",
+            "tipo": "porcentaje",
+            "valor": 40.48,
+            "unidad": "%"
+          }
+        ],
+        "observaciones": [
+          "La mayoría de las métricas mostraron cambios en dirección opuesta entre la primera y última sesión.",
+          "Los cambios en tiempo de respuesta y duración de sesión son significativos en términos porcentuales."
+        ],
+        "conclusion": "Se registraron variaciones en las métricas registradas entre la primera y última sesión, sin posibilidad de establecer relaciones causales o diagnósticos clínicos.",
+        "advertencias": [
+          "No se realizó interpretación clínica de los cambios observados.",
+          "Los datos no permiten comparar métricas con escalas diferentes.",
+          "Los cambios se reportan únicamente como diferencias numéricas sin valoración de significado funcional."
+        ]
+      }
+    },
+    {
+      "seed_id": "S002",
+      "seed_name": "Analítico v1",
+      "seed_file": "S002_analitico_v1.txt",
+      "seed_hash": "04b04166f551",
+      "success": true,
+      "validation": {
+        "valid": true,
+        "error_count": 0,
+        "errors": []
+      },
+      "output": {
+        "resumen": "Se registraron cambios en múltiples métricas entre la primera y última sesión. La precisión disminuyó significativamente, mientras que el tiempo de respuesta, la desviación de mirada, la tremor del controlador y la duración de la sesión aumentaron. Los cambios se expresan tanto en valores absolutos como en porcentajes según la métrica.",
+        "cambios_observados": [
+          {
+            "metrica": "accuracy",
+            "tipo_cambio": "absoluto",
+            "valor": -23.0,
+            "unidad": "puntos_porcentuales"
+          },
+          {
+            "metrica": "response_time",
+            "tipo_cambio": "porcentaje",
+            "valor": 51.28,
+            "unidad": "%"
+          },
+          {
+            "metrica": "gaze_deviation",
+            "tipo_cambio": "absoluto",
+            "valor": 7.0,
+            "unidad": "puntos_porcentuales"
+          },
+          {
+            "metrica": "controller_tremor",
+            "tipo_cambio": "absoluto",
+            "valor": 0.09,
+            "unidad": "index"
+          },
+          {
+            "metrica": "session_duration",
+            "tipo_cambio": "porcentaje",
+            "valor": 40.48,
+            "unidad": "%"
+          }
+        ],
+        "observaciones": [
+          "La disminución absoluta en precisión (-23 puntos porcentuales) es más pronunciada que el aumento en tiempo de respuesta (51.28%).",
+          "La desviación de mirada mostró un aumento absoluto similar al de la precisión, pero con una escala diferente."
+        ],
+        "conclusion": "Se documentaron variaciones en las métricas registradas entre la primera y última sesión, sin posibilidad de inferir causas o tendencias sin más contexto.",
+        "advertencias": [
+          "Los datos solo incluyen mediciones iniciales y finales, sin información intermedia.",
+          "No se proporciona contexto sobre la naturaleza de las sesiones ni factores externos que podrían influir en las métricas.",
+          "Los porcentajes calculados para tiempo de respuesta y duración de sesión no pueden compararse directamente con otros porcentajes de métricas con escalas distintas."
+        ]
+      }
+    },
+    {
+      "seed_id": "S003",
+      "seed_name": "Profesional conciso v1",
+      "seed_file": "S003_profesional_conciso_v1.txt",
+      "seed_hash": "b3f80a2bc6df",
+      "success": true,
+      "validation": {
+        "valid": true,
+        "error_count": 0,
+        "errors": []
+      },
+      "output": {
+        "resumen": "Se registraron 4 sesiones con comparación temporal. Se observaron cambios en varias métricas, incluyendo una disminución en precisión y aumento en tiempo de respuesta.",
+        "cambios_observados": [
+          {
+            "metrica": "accuracy",
+            "tipo_de_cambio": "absoluto",
+            "valor": -23.0,
+            "unidad": "puntos_porcentuales"
+          },
+          {
+            "metrica": "response_time",
+            "tipo_de_cambio": "porcentaje",
+            "valor": 51.28,
+            "unidad": "%"
+          },
+          {
+            "metrica": "gaze_deviation",
+            "tipo_de_cambio": "absoluto",
+            "valor": 7.0,
+            "unidad": "puntos_porcentuales"
+          },
+          {
+            "metrica": "controller_tremor",
+            "tipo_de_cambio": "absoluto",
+            "valor": 0.09,
+            "unidad": "indice"
+          },
+          {
+            "metrica": "session_duration",
+            "tipo_de_cambio": "porcentaje",
+            "valor": 40.48,
+            "unidad": "%"
+          }
+        ],
+        "observaciones": [
+          "La precisión mostró una disminución absoluta de 23 puntos porcentuales.",
+          "El tiempo de respuesta aumentó en un 51.28% en términos porcentuales."
+        ],
+        "conclusion": "Se registraron variaciones en múltiples métricas durante las sesiones, incluyendo cambios absolutos y porcentuales.",
+        "advertencias": []
+      }
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+# Instalar primero torch desde el índice CUDA oficial (ver docs/entrenamiento_local.md).
+transformers==5.20.2
+peft==0.21.2
+accelerate==1.15.0
+bitsandbytes==0.50.2
+requests==2.34.2

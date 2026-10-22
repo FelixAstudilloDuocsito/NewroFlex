@@ -1,0 +1,11 @@
+{
+  "status": "passed",
+  "package": "D:\\NeuroFlex\\releases\\neuroflex-resumen-v0.1-candidate",
+  "manifest_sha256": "8b47943226235ee5974ffbe1d57efbe64679708c339014816512f263dadebaa7",
+  "verified_files": 32,
+  "inference_json_valid": true,
+  "structured_values_match": true,
+  "weights_unchanged": true,
+  "semantic_review": "pending",
+  "known_test_issue": "v2-base_cero-p5-v1: prosa atribuye base cero a precisión en lugar de duración"
+}

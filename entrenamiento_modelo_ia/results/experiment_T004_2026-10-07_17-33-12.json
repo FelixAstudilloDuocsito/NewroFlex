@@ -1,0 +1,167 @@
+{
+  "experiment": {
+    "timestamp": "2026-10-07_17-33-12",
+    "llm": "qwen3:8b",
+    "temperature": 0.2,
+    "selected_seeds": [
+      "S001",
+      "S002",
+      "S003"
+    ]
+  },
+  "test_case": {
+    "id": "T004",
+    "name": "Una sola sesion"
+  },
+  "input": {
+    "sessions": [
+      {
+        "session_number": 1,
+        "difficulty": "medium",
+        "metrics": {
+          "accuracy_percentage": 73.0,
+          "average_response_time_ms": 5100,
+          "gaze_deviation_percentage": 15.4,
+          "controller_tremor_index": 0.22,
+          "session_duration_seconds": 505
+        }
+      }
+    ],
+    "processed_data": {
+      "number_of_sessions": 1,
+      "has_temporal_comparison": false,
+      "accuracy": {
+        "first": 73.0,
+        "last": 73.0,
+        "unit": "%",
+        "change": {
+          "type": "absolute",
+          "value": 0.0,
+          "unit": "percentage_points"
+        }
+      },
+      "response_time": {
+        "first": 5100,
+        "last": 5100,
+        "unit": "ms",
+        "change": {
+          "type": "percentage",
+          "value": 0.0,
+          "unit": "%"
+        }
+      },
+      "gaze_deviation": {
+        "first": 15.4,
+        "last": 15.4,
+        "unit": "%",
+        "change": {
+          "type": "absolute",
+          "value": 0.0,
+          "unit": "percentage_points"
+        }
+      },
+      "controller_tremor": {
+        "first": 0.22,
+        "last": 0.22,
+        "unit": "index",
+        "change": {
+          "type": "absolute",
+          "value": 0.0,
+          "unit": "index"
+        }
+      },
+      "session_duration": {
+        "first": 505,
+        "last": 505,
+        "unit": "seconds",
+        "change": {
+          "type": "percentage",
+          "value": 0.0,
+          "unit": "%"
+        }
+      }
+    }
+  },
+  "summary": {
+    "total_seeds": 3,
+    "valid_outputs": 3,
+    "validation_errors": 0
+  },
+  "results": [
+    {
+      "seed_id": "S001",
+      "seed_name": "Estricto v1",
+      "seed_file": "S001_estricto_v1.txt",
+      "seed_hash": "c5daa17def0e",
+      "success": true,
+      "validation": {
+        "valid": true,
+        "error_count": 0,
+        "errors": []
+      },
+      "output": {
+        "resumen": "No se observaron cambios en las métricas registradas durante la única sesión analizada. Todos los valores iniciales y finales son idénticos.",
+        "cambios_observados": [],
+        "observaciones": [
+          "La precisión (73.0%) y la duración de la sesión (505 segundos) permanecieron estables.",
+          "El tiempo de respuesta (5100 ms) y la desviación de mirada (15.4%) no mostraron variación.",
+          "El índice de temblor en el controlador (0.22) se mantuvo constante."
+        ],
+        "conclusion": "No es posible establecer conclusiones debido a la ausencia de comparaciones temporales y la limitación a una sola sesión.",
+        "advertencias": [
+          "Los resultados no incluyen análisis de variabilidad temporal.",
+          "La falta de múltiples sesiones impide detectar patrones o cambios significativos."
+        ]
+      }
+    },
+    {
+      "seed_id": "S002",
+      "seed_name": "Analítico v1",
+      "seed_file": "S002_analitico_v1.txt",
+      "seed_hash": "04b04166f551",
+      "success": true,
+      "validation": {
+        "valid": true,
+        "error_count": 0,
+        "errors": []
+      },
+      "output": {
+        "resumen": "No se observaron cambios en las métricas durante la única sesión registrada. Todos los valores iniciales y finales son idénticos.",
+        "cambios_observados": [],
+        "observaciones": [
+          "La comparación temporal no es posible debido a la ausencia de múltiples sesiones.",
+          "No se detectaron variaciones en ninguna métrica, lo que sugiere una estabilidad en los valores registrados."
+        ],
+        "conclusion": "No se registraron cambios en las métricas analizadas durante la sesión. La estabilidad de los valores no permite inferir tendencias ni patrones.",
+        "advertencias": [
+          "El análisis se basa en una única sesión, lo que limita la capacidad de detectar variaciones temporales.",
+          "No se dispone de datos suficientes para establecer correlaciones o patrones de comportamiento."
+        ]
+      }
+    },
+    {
+      "seed_id": "S003",
+      "seed_name": "Profesional conciso v1",
+      "seed_file": "S003_profesional_conciso_v1.txt",
+      "seed_hash": "b3f80a2bc6df",
+      "success": true,
+      "validation": {
+        "valid": true,
+        "error_count": 0,
+        "errors": []
+      },
+      "output": {
+        "resumen": "Los resultados de la única sesión registrada muestran valores estables en todas las métricas sin cambios detectados.",
+        "cambios_observados": [],
+        "observaciones": [
+          "Los datos corresponden a una sola sesión, por lo que no se puede realizar comparación temporal.",
+          "No se observaron variaciones en ninguna de las métricas registradas."
+        ],
+        "conclusion": "No se detectaron cambios en las métricas durante la sesión analizada.",
+        "advertencias": [
+          "Los datos son insuficientes para identificar tendencias temporales o patrones de comportamiento."
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,391 @@
+{
+  "created_at_utc": "2026-10-20T20:35:20.497708+00:00",
+  "split": "validation",
+  "model": {
+    "name": "qwen3:8b",
+    "model": "qwen3:8b",
+    "modified_at": "2026-10-18T14:00:45.3737565-03:00",
+    "size": 5225388164,
+    "digest": "500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41",
+    "details": {
+      "parent_model": "",
+      "format": "gguf",
+      "family": "qwen3",
+      "families": [
+        "qwen3"
+      ],
+      "parameter_size": "8.2B",
+      "quantization_level": "Q4_K_M",
+      "context_length": 40960,
+      "embedding_length": 4096,
+      "runner": "ggml"
+    },
+    "capabilities": [
+      "completion",
+      "tools",
+      "thinking"
+    ]
+  },
+  "ollama": {
+    "version": "0.40.6"
+  },
+  "options": {
+    "temperature": 0,
+    "seed": 20261020,
+    "num_ctx": 4096,
+    "num_predict": 1500
+  },
+  "think": false,
+  "dataset_sha256": "2cf949084d3864cb96f4c9cd3908a4364cd4574dfd75562d83b7c7670018528b",
+  "prompt_sha256": "b303063e2dda91a32120982baa5a9474eb14b9ee0e958b4e21b00eb30cdd6be1",
+  "schema_sha256": "cbbab3487bc92db762fda88f304949f0b88e3e458d7c28517a26247b66ed111d",
+  "evaluator_sha256": "fcf4bdd8b355d9d930e5c22d83612bad19e98208bed84d07441c75dd3bee6d96",
+  "processor_sha256": "737b8d5dd8325fdc2518a1ea62c3e3b61e6038df2cf2b2774e4d16b493f22875",
+  "status": "completed",
+  "human_review": "pending",
+  "results": [
+    {
+      "id": "oscilacion-1",
+      "raw_output": "{\n  \"resumen\": \"Se presentan cambios observados en cinco métricas durante tres sesiones. No se puede inferir una tendencia continua debido a la comparación de extremos.\",\n  \"cambios_observados\": [\n    {\"metrica\": \"accuracy_percentage\", \"inicial\": 60, \"final\": 68, \"valor\": 8, \"unidad\": \"puntos_porcentuales\"},\n    {\"metrica\": \"average_response_time_ms\", \"inicial\": 5000, \"final\": 4600, \"valor\": -8.0, \"unidad\": \"%\"},\n    {\"metrica\": \"gaze_deviation_percentage\", \"inicial\": 20, \"final\": 18, \"valor\": -2, \"unidad\": \"puntos_porcentuales\"},\n    {\"metrica\": \"controller_tremor_index\", \"inicial\": 0.2, \"final\": 0.18, \"valor\": -0.02, \"unidad\": \"indice\"},\n    {\"metrica\": \"session_duration_seconds\", \"inicial\": 500, \"final\": 480, \"valor\": -4.0, \"unidad\": \"%\"}\n  ],\n  \"advertencias\": [\"sin_inferencia_clinica\"]\n}",
+      "done_reason": "stop",
+      "output": {
+        "resumen": "Se presentan cambios observados en cinco métricas durante tres sesiones. No se puede inferir una tendencia continua debido a la comparación de extremos.",
+        "cambios_observados": [
+          {
+            "metrica": "accuracy_percentage",
+            "inicial": 60,
+            "final": 68,
+            "valor": 8,
+            "unidad": "puntos_porcentuales"
+          },
+          {
+            "metrica": "average_response_time_ms",
+            "inicial": 5000,
+            "final": 4600,
+            "valor": -8.0,
+            "unidad": "%"
+          },
+          {
+            "metrica": "gaze_deviation_percentage",
+            "inicial": 20,
+            "final": 18,
+            "valor": -2,
+            "unidad": "puntos_porcentuales"
+          },
+          {
+            "metrica": "controller_tremor_index",
+            "inicial": 0.2,
+            "final": 0.18,
+            "valor": -0.02,
+            "unidad": "indice"
+          },
+          {
+            "metrica": "session_duration_seconds",
+            "inicial": 500,
+            "final": 480,
+            "valor": -4.0,
+            "unidad": "%"
+          }
+        ],
+        "advertencias": [
+          "sin_inferencia_clinica"
+        ]
+      },
+      "checks": {
+        "schema_valid": true,
+        "structured_fidelity": true,
+        "errors": [],
+        "lexical_review_flags": [],
+        "human_review": "pending"
+      },
+      "latency_seconds": 7.176
+    },
+    {
+      "id": "oscilacion-2",
+      "raw_output": "{\n  \"resumen\": \"Se presentan cambios observados en cinco métricas durante tres sesiones. No se puede inferir una tendencia continua debido a la comparación de extremos.\",\n  \"cambios_observados\": [\n    {\"metrica\": \"accuracy_percentage\", \"inicial\": 64, \"final\": 72, \"valor\": 8, \"unidad\": \"puntos_porcentuales\"},\n    {\"metrica\": \"average_response_time_ms\", \"inicial\": 5250, \"final\": 4850, \"valor\": -7.62, \"unidad\": \"%\"},\n    {\"metrica\": \"gaze_deviation_percentage\", \"inicial\": 21, \"final\": 19, \"valor\": -2, \"unidad\": \"puntos_porcentuales\"},\n    {\"metrica\": \"controller_tremor_index\", \"inicial\": 0.22, \"final\": 0.2, \"valor\": -0.02, \"unidad\": \"indice\"},\n    {\"metrica\": \"session_duration_seconds\", \"inicial\": 520, \"final\": 500, \"valor\": -3.85, \"unidad\": \"%\"}\n  ],\n  \"advertencias\": [\"sin_inferencia_clinica\"]\n}",
+      "done_reason": "stop",
+      "output": {
+        "resumen": "Se presentan cambios observados en cinco métricas durante tres sesiones. No se puede inferir una tendencia continua debido a la comparación de extremos.",
+        "cambios_observados": [
+          {
+            "metrica": "accuracy_percentage",
+            "inicial": 64,
+            "final": 72,
+            "valor": 8,
+            "unidad": "puntos_porcentuales"
+          },
+          {
+            "metrica": "average_response_time_ms",
+            "inicial": 5250,
+            "final": 4850,
+            "valor": -7.62,
+            "unidad": "%"
+          },
+          {
+            "metrica": "gaze_deviation_percentage",
+            "inicial": 21,
+            "final": 19,
+            "valor": -2,
+            "unidad": "puntos_porcentuales"
+          },
+          {
+            "metrica": "controller_tremor_index",
+            "inicial": 0.22,
+            "final": 0.2,
+            "valor": -0.02,
+            "unidad": "indice"
+          },
+          {
+            "metrica": "session_duration_seconds",
+            "inicial": 520,
+            "final": 500,
+            "valor": -3.85,
+            "unidad": "%"
+          }
+        ],
+        "advertencias": [
+          "sin_inferencia_clinica"
+        ]
+      },
+      "checks": {
+        "schema_valid": true,
+        "structured_fidelity": true,
+        "errors": [],
+        "lexical_review_flags": [],
+        "human_review": "pending"
+      },
+      "latency_seconds": 7.569
+    },
+    {
+      "id": "oscilacion-3",
+      "raw_output": "{\n  \"resumen\": \"Se presentan cambios observados en cinco métricas durante tres sesiones. No se puede inferir una tendencia continua debido a la comparación de extremos.\",\n  \"cambios_observados\": [\n    {\"metrica\": \"accuracy_percentage\", \"inicial\": 68, \"final\": 76, \"valor\": 8, \"unidad\": \"puntos_porcentuales\"},\n    {\"metrica\": \"average_response_time_ms\", \"inicial\": 5500, \"final\": 5100, \"valor\": -7.27, \"unidad\": \"%\"},\n    {\"metrica\": \"gaze_deviation_percentage\", \"inicial\": 22, \"final\": 20, \"valor\": -2, \"unidad\": \"puntos_porcentuales\"},\n    {\"metrica\": \"controller_tremor_index\", \"inicial\": 0.24, \"final\": 0.22, \"valor\": -0.02, \"unidad\": \"indice\"},\n    {\"metrica\": \"session_duration_seconds\", \"inicial\": 540, \"final\": 520, \"valor\": -3.7, \"unidad\": \"%\"}\n  ],\n  \"advertencias\": [\"sin_inferencia_clinica\"]\n}",
+      "done_reason": "stop",
+      "output": {
+        "resumen": "Se presentan cambios observados en cinco métricas durante tres sesiones. No se puede inferir una tendencia continua debido a la comparación de extremos.",
+        "cambios_observados": [
+          {
+            "metrica": "accuracy_percentage",
+            "inicial": 68,
+            "final": 76,
+            "valor": 8,
+            "unidad": "puntos_porcentuales"
+          },
+          {
+            "metrica": "average_response_time_ms",
+            "inicial": 5500,
+            "final": 5100,
+            "valor": -7.27,
+            "unidad": "%"
+          },
+          {
+            "metrica": "gaze_deviation_percentage",
+            "inicial": 22,
+            "final": 20,
+            "valor": -2,
+            "unidad": "puntos_porcentuales"
+          },
+          {
+            "metrica": "controller_tremor_index",
+            "inicial": 0.24,
+            "final": 0.22,
+            "valor": -0.02,
+            "unidad": "indice"
+          },
+          {
+            "metrica": "session_duration_seconds",
+            "inicial": 540,
+            "final": 520,
+            "valor": -3.7,
+            "unidad": "%"
+          }
+        ],
+        "advertencias": [
+          "sin_inferencia_clinica"
+        ]
+      },
+      "checks": {
+        "schema_valid": true,
+        "structured_fidelity": true,
+        "errors": [],
+        "lexical_review_flags": [],
+        "human_review": "pending"
+      },
+      "latency_seconds": 7.376
+    },
+    {
+      "id": "extremos-1",
+      "raw_output": "{\n  \"resumen\": \"Se registraron tres sesiones con cambios observados en varias métricas. No se puede inferir una tendencia continua debido a la comparación de extremos.\",\n  \"cambios_observados\": [\n    {\"metrica\": \"accuracy_percentage\", \"inicial\": 0, \"final\": 100, \"valor\": 100, \"unidad\": \"puntos_porcentuales\"},\n    {\"metrica\": \"average_response_time_ms\", \"inicial\": 5000, \"final\": 4200, \"valor\": -16.0, \"unidad\": \"%\"},\n    {\"metrica\": \"gaze_deviation_percentage\", \"inicial\": 100, \"final\": 0, \"valor\": -100, \"unidad\": \"puntos_porcentuales\"},\n    {\"metrica\": \"controller_tremor_index\", \"inicial\": 0.2, \"final\": 0.16, \"valor\": -0.04, \"unidad\": \"indice\"},\n    {\"metrica\": \"session_duration_seconds\", \"inicial\": 500, \"final\": 460, \"valor\": -8.0, \"unidad\": \"%\"}\n  ],\n  \"advertencias\": [\"sin_inferencia_clinica\"]\n}",
+      "done_reason": "stop",
+      "output": {
+        "resumen": "Se registraron tres sesiones con cambios observados en varias métricas. No se puede inferir una tendencia continua debido a la comparación de extremos.",
+        "cambios_observados": [
+          {
+            "metrica": "accuracy_percentage",
+            "inicial": 0,
+            "final": 100,
+            "valor": 100,
+            "unidad": "puntos_porcentuales"
+          },
+          {
+            "metrica": "average_response_time_ms",
+            "inicial": 5000,
+            "final": 4200,
+            "valor": -16.0,
+            "unidad": "%"
+          },
+          {
+            "metrica": "gaze_deviation_percentage",
+            "inicial": 100,
+            "final": 0,
+            "valor": -100,
+            "unidad": "puntos_porcentuales"
+          },
+          {
+            "metrica": "controller_tremor_index",
+            "inicial": 0.2,
+            "final": 0.16,
+            "valor": -0.04,
+            "unidad": "indice"
+          },
+          {
+            "metrica": "session_duration_seconds",
+            "inicial": 500,
+            "final": 460,
+            "valor": -8.0,
+            "unidad": "%"
+          }
+        ],
+        "advertencias": [
+          "sin_inferencia_clinica"
+        ]
+      },
+      "checks": {
+        "schema_valid": true,
+        "structured_fidelity": true,
+        "errors": [],
+        "lexical_review_flags": [],
+        "human_review": "pending"
+      },
+      "latency_seconds": 7.822
+    },
+    {
+      "id": "extremos-2",
+      "raw_output": "{\n  \"resumen\": \"Se registraron tres sesiones con cambios observados en varias métricas. No se puede inferir una tendencia continua debido a la comparación de extremos.\",\n  \"cambios_observados\": [\n    {\"metrica\": \"accuracy_percentage\", \"inicial\": 0, \"final\": 100, \"valor\": 100, \"unidad\": \"puntos_porcentuales\"},\n    {\"metrica\": \"average_response_time_ms\", \"inicial\": 5250, \"final\": 4450, \"valor\": -15.24, \"unidad\": \"%\"},\n    {\"metrica\": \"gaze_deviation_percentage\", \"inicial\": 100, \"final\": 0, \"valor\": -100, \"unidad\": \"puntos_porcentuales\"},\n    {\"metrica\": \"controller_tremor_index\", \"inicial\": 0.22, \"final\": 0.18, \"valor\": -0.04, \"unidad\": \"indice\"},\n    {\"metrica\": \"session_duration_seconds\", \"inicial\": 520, \"final\": 480, \"valor\": -7.69, \"unidad\": \"%\"}\n  ],\n  \"advertencias\": [\"sin_inferencia_clinica\"]\n}",
+      "done_reason": "stop",
+      "output": {
+        "resumen": "Se registraron tres sesiones con cambios observados en varias métricas. No se puede inferir una tendencia continua debido a la comparación de extremos.",
+        "cambios_observados": [
+          {
+            "metrica": "accuracy_percentage",
+            "inicial": 0,
+            "final": 100,
+            "valor": 100,
+            "unidad": "puntos_porcentuales"
+          },
+          {
+            "metrica": "average_response_time_ms",
+            "inicial": 5250,
+            "final": 4450,
+            "valor": -15.24,
+            "unidad": "%"
+          },
+          {
+            "metrica": "gaze_deviation_percentage",
+            "inicial": 100,
+            "final": 0,
+            "valor": -100,
+            "unidad": "puntos_porcentuales"
+          },
+          {
+            "metrica": "controller_tremor_index",
+            "inicial": 0.22,
+            "final": 0.18,
+            "valor": -0.04,
+            "unidad": "indice"
+          },
+          {
+            "metrica": "session_duration_seconds",
+            "inicial": 520,
+            "final": 480,
+            "valor": -7.69,
+            "unidad": "%"
+          }
+        ],
+        "advertencias": [
+          "sin_inferencia_clinica"
+        ]
+      },
+      "checks": {
+        "schema_valid": true,
+        "structured_fidelity": true,
+        "errors": [],
+        "lexical_review_flags": [],
+        "human_review": "pending"
+      },
+      "latency_seconds": 7.382
+    },
+    {
+      "id": "extremos-3",
+      "raw_output": "{\n  \"resumen\": \"Se registraron tres sesiones con cambios observados en varias métricas. No se puede inferir una tendencia continua debido a la comparación de extremos.\",\n  \"cambios_observados\": [\n    {\"metrica\": \"accuracy_percentage\", \"inicial\": 0, \"final\": 100, \"valor\": 100, \"unidad\": \"puntos_porcentuales\"},\n    {\"metrica\": \"average_response_time_ms\", \"inicial\": 5500, \"final\": 4700, \"valor\": -14.55, \"unidad\": \"%\"},\n    {\"metrica\": \"gaze_deviation_percentage\", \"inicial\": 100, \"final\": 0, \"valor\": -100, \"unidad\": \"puntos_porcentuales\"},\n    {\"metrica\": \"controller_tremor_index\", \"inicial\": 0.24, \"final\": 0.2, \"valor\": -0.04, \"unidad\": \"indice\"},\n    {\"metrica\": \"session_duration_seconds\", \"inicial\": 540, \"final\": 500, \"valor\": -7.41, \"unidad\": \"%\"}\n  ],\n  \"advertencias\": [\"sin_inferencia_clinica\"]\n}",
+      "done_reason": "stop",
+      "output": {
+        "resumen": "Se registraron tres sesiones con cambios observados en varias métricas. No se puede inferir una tendencia continua debido a la comparación de extremos.",
+        "cambios_observados": [
+          {
+            "metrica": "accuracy_percentage",
+            "inicial": 0,
+            "final": 100,
+            "valor": 100,
+            "unidad": "puntos_porcentuales"
+          },
+          {
+            "metrica": "average_response_time_ms",
+            "inicial": 5500,
+            "final": 4700,
+            "valor": -14.55,
+            "unidad": "%"
+          },
+          {
+            "metrica": "gaze_deviation_percentage",
+            "inicial": 100,
+            "final": 0,
+            "valor": -100,
+            "unidad": "puntos_porcentuales"
+          },
+          {
+            "metrica": "controller_tremor_index",
+            "inicial": 0.24,
+            "final": 0.2,
+            "valor": -0.04,
+            "unidad": "indice"
+          },
+          {
+            "metrica": "session_duration_seconds",
+            "inicial": 540,
+            "final": 500,
+            "valor": -7.41,
+            "unidad": "%"
+          }
+        ],
+        "advertencias": [
+          "sin_inferencia_clinica"
+        ]
+      },
+      "checks": {
+        "schema_valid": true,
+        "structured_fidelity": true,
+        "errors": [],
+        "lexical_review_flags": [],
+        "human_review": "pending"
+      },
+      "latency_seconds": 7.442
+    }
+  ],
+  "summary": {
+    "total": 6,
+    "request_or_parse_errors": 0,
+    "schema_valid": 6,
+    "structured_fidelity": 6,
+    "automatic_pass": 6
+  }
+}

@@ -1,0 +1,6 @@
+.venv-training/
+.cache-training/
+training/__pycache__/
+training/runs/
+storage.local.json
+scenes/__pycache__/

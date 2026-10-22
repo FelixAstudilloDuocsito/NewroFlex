@@ -1,0 +1,15 @@
+{
+  "training_ready": false,
+  "status": "experimental_ai_reviewed",
+  "files": {
+    "train.jsonl": {
+      "count": 96,
+      "sha256": "902a8c27bf2cc006a9f17beb54acb9755884925555e9b45c9451cd0c9a041bbf"
+    },
+    "validation.jsonl": {
+      "count": 24,
+      "sha256": "85a1e55fb17184812323d71560029f2639acf3f4e89f5b09e709f0d99258e34d"
+    }
+  },
+  "source_manifest_sha256": "66e504dcbe183495320efeae787422f3ba366037f2a814643ce2a5283900811e"
+}
