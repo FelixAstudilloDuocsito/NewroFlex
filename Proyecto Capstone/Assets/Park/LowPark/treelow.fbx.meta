@@ -1,49 +1,9 @@
 fileFormatVersion: 2
-guid: a1c7a85f93b76a828946b10bac52d3dc
+guid: d1310e5e9c742b4b3b3eb7283681402e
 ModelImporter:
   serializedVersion: 24600
   internalIDToNameTable: []
-  externalObjects:
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: 1
-    second: {fileID: 2100000, guid: f1fbd52b3e523d54eb169504cb3d3ae6, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: 2
-    second: {fileID: 2100000, guid: 8b36ab6167baf8c48baa66f31e487b42, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Emission
-    second: {fileID: 2100000, guid: 9c47dd36310c4a848875de840c1c3069, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Material
-    second: {fileID: 2100000, guid: 58ba3a824f49e6140a837f9936fde579, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Material.001
-    second: {fileID: 2100000, guid: ca166b3829080344692ec2bf77309db1, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Material.002
-    second: {fileID: 2100000, guid: 52f32916e4c295647886f4e1265f5408, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Material.003
-    second: {fileID: 2100000, guid: 7170256a2fea9e14db3713f2dac25390, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: glass
-    second: {fileID: 2100000, guid: 586776765b9754e4a9e94741331ec330, type: 2}
+  externalObjects: {}
   materials:
     materialImportMode: 2
     materialName: 0
