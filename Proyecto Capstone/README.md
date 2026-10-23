@@ -129,24 +129,17 @@ Al iniciar el nivel 1, se reproduce un **video tutorial** incrustado (`TutorialP
 - Barajado aleatorio de posiciones al inicio.
 - Feedback visual con estrellas (`StarFeedback.cs`) que vuelan en abanico hacia arriba al acertar un par.
 
-### 4. Parque — Alimentar Palomas
+### 4. Parque — Contar Palomas
 
 **Archivo:** `Assets/Scenes/Parque-Palomas.unity`  
-**Script asociado:** `ReturnToSlot.cs`
 
-Escenario exterior ambientado en un **parque**, donde el participante debe **alimentar palomas** interactuando con objetos del entorno.
+Escenario exterior ambientado en un **parque**, donde el participante debe **Contar palomas**.
 
 #### Mecánica
-
-- El participante agarra objetos (comida) y los acerca a las palomas u otros puntos designados.
-- Si el objeto se suelta sin completar la acción, **regresa suavemente a su lugar original** gracias al script `ReturnToSlot`.
-- La actividad concluye al cumplir los objetivos de alimentación.
+- El participante lanza comida y tiene que contar las palomas que aparezcan.
+- La actividad concluye al cumplir los objetivos.
 
 > **Nota:** Esta escena comparte el sistema de agarre y retorno (`XRGrabInteractable` + `ReturnToSlot`) con otras actividades, y puede configurarse con diferentes niveles de dificultad al igual que el resto de escenarios.
-
-### Escenarios Adicionales (en desarrollo/planeados)
-
-- **Supermercado** (`Assets/Supermercado/`) — Modelo 3D de un mercado con estanterías y productos. Potencial escenario de compra/asociación de objetos.
 
 ---
 
@@ -183,22 +176,46 @@ Cuando el participante acierta un par en el Memory o completa un hito, aparecen 
 
 Cada sesión de juego genera datos de rendimiento que son enviados al dashboard y al pipeline de IA. Las métricas principales incluyen:
 
-| Métrica | Descripción | Unidad |
-|---------|-------------|--------|
-| **Accuracy** | Precisión (aciertos / total) | % |
-| **Response Time** | Tiempo medio de respuesta | ms |
-| **Gaze Deviation** | Desviación de la mirada | % |
-| **Controller Tremor** | Índice de temblor del control | índice |
-| **Session Duration** | Duración total de la sesión | segundos |
+scenes:
+  puzzle:
+    description: "Ejecución y eficiencia en rompecabezas"
+    metrics:
+      - activeTimeSeconds: "Tiempo activo total de interacción (segundos)"
+      - resolutionTimeSeconds: "Tiempo activo solo si se completó (null si no)"
+      - completedPieces: "Piezas colocadas correctamente"
+      - totalPieces: "Cantidad total de piezas"
+      - incorrectMoves: "Intentos fallidos de colocación"
+      - aidsUsed: "Cantidad de ayudas activadas"
 
-Además, por cada ronda se registran:
+  memory:
+    description: "Precisión y tiempo en emparejar cartas"
+    metrics:
+      - matchingAccuracyPercent: "Precisión porcentual (100 * correctos / (correctos + incorrectos)), redondeado a 2 decimales"
+      - activeTimeSeconds: "Tiempo activo total"
+      - resolutionTimeSeconds: "Tiempo activo al completar"
+      - pairsFound: "Parejas descubiertas"
+      - totalPairs: "Total de parejas de la ronda"
+      - incorrectAttempts: "Intentos fallidos de parejas"
+      - aidsUsed: "Cantidad de pistas utilizadas"
 
-- Estado de la ronda (`completed`, `abandoned`, `interrupted`)
-- Nivel de dificultad
-- Distracciones activas (tipo, intensidad, duración)
-- Ayudas utilizadas
-- Tiempo activo (excluyendo pausas)
-- Movimientos incorrectos
+  pigeons:
+    description: "Estimación cuantitativa y tiempos de reacción/retención"
+    metrics:
+      - responseCorrect: "Acierto booleano (true / false / null si no respondió)"
+      - signedCountError: "Error con signo (usuario - real; positivo = sobreconteo, negativo = subconteo)"
+      - absoluteCountError: "Valor absoluto del error de conteo"
+      - responseTimeSeconds: "Tiempo de reloj desde ocultación hasta confirmar (Métrica Principal)"
+      - enabledResponseActiveSeconds: "Tiempo activo desde que se habilita la respuesta (Métrica Secundaria)"
+      - actualPigeonCount: "Cantidad real de palomas"
+      - userPigeonCount: "Cantidad confirmada por el participante"
+
+  distractions_common:
+    description: "Métricas globales de distractores (si distractionsEnabled: true)"
+    metrics:
+      - distractionType: "Tipo de distractor (none, visual, audio, mixed)"
+      - distractionCount: "Eventos de distracción presentados"
+      - distractionIntensity: "Intensidad configurada (none, low, medium, high)"
+      - distractionDurationMs: "Duración efectiva acumulada de la distracción (milisegundos)"
 
 ### Modelo de Datos
 
