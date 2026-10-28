@@ -61,6 +61,7 @@ namespace NeuroFlexVR
         public AudioClip distractorAudio;
 
         [Header("World Space UI: inicio, comida, observacion, respuesta, resultado")]
+        [Tooltip("Panel de inicio. Su Canvas padre debe ser exclusivo de este menu: tambien se desactiva al iniciar la ronda.")]
         public GameObject startPanel;
         public GameObject observingPanel;
         public GameObject answerPanel;
@@ -72,6 +73,7 @@ namespace NeuroFlexVR
 
         private enum Phase { Ready, AwaitFood, FoodFlight, Arrival, Observe, Retain, Answer, Finished }
         private Phase phase = Phase.Ready;
+        private Canvas startCanvas;
         private bool isPaused;
         private float observationElapsed;
         private float arrivalElapsed;
@@ -113,6 +115,9 @@ namespace NeuroFlexVR
 
         private void Awake()
         {
+            if (startPanel != null)
+                startCanvas = startPanel.GetComponentInParent<Canvas>(true);
+
             // Existing pigeons are managed by this controller, not by scene activation.
             foreach (PigeonAgent pigeon in pigeons)
                 if (pigeon != null) pigeon.gameObject.SetActive(false);
@@ -647,8 +652,11 @@ namespace NeuroFlexVR
 
         private void UpdatePanels(Phase p)
         {
-            if (startPanel != null) startPanel.SetActive(p == Phase.Ready || p == Phase.Finished ||
-                (p == Phase.AwaitFood && foodPanel == null));
+            bool showStart = p == Phase.Ready || p == Phase.Finished ||
+                (p == Phase.AwaitFood && foodPanel == null);
+            if (startPanel != null) startPanel.SetActive(showStart);
+            // Disable the entire start menu, including blur images outside startPanel.
+            if (startCanvas != null) startCanvas.gameObject.SetActive(showStart);
             if (foodPanel != null) foodPanel.SetActive(p == Phase.AwaitFood);
             if (observingPanel != null) observingPanel.SetActive(p == Phase.FoodFlight ||
                 p == Phase.Arrival || p == Phase.Observe || p == Phase.Retain);
