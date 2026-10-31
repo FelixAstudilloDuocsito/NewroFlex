@@ -1,0 +1,609 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "contractVersion": {
+      "type": "string",
+      "enum": [
+        "scenes-v1"
+      ]
+    },
+    "rounds": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "items": {
+        "anyOf": [
+          {
+            "type": "object",
+            "properties": {
+              "participantId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "sessionId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "roundId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "scenarioVersion": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "difficultyLevel": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2147483647
+              },
+              "startedAt": {
+                "type": "string",
+                "minLength": 20,
+                "maxLength": 40,
+                "format": "date-time"
+              },
+              "endedAt": {
+                "type": "string",
+                "minLength": 20,
+                "maxLength": 40,
+                "format": "date-time"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "completed",
+                  "abandoned",
+                  "interrupted"
+                ]
+              },
+              "pausedDurationMs": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2147483647
+              },
+              "assessmentMode": {
+                "type": "string",
+                "enum": [
+                  "training",
+                  "comparison"
+                ]
+              },
+              "distractionsEnabled": {
+                "type": "boolean"
+              },
+              "distractionType": {
+                "type": "string",
+                "enum": [
+                  "none",
+                  "visual",
+                  "audio",
+                  "mixed"
+                ]
+              },
+              "distractionCount": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2147483647
+              },
+              "distractionIntensity": {
+                "type": "string",
+                "enum": [
+                  "none",
+                  "low",
+                  "medium",
+                  "high"
+                ]
+              },
+              "distractionDurationMs": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2147483647
+              },
+              "comparisonGroupId": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "scenarioId": {
+                "type": "string",
+                "enum": [
+                  "puzzle"
+                ]
+              },
+              "totalPieces": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 2147483647
+              },
+              "correctPlacements": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2147483647
+              },
+              "incorrectPlacements": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2147483647
+              },
+              "aidsUsed": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2147483647
+              },
+              "activeTimeMs": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2147483647
+              },
+              "puzzleId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "rotationEnabled": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "participantId",
+              "sessionId",
+              "roundId",
+              "scenarioVersion",
+              "difficultyLevel",
+              "startedAt",
+              "endedAt",
+              "status",
+              "pausedDurationMs",
+              "assessmentMode",
+              "distractionsEnabled",
+              "distractionType",
+              "distractionCount",
+              "distractionIntensity",
+              "distractionDurationMs",
+              "comparisonGroupId",
+              "scenarioId",
+              "totalPieces",
+              "correctPlacements",
+              "incorrectPlacements",
+              "aidsUsed",
+              "activeTimeMs",
+              "puzzleId",
+              "rotationEnabled"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "participantId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "sessionId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "roundId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "scenarioVersion": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "difficultyLevel": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2147483647
+              },
+              "startedAt": {
+                "type": "string",
+                "minLength": 20,
+                "maxLength": 40,
+                "format": "date-time"
+              },
+              "endedAt": {
+                "type": "string",
+                "minLength": 20,
+                "maxLength": 40,
+                "format": "date-time"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "completed",
+                  "abandoned",
+                  "interrupted"
+                ]
+              },
+              "pausedDurationMs": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2147483647
+              },
+              "assessmentMode": {
+                "type": "string",
+                "enum": [
+                  "training",
+                  "comparison"
+                ]
+              },
+              "distractionsEnabled": {
+                "type": "boolean"
+              },
+              "distractionType": {
+                "type": "string",
+                "enum": [
+                  "none",
+                  "visual",
+                  "audio",
+                  "mixed"
+                ]
+              },
+              "distractionCount": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2147483647
+              },
+              "distractionIntensity": {
+                "type": "string",
+                "enum": [
+                  "none",
+                  "low",
+                  "medium",
+                  "high"
+                ]
+              },
+              "distractionDurationMs": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2147483647
+              },
+              "comparisonGroupId": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "scenarioId": {
+                "type": "string",
+                "enum": [
+                  "memory"
+                ]
+              },
+              "totalCards": {
+                "type": "integer",
+                "minimum": 2,
+                "maximum": 2147483647
+              },
+              "totalPairs": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 2147483647
+              },
+              "correctPairAttempts": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2147483647
+              },
+              "incorrectPairAttempts": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2147483647
+              },
+              "pairsFound": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2147483647
+              },
+              "activeTimeMs": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2147483647
+              },
+              "aidsUsed": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2147483647
+              },
+              "previewDurationMs": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2147483647
+              },
+              "deckId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              }
+            },
+            "required": [
+              "participantId",
+              "sessionId",
+              "roundId",
+              "scenarioVersion",
+              "difficultyLevel",
+              "startedAt",
+              "endedAt",
+              "status",
+              "pausedDurationMs",
+              "assessmentMode",
+              "distractionsEnabled",
+              "distractionType",
+              "distractionCount",
+              "distractionIntensity",
+              "distractionDurationMs",
+              "comparisonGroupId",
+              "scenarioId",
+              "totalCards",
+              "totalPairs",
+              "correctPairAttempts",
+              "incorrectPairAttempts",
+              "pairsFound",
+              "activeTimeMs",
+              "aidsUsed",
+              "previewDurationMs",
+              "deckId"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "participantId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "sessionId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "roundId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "scenarioVersion": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "difficultyLevel": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2147483647
+              },
+              "startedAt": {
+                "type": "string",
+                "minLength": 20,
+                "maxLength": 40,
+                "format": "date-time"
+              },
+              "endedAt": {
+                "type": "string",
+                "minLength": 20,
+                "maxLength": 40,
+                "format": "date-time"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "completed",
+                  "abandoned",
+                  "interrupted"
+                ]
+              },
+              "pausedDurationMs": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2147483647
+              },
+              "assessmentMode": {
+                "type": "string",
+                "enum": [
+                  "training",
+                  "comparison"
+                ]
+              },
+              "distractionsEnabled": {
+                "type": "boolean"
+              },
+              "distractionType": {
+                "type": "string",
+                "enum": [
+                  "none",
+                  "visual",
+                  "audio",
+                  "mixed"
+                ]
+              },
+              "distractionCount": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2147483647
+              },
+              "distractionIntensity": {
+                "type": "string",
+                "enum": [
+                  "none",
+                  "low",
+                  "medium",
+                  "high"
+                ]
+              },
+              "distractionDurationMs": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2147483647
+              },
+              "comparisonGroupId": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "scenarioId": {
+                "type": "string",
+                "enum": [
+                  "pigeons"
+                ]
+              },
+              "actualPigeonCount": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2147483647
+              },
+              "userPigeonCount": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2147483647
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "displayDurationMs": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2147483647
+              },
+              "responseTimeMs": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2147483647
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "pigeonsHiddenAt": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 20,
+                    "maxLength": 40,
+                    "format": "date-time"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "answerEnabledAt": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 20,
+                    "maxLength": 40,
+                    "format": "date-time"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "answerSubmittedAt": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 20,
+                    "maxLength": 40,
+                    "format": "date-time"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "movementLevel": {
+                "type": "string",
+                "enum": [
+                  "static",
+                  "low",
+                  "medium",
+                  "high"
+                ]
+              },
+              "retentionDelayMs": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2147483647
+              }
+            },
+            "required": [
+              "participantId",
+              "sessionId",
+              "roundId",
+              "scenarioVersion",
+              "difficultyLevel",
+              "startedAt",
+              "endedAt",
+              "status",
+              "pausedDurationMs",
+              "assessmentMode",
+              "distractionsEnabled",
+              "distractionType",
+              "distractionCount",
+              "distractionIntensity",
+              "distractionDurationMs",
+              "comparisonGroupId",
+              "scenarioId",
+              "actualPigeonCount",
+              "userPigeonCount",
+              "displayDurationMs",
+              "responseTimeMs",
+              "pigeonsHiddenAt",
+              "answerEnabledAt",
+              "answerSubmittedAt",
+              "movementLevel",
+              "retentionDelayMs"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      }
+    }
+  },
+  "required": [
+    "contractVersion",
+    "rounds"
+  ],
+  "additionalProperties": false
+}

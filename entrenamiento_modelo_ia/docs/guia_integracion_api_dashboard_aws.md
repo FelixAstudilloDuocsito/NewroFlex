@@ -2,6 +2,15 @@
 
 Fecha: 21 de octubre de 2026. Destinatario: persona responsable del backend, dashboard y despliegue AWS.
 
+Para entregar base y adaptador fusionados en un único ZIP, ver
+[exportación del modelo fusionado](fusion_modelo.md). Es una entrega nueva que
+incluye la base y requiere su propia evaluación; los pasos de esta guía describen
+el candidato original con base separada.
+
+Para desplegar la entrega fusionada ya generada, seguir la
+[guía AWS del modelo fusionado](guia_aws_modelo_fusionado.md), con comandos Linux,
+API privada y comprobaciones específicas de esa versión.
+
 ## 1. Qué está hecho y qué debe implementarse
 
 El candidato actual utiliza **Qwen3-4B con un adaptador QLoRA entrenado para Puzzle, Memoria y Palomas**. El prototipo Ollama 8B es anterior y no es la entrega que se integra aquí.

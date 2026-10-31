@@ -1,0 +1,681 @@
+{
+  "status": "completed",
+  "split": "test",
+  "source_sha256": "d26056faeaf5f7f56902287c748e62add4bc059aa365770ff1adbcaab65ee42a",
+  "run_sha256": "b1f5c5767b43a224bdbdd434109192a2a5845de4c5261584168b1e359c5721b2",
+  "adapter_sha256": "eba85dc6d223573f3d687964e3a0a808765b814478584b63134623c05c9b8683",
+  "code_sha256": {
+    "contracts.py": "6f70a39ce7b56d38b246962939825fa2cf924025f0daa49fade334f6791ebbad",
+    "summaries.py": "50de3bbed35a03f07d1c5bd6d08ede21da55afb40762e7d17b17e266ef4a255a",
+    "runtime.py": "8db9ab353b2b3ecf07605b13484b619a82909259103d1cbde484048450ffe22c",
+    "evaluate.py": "007f010777bad78be73dfeaad6d216ad7362cb33380b401ac750afb46eb561c2"
+  },
+  "results": [
+    {
+      "id": "puzzle-p5-v0",
+      "base": {
+        "raw_output": "{\n  \"resumen\": \"Ronda completada. El usuario resolvió el puzzle en 79.095 segundos, realizando 3 movimientos incorrectos. Se completaron 20 piezas de un total de 20, utilizando 2 ayudas. El tiempo activo es igual al tiempo de resolución.\"\n}",
+        "json_valid": true,
+        "exact_reference_match": false,
+        "trace": {
+          "summarySource": "deterministic_fallback"
+        },
+        "delivered": {
+          "resumen": "Puzzle: ronda completada. Tiempo de resolución: 79.095 s activos. Piezas completadas: 20 de 20. Movimientos incorrectos: 3. Ayudas utilizadas: 2. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia."
+        },
+        "delivered_matches_reference": true
+      },
+      "adapted": {
+        "raw_output": "{\"resumen\": \"Puzzle: ronda completada. Tiempo de resolución: 79.095 s activos. Piezas completadas: 20 de 20. Movimientos incorrectos: 3. Ayudas utilizadas: 2. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia.\"}",
+        "json_valid": true,
+        "exact_reference_match": true,
+        "trace": {
+          "summarySource": "model_verified_template"
+        },
+        "delivered": {
+          "resumen": "Puzzle: ronda completada. Tiempo de resolución: 79.095 s activos. Piezas completadas: 20 de 20. Movimientos incorrectos: 3. Ayudas utilizadas: 2. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia."
+        },
+        "delivered_matches_reference": true
+      }
+    },
+    {
+      "id": "puzzle-p5-v1",
+      "base": {
+        "raw_output": "{\n  \"resumen\": \"Ronda completada. El usuario resolvió el puzzle en 67.596 segundos, sin usar ayuda. Se completaron 19 piezas de un total de 19, con 6 movimientos incorrectos. El tiempo activo es igual al tiempo de resolución, lo que indica que el usuario no tuvo pausas durante la resolución.\"\n}",
+        "json_valid": true,
+        "exact_reference_match": false,
+        "trace": {
+          "summarySource": "deterministic_fallback"
+        },
+        "delivered": {
+          "resumen": "Puzzle: ronda completada. Tiempo de resolución: 67.596 s activos. Piezas completadas: 19 de 19. Movimientos incorrectos: 6. Ayudas utilizadas: 0. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia."
+        },
+        "delivered_matches_reference": true
+      },
+      "adapted": {
+        "raw_output": "{\"resumen\": \"Puzzle: ronda completada. Tiempo de resolución: 67.596 s activos. Piezas completadas: 19 de 19. Movimientos incorrectos: 6. Ayudas utilizadas: 0. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia.\"}",
+        "json_valid": true,
+        "exact_reference_match": true,
+        "trace": {
+          "summarySource": "model_verified_template"
+        },
+        "delivered": {
+          "resumen": "Puzzle: ronda completada. Tiempo de resolución: 67.596 s activos. Piezas completadas: 19 de 19. Movimientos incorrectos: 6. Ayudas utilizadas: 0. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia."
+        },
+        "delivered_matches_reference": true
+      }
+    },
+    {
+      "id": "puzzle-p5-v2",
+      "base": {
+        "raw_output": "{\n  \"resumen\": \"Ronda abandonada en el escenario puzzle. El usuario no completó el rompecabezas. El tiempo activo fue de 20.843 segundos. Se realizaron 7 movimientos incorrectos. Se completaron 2 piezas de un total de 7. Se utilizó 1 ayuda.\"\n}",
+        "json_valid": true,
+        "exact_reference_match": false,
+        "trace": {
+          "summarySource": "deterministic_fallback"
+        },
+        "delivered": {
+          "resumen": "Puzzle: ronda abandonada. Tiempo activo registrado: 20.843 s; no se informa tiempo de resolución porque la ronda no se completó. Piezas completadas: 2 de 7. Movimientos incorrectos: 7. Ayudas utilizadas: 1. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia."
+        },
+        "delivered_matches_reference": true
+      },
+      "adapted": {
+        "raw_output": "{\"resumen\": \"Puzzle: ronda abandonada. Tiempo activo registrado: 20.843 s; no se informa tiempo de resolución porque la ronda no se completó. Piezas completadas: 2 de 7. Movimientos incorrectos: 7. Ayudas utilizadas: 1. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia.\"}",
+        "json_valid": true,
+        "exact_reference_match": true,
+        "trace": {
+          "summarySource": "model_verified_template"
+        },
+        "delivered": {
+          "resumen": "Puzzle: ronda abandonada. Tiempo activo registrado: 20.843 s; no se informa tiempo de resolución porque la ronda no se completó. Piezas completadas: 2 de 7. Movimientos incorrectos: 7. Ayudas utilizadas: 1. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia."
+        },
+        "delivered_matches_reference": true
+      }
+    },
+    {
+      "id": "puzzle-p5-v3",
+      "base": {
+        "raw_output": "{\n  \"resumen\": \"Ronda interrumpida en el escenario puzzle. El usuario realizó 56.297 segundos de tiempo activo, realizó 8 movimientos incorrectos, completó 1 pieza de un total de 10 piezas. Se utilizaron 3 ayudas. El tiempo de resolución no está disponible.\"\n}",
+        "json_valid": true,
+        "exact_reference_match": false,
+        "trace": {
+          "summarySource": "deterministic_fallback"
+        },
+        "delivered": {
+          "resumen": "Puzzle: ronda interrumpida. Tiempo activo registrado: 56.297 s; no se informa tiempo de resolución porque la ronda no se completó. Piezas completadas: 1 de 10. Movimientos incorrectos: 8. Ayudas utilizadas: 3. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia."
+        },
+        "delivered_matches_reference": true
+      },
+      "adapted": {
+        "raw_output": "{\"resumen\": \"Puzzle: ronda interrumpida. Tiempo activo registrado: 56.297 s; no se informa tiempo de resolución porque la ronda no se completó. Piezas completadas: 1 de 10. Movimientos incorrectos: 8. Ayudas utilizadas: 3. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia.\"}",
+        "json_valid": true,
+        "exact_reference_match": true,
+        "trace": {
+          "summarySource": "model_verified_template"
+        },
+        "delivered": {
+          "resumen": "Puzzle: ronda interrumpida. Tiempo activo registrado: 56.297 s; no se informa tiempo de resolución porque la ronda no se completó. Piezas completadas: 1 de 10. Movimientos incorrectos: 8. Ayudas utilizadas: 3. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia."
+        },
+        "delivered_matches_reference": true
+      }
+    },
+    {
+      "id": "puzzle-p5-v4",
+      "base": {
+        "raw_output": "{\n  \"resumen\": \"Ronda completada. El usuario resolvió el puzzle en 63.535 segundos, con 63.535 segundos de tiempo activo. Realizó 8 movimientos incorrectos y completó 11 piezas de un total de 11. Se utilizaron 2 ayudas.\"\n}",
+        "json_valid": true,
+        "exact_reference_match": false,
+        "trace": {
+          "summarySource": "deterministic_fallback"
+        },
+        "delivered": {
+          "resumen": "Puzzle: ronda completada. Tiempo de resolución: 63.535 s activos. Piezas completadas: 11 de 11. Movimientos incorrectos: 8. Ayudas utilizadas: 2. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia."
+        },
+        "delivered_matches_reference": true
+      },
+      "adapted": {
+        "raw_output": "{\"resumen\": \"Puzzle: ronda completada. Tiempo de resolución: 63.535 s activos. Piezas completadas: 11 de 11. Movimientos incorrectos: 8. Ayudas utilizadas: 2. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia.\"}",
+        "json_valid": true,
+        "exact_reference_match": true,
+        "trace": {
+          "summarySource": "model_verified_template"
+        },
+        "delivered": {
+          "resumen": "Puzzle: ronda completada. Tiempo de resolución: 63.535 s activos. Piezas completadas: 11 de 11. Movimientos incorrectos: 8. Ayudas utilizadas: 2. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia."
+        },
+        "delivered_matches_reference": true
+      }
+    },
+    {
+      "id": "puzzle-p5-v5",
+      "base": {
+        "raw_output": "{\n  \"resumen\": \"Ronda abandonada en el escenario puzzle. El usuario no completó el rompecabezas. El tiempo activo fue de 27,516 segundos. Se realizaron 6 movimientos incorrectos. Se completaron 3 piezas de un total de 9. No se utilizaron ninguna ayuda.\"\n}",
+        "json_valid": true,
+        "exact_reference_match": false,
+        "trace": {
+          "summarySource": "deterministic_fallback"
+        },
+        "delivered": {
+          "resumen": "Puzzle: ronda abandonada. Tiempo activo registrado: 27.516 s; no se informa tiempo de resolución porque la ronda no se completó. Piezas completadas: 3 de 9. Movimientos incorrectos: 6. Ayudas utilizadas: 0. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia."
+        },
+        "delivered_matches_reference": true
+      },
+      "adapted": {
+        "raw_output": "{\"resumen\": \"Puzzle: ronda abandonada. Tiempo activo registrado: 27.516 s; no se informa tiempo de resolución porque la ronda no se completó. Piezas completadas: 3 de 9. Movimientos incorrectos: 6. Ayudas utilizadas: 0. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia.\"}",
+        "json_valid": true,
+        "exact_reference_match": true,
+        "trace": {
+          "summarySource": "model_verified_template"
+        },
+        "delivered": {
+          "resumen": "Puzzle: ronda abandonada. Tiempo activo registrado: 27.516 s; no se informa tiempo de resolución porque la ronda no se completó. Piezas completadas: 3 de 9. Movimientos incorrectos: 6. Ayudas utilizadas: 0. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia."
+        },
+        "delivered_matches_reference": true
+      }
+    },
+    {
+      "id": "puzzle-p5-v6",
+      "base": {
+        "raw_output": "{\n  \"resumen\": \"Ronda completada. El usuario resolvió el puzzle en 79.536 segundos, sin usar ayuda. Se completaron 12 piezas de un total de 12, con 6 movimientos incorrectos. El tiempo activo es igual al tiempo de resolución.\"\n}",
+        "json_valid": true,
+        "exact_reference_match": false,
+        "trace": {
+          "summarySource": "deterministic_fallback"
+        },
+        "delivered": {
+          "resumen": "Puzzle: ronda completada. Tiempo de resolución: 79.536 s activos. Piezas completadas: 12 de 12. Movimientos incorrectos: 6. Ayudas utilizadas: 0. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia."
+        },
+        "delivered_matches_reference": true
+      },
+      "adapted": {
+        "raw_output": "{\"resumen\": \"Puzzle: ronda completada. Tiempo de resolución: 79.536 s activos. Piezas completadas: 12 de 12. Movimientos incorrectos: 6. Ayudas utilizadas: 0. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia.\"}",
+        "json_valid": true,
+        "exact_reference_match": true,
+        "trace": {
+          "summarySource": "model_verified_template"
+        },
+        "delivered": {
+          "resumen": "Puzzle: ronda completada. Tiempo de resolución: 79.536 s activos. Piezas completadas: 12 de 12. Movimientos incorrectos: 6. Ayudas utilizadas: 0. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia."
+        },
+        "delivered_matches_reference": true
+      }
+    },
+    {
+      "id": "puzzle-p5-v7",
+      "base": {
+        "raw_output": "{\n  \"resumen\": \"Ronda interrumpida en el escenario puzzle. El usuario realizó 59,268 segundos de actividad, completó 4 piezas de un total de 10, realizó 9 movimientos incorrectos y no utilizó ninguna ayuda. El tiempo de resolución no está disponible.\"\n}",
+        "json_valid": true,
+        "exact_reference_match": false,
+        "trace": {
+          "summarySource": "deterministic_fallback"
+        },
+        "delivered": {
+          "resumen": "Puzzle: ronda interrumpida. Tiempo activo registrado: 59.268 s; no se informa tiempo de resolución porque la ronda no se completó. Piezas completadas: 4 de 10. Movimientos incorrectos: 9. Ayudas utilizadas: 0. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia."
+        },
+        "delivered_matches_reference": true
+      },
+      "adapted": {
+        "raw_output": "{\"resumen\": \"Puzzle: ronda interrumpida. Tiempo activo registrado: 59.268 s; no se informa tiempo de resolución porque la ronda no se completó. Piezas completadas: 4 de 10. Movimientos incorrectos: 9. Ayudas utilizadas: 0. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia.\"}",
+        "json_valid": true,
+        "exact_reference_match": true,
+        "trace": {
+          "summarySource": "model_verified_template"
+        },
+        "delivered": {
+          "resumen": "Puzzle: ronda interrumpida. Tiempo activo registrado: 59.268 s; no se informa tiempo de resolución porque la ronda no se completó. Piezas completadas: 4 de 10. Movimientos incorrectos: 9. Ayudas utilizadas: 0. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia."
+        },
+        "delivered_matches_reference": true
+      }
+    },
+    {
+      "id": "memory-p5-v0",
+      "base": {
+        "raw_output": "{\n  \"resumen\": \"Ronda completada en el escenario de memoria. Se mostraron 20 cartas, se encontraron 10 pares, lo que representa el 100% de los pares totales. La precisión en los intentos fue del 55.56%. Hubo 8 intentos incorrectos. El tiempo activo fue de 60.932 segundos, igual que el tiempo de resolución. Se usaron 3 ayudas.\"\n}",
+        "json_valid": true,
+        "exact_reference_match": false,
+        "trace": {
+          "summarySource": "deterministic_fallback"
+        },
+        "delivered": {
+          "resumen": "Memoria de tarjetas: ronda completada. Tiempo de resolución: 60.932 s activos. Precisión de emparejamiento: 55.56 %. Intentos incorrectos: 8. Cartas mostradas: 20. Parejas encontradas: 10 de 10. Ayudas utilizadas: 3. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia."
+        },
+        "delivered_matches_reference": true
+      },
+      "adapted": {
+        "raw_output": "{\"resumen\": \"Memoria de tarjetas: ronda completada. Tiempo de resolución: 60.932 s activos. Precisión de emparejamiento: 55.56 %. Intentos incorrectos: 8. Cartas mostradas: 20. Parejas encontradas: 10 de 10. Ayudas utilizadas: 3. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia.\"}",
+        "json_valid": true,
+        "exact_reference_match": true,
+        "trace": {
+          "summarySource": "model_verified_template"
+        },
+        "delivered": {
+          "resumen": "Memoria de tarjetas: ronda completada. Tiempo de resolución: 60.932 s activos. Precisión de emparejamiento: 55.56 %. Intentos incorrectos: 8. Cartas mostradas: 20. Parejas encontradas: 10 de 10. Ayudas utilizadas: 3. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia."
+        },
+        "delivered_matches_reference": true
+      }
+    },
+    {
+      "id": "memory-p5-v1",
+      "base": {
+        "raw_output": "{\n  \"resumen\": \"Ronda completada en el escenario de memoria. Se mostraron 6 cartas, se encontraron 3 parejas, lo que representa el 100% de las parejas totales. La precisión en la coincidencia fue del 25%. Hubo 9 intentos incorrectos. El tiempo activo fue de 13.87 segundos, y el tiempo de resolución también fue de 13.87 segundos. Se utilizó 1 ayuda.\"\n}",
+        "json_valid": true,
+        "exact_reference_match": false,
+        "trace": {
+          "summarySource": "deterministic_fallback"
+        },
+        "delivered": {
+          "resumen": "Memoria de tarjetas: ronda completada. Tiempo de resolución: 13.87 s activos. Precisión de emparejamiento: 25 %. Intentos incorrectos: 9. Cartas mostradas: 6. Parejas encontradas: 3 de 3. Ayudas utilizadas: 1. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia."
+        },
+        "delivered_matches_reference": true
+      },
+      "adapted": {
+        "raw_output": "{\"resumen\": \"Memoria de tarjetas: ronda completada. Tiempo de resolución: 13.87 s activos. Precisión de emparejamiento: 25 %. Intentos incorrectos: 9. Cartas mostradas: 6. Parejas encontradas: 3 de 3. Ayudas utilizadas: 1. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia.\"}",
+        "json_valid": true,
+        "exact_reference_match": true,
+        "trace": {
+          "summarySource": "model_verified_template"
+        },
+        "delivered": {
+          "resumen": "Memoria de tarjetas: ronda completada. Tiempo de resolución: 13.87 s activos. Precisión de emparejamiento: 25 %. Intentos incorrectos: 9. Cartas mostradas: 6. Parejas encontradas: 3 de 3. Ayudas utilizadas: 1. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia."
+        },
+        "delivered_matches_reference": true
+      }
+    },
+    {
+      "id": "memory-p5-v2",
+      "base": {
+        "raw_output": "{\n  \"resumen\": \"Ronda abandonada en el escenario de memoria. El jugador logró una precisión del 100% en los intentos de coincidencia, sin errores. Se mostraron 12 cartas, se encontraron 3 pares, y el total de pares en el juego fue 6. El tiempo activo fue de 48.099 segundos. No se utilizaron ayudas. El tiempo de resolución no está disponible porque la ronda fue abandonada.\"\n}",
+        "json_valid": true,
+        "exact_reference_match": false,
+        "trace": {
+          "summarySource": "deterministic_fallback"
+        },
+        "delivered": {
+          "resumen": "Memoria de tarjetas: ronda abandonada. Tiempo activo registrado: 48.099 s; no se informa tiempo de resolución porque la ronda no se completó. Precisión de emparejamiento: 100 %. Intentos incorrectos: 0. Cartas mostradas: 12. Parejas encontradas: 3 de 6. Ayudas utilizadas: 0. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia."
+        },
+        "delivered_matches_reference": true
+      },
+      "adapted": {
+        "raw_output": "{\"resumen\": \"Memoria de tarjetas: ronda abandonada. Tiempo activo registrado: 48.099 s; no se informa tiempo de resolución porque la ronda no se completó. Precisión de emparejamiento: 100 %. Intentos incorrectos: 0. Cartas mostradas: 12. Parejas encontradas: 3 de 6. Ayudas utilizadas: 0. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia.\"}",
+        "json_valid": true,
+        "exact_reference_match": true,
+        "trace": {
+          "summarySource": "model_verified_template"
+        },
+        "delivered": {
+          "resumen": "Memoria de tarjetas: ronda abandonada. Tiempo activo registrado: 48.099 s; no se informa tiempo de resolución porque la ronda no se completó. Precisión de emparejamiento: 100 %. Intentos incorrectos: 0. Cartas mostradas: 12. Parejas encontradas: 3 de 6. Ayudas utilizadas: 0. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia."
+        },
+        "delivered_matches_reference": true
+      }
+    },
+    {
+      "id": "memory-p5-v3",
+      "base": {
+        "raw_output": "{\n  \"resumen\": \"Ronda interrumpida en el escenario de memoria. Se mostraron 18 cartas, se encontraron 4 parejas, y se intentaron 9 veces incorrectamente. La precisión en el matching es del 30.77%. El tiempo activo fue de 42.291 segundos. No se registró tiempo de resolución. Se usó 1 ayuda. El total de parejas es 9.\"\n}",
+        "json_valid": true,
+        "exact_reference_match": false,
+        "trace": {
+          "summarySource": "deterministic_fallback"
+        },
+        "delivered": {
+          "resumen": "Memoria de tarjetas: ronda interrumpida. Tiempo activo registrado: 42.291 s; no se informa tiempo de resolución porque la ronda no se completó. Precisión de emparejamiento: 30.77 %. Intentos incorrectos: 9. Cartas mostradas: 18. Parejas encontradas: 4 de 9. Ayudas utilizadas: 1. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia."
+        },
+        "delivered_matches_reference": true
+      },
+      "adapted": {
+        "raw_output": "{\"resumen\": \"Memoria de tarjetas: ronda interrumpida. Tiempo activo registrado: 42.291 s; no se informa tiempo de resolución porque la ronda no se completó. Precisión de emparejamiento: 30.77 %. Intentos incorrectos: 9. Cartas mostradas: 18. Parejas encontradas: 4 de 9. Ayudas utilizadas: 1. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia.\"}",
+        "json_valid": true,
+        "exact_reference_match": true,
+        "trace": {
+          "summarySource": "model_verified_template"
+        },
+        "delivered": {
+          "resumen": "Memoria de tarjetas: ronda interrumpida. Tiempo activo registrado: 42.291 s; no se informa tiempo de resolución porque la ronda no se completó. Precisión de emparejamiento: 30.77 %. Intentos incorrectos: 9. Cartas mostradas: 18. Parejas encontradas: 4 de 9. Ayudas utilizadas: 1. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia."
+        },
+        "delivered_matches_reference": true
+      }
+    },
+    {
+      "id": "memory-p5-v4",
+      "base": {
+        "raw_output": "{\n  \"resumen\": \"Ronda completada en el escenario de memoria. Se mostraron 14 cartas, se encontraron 7 pares, lo que representa un 100% de pares encontrados. La precisión en los intentos fue del 53.85%. Se realizaron 6 intentos incorrectos. El tiempo activo fue de 21.61 segundos, y el tiempo de resolución fue igual al tiempo activo. No se utilizaron ayudas.\"\n}",
+        "json_valid": true,
+        "exact_reference_match": false,
+        "trace": {
+          "summarySource": "deterministic_fallback"
+        },
+        "delivered": {
+          "resumen": "Memoria de tarjetas: ronda completada. Tiempo de resolución: 21.607 s activos. Precisión de emparejamiento: 53.85 %. Intentos incorrectos: 6. Cartas mostradas: 14. Parejas encontradas: 7 de 7. Ayudas utilizadas: 0. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia."
+        },
+        "delivered_matches_reference": true
+      },
+      "adapted": {
+        "raw_output": "{\"resumen\": \"Memoria de tarjetas: ronda completada. Tiempo de resolución: 21.607 s activos. Precisión de emparejamiento: 53.85 %. Intentos incorrectos: 6. Cartas mostradas: 14. Parejas encontradas: 7 de 7. Ayudas utilizadas: 0. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia.\"}",
+        "json_valid": true,
+        "exact_reference_match": true,
+        "trace": {
+          "summarySource": "model_verified_template"
+        },
+        "delivered": {
+          "resumen": "Memoria de tarjetas: ronda completada. Tiempo de resolución: 21.607 s activos. Precisión de emparejamiento: 53.85 %. Intentos incorrectos: 6. Cartas mostradas: 14. Parejas encontradas: 7 de 7. Ayudas utilizadas: 0. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia."
+        },
+        "delivered_matches_reference": true
+      }
+    },
+    {
+      "id": "memory-p5-v5",
+      "base": {
+        "raw_output": "{\n  \"resumen\": \"Ronda abandonada en el escenario de memoria. Se mostraron 12 cartas, pero no se encontraron ninguna pareja. El tiempo activo fue de 20.648 segundos. No se utilizaron ayudas. No se registraron intentos incorrectos. El porcentaje de precisión en la coincidencia no está disponible. El tiempo de resolución no está disponible. El total de pares es 6.\"\n}",
+        "json_valid": true,
+        "exact_reference_match": false,
+        "trace": {
+          "summarySource": "deterministic_fallback"
+        },
+        "delivered": {
+          "resumen": "Memoria de tarjetas: ronda abandonada. Tiempo activo registrado: 20.648 s; no se informa tiempo de resolución porque la ronda no se completó. Precisión de emparejamiento: no disponible porque no hubo intentos. Intentos incorrectos: 0. Cartas mostradas: 12. Parejas encontradas: 0 de 6. Ayudas utilizadas: 0. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia."
+        },
+        "delivered_matches_reference": true
+      },
+      "adapted": {
+        "raw_output": "{\"resumen\": \"Memoria de tarjetas: ronda abandonada. Tiempo activo registrado: 20.648 s; no se informa tiempo de resolución porque la ronda no se completó. Precisión de emparejamiento: no disponible. Intentos incorrectos: 0. Cartas mostradas: 12. Parejas encontradas: 0 de 6. Ayudas utilizadas: 0. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia.\"}",
+        "json_valid": true,
+        "exact_reference_match": false,
+        "trace": {
+          "summarySource": "deterministic_fallback"
+        },
+        "delivered": {
+          "resumen": "Memoria de tarjetas: ronda abandonada. Tiempo activo registrado: 20.648 s; no se informa tiempo de resolución porque la ronda no se completó. Precisión de emparejamiento: no disponible porque no hubo intentos. Intentos incorrectos: 0. Cartas mostradas: 12. Parejas encontradas: 0 de 6. Ayudas utilizadas: 0. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia."
+        },
+        "delivered_matches_reference": true
+      }
+    },
+    {
+      "id": "memory-p5-v6",
+      "base": {
+        "raw_output": "{\n  \"resumen\": \"Ronda completada. Se mostraron 20 cartas, se encontraron 10 pares en 20.615 segundos. La precisión en los intentos fue del 71.43%. Se realizaron 4 intentos incorrectos. Se usaron 2 ayudas. El tiempo activo es igual al tiempo de resolución.\"\n}",
+        "json_valid": true,
+        "exact_reference_match": false,
+        "trace": {
+          "summarySource": "deterministic_fallback"
+        },
+        "delivered": {
+          "resumen": "Memoria de tarjetas: ronda completada. Tiempo de resolución: 20.615 s activos. Precisión de emparejamiento: 71.43 %. Intentos incorrectos: 4. Cartas mostradas: 20. Parejas encontradas: 10 de 10. Ayudas utilizadas: 2. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia."
+        },
+        "delivered_matches_reference": true
+      },
+      "adapted": {
+        "raw_output": "{\"resumen\": \"Memoria de tarjetas: ronda completada. Tiempo de resolución: 20.615 s activos. Precisión de emparejamiento: 71.43 %. Intentos incorrectos: 4. Cartas mostradas: 20. Parejas encontradas: 10 de 10. Ayudas utilizadas: 2. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia.\"}",
+        "json_valid": true,
+        "exact_reference_match": true,
+        "trace": {
+          "summarySource": "model_verified_template"
+        },
+        "delivered": {
+          "resumen": "Memoria de tarjetas: ronda completada. Tiempo de resolución: 20.615 s activos. Precisión de emparejamiento: 71.43 %. Intentos incorrectos: 4. Cartas mostradas: 20. Parejas encontradas: 10 de 10. Ayudas utilizadas: 2. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia."
+        },
+        "delivered_matches_reference": true
+      }
+    },
+    {
+      "id": "memory-p5-v7",
+      "base": {
+        "raw_output": "{\n  \"resumen\": \"Ronda interrumpida en el escenario de memoria. Se mostraron 20 cartas, se encontraron 2 parejas, y se intentaron 8 veces incorrectamente. El porcentaje de precisión en el matching es del 20.0%. El tiempo activo fue de 77.321 segundos. Se utilizó 1 ayuda. No se registró tiempo de resolución debido a la interrupción.\"\n}",
+        "json_valid": true,
+        "exact_reference_match": false,
+        "trace": {
+          "summarySource": "deterministic_fallback"
+        },
+        "delivered": {
+          "resumen": "Memoria de tarjetas: ronda interrumpida. Tiempo activo registrado: 77.321 s; no se informa tiempo de resolución porque la ronda no se completó. Precisión de emparejamiento: 20 %. Intentos incorrectos: 8. Cartas mostradas: 20. Parejas encontradas: 2 de 10. Ayudas utilizadas: 1. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia."
+        },
+        "delivered_matches_reference": true
+      },
+      "adapted": {
+        "raw_output": "{\"resumen\": \"Memoria de tarjetas: ronda interrumpida. Tiempo activo registrado: 77.321 s; no se informa tiempo de resolución porque la ronda no se completó. Precisión de emparejamiento: 20 %. Intentos incorrectos: 8. Cartas mostradas: 20. Parejas encontradas: 2 de 10. Ayudas utilizadas: 1. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia.\"}",
+        "json_valid": true,
+        "exact_reference_match": true,
+        "trace": {
+          "summarySource": "model_verified_template"
+        },
+        "delivered": {
+          "resumen": "Memoria de tarjetas: ronda interrumpida. Tiempo activo registrado: 77.321 s; no se informa tiempo de resolución porque la ronda no se completó. Precisión de emparejamiento: 20 %. Intentos incorrectos: 8. Cartas mostradas: 20. Parejas encontradas: 2 de 10. Ayudas utilizadas: 1. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia."
+        },
+        "delivered_matches_reference": true
+      }
+    },
+    {
+      "id": "pigeons-p5-v0",
+      "base": {
+        "raw_output": "{\n  \"resumen\": \"Ronda completada. El usuario respondió correctamente. No hubo errores en el conteo firmado o absoluto. El conteo de aves registrado fue 2, coincidiendo con el valor esperado. El tiempo activo del usuario fue 9.218 segundos, y el tiempo de respuesta fue 11.218 segundos.\",\n  \"metricas\": {\n    \"responseCorrect\": true,\n    \"signedCountError\": 0,\n    \"absoluteCountError\": 0,\n    \"actualPigeonCount\": 2,\n    \"userPigeonCount\": 2,\n    \"enabledResponseActiveSeconds\": 9.218,\n    \"responseTimeSeconds\": 11.218\n  }\n}",
+        "json_valid": true,
+        "exact_reference_match": false,
+        "trace": {
+          "summarySource": "deterministic_fallback"
+        },
+        "delivered": {
+          "resumen": "Conteo de palomas: ronda completada. Cantidad real: 2 palomas. Respuesta: 2 palomas (correcta). Error con signo (respuesta menos real): 0; margen absoluto: 0 palomas. Tiempo de respuesta desde ocultar las palomas: 11.218 s de reloj, incluida la espera y las pausas. Tiempo activo desde habilitar la respuesta: 9.218 s. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia."
+        },
+        "delivered_matches_reference": true
+      },
+      "adapted": {
+        "raw_output": "{\"resumen\": \"Conteo de palomas: ronda completada. Cantidad real: 2 palomas. Respuesta: 2 palomas (correcta). Error con signo (respuesta menos real): 0; margen absoluto: 0 palomas. Tiempo de respuesta desde ocultar las palomas: 11.218 s de reloj, incluida la espera; no activada, no registrada. Tiempo activo desde habilitar la respuesta: 9.218 s. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia.\"}",
+        "json_valid": true,
+        "exact_reference_match": false,
+        "trace": {
+          "summarySource": "deterministic_fallback"
+        },
+        "delivered": {
+          "resumen": "Conteo de palomas: ronda completada. Cantidad real: 2 palomas. Respuesta: 2 palomas (correcta). Error con signo (respuesta menos real): 0; margen absoluto: 0 palomas. Tiempo de respuesta desde ocultar las palomas: 11.218 s de reloj, incluida la espera y las pausas. Tiempo activo desde habilitar la respuesta: 9.218 s. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia."
+        },
+        "delivered_matches_reference": true
+      }
+    },
+    {
+      "id": "pigeons-p5-v1",
+      "base": {
+        "raw_output": "{\n  \"resumen\": \"Ronda completada. El usuario respondió incorrectamente. Hubo 2 errores en el conteo firmado y 2 en el conteo absoluto. El conteo real de palomas fue 10, mientras que el conteo del usuario fue 12. El tiempo activo del response fue 6.499 segundos, y el tiempo de respuesta fue 8.499 segundos.\",\n  \"metricas\": {\n    \"responseCorrect\": false,\n    \"signedCountError\": 2,\n    \"absoluteCountError\": 2,\n    \"actualPigeonCount\": 10,\n    \"userPigeonCount\": 12,\n    \"enabledResponseActiveSeconds\": 6.499,\n    \"responseTimeSeconds\": 8.499\n  }\n}",
+        "json_valid": true,
+        "exact_reference_match": false,
+        "trace": {
+          "summarySource": "deterministic_fallback"
+        },
+        "delivered": {
+          "resumen": "Conteo de palomas: ronda completada. Cantidad real: 10 palomas. Respuesta: 12 palomas (incorrecta). Error con signo (respuesta menos real): 2; margen absoluto: 2 palomas. Tiempo de respuesta desde ocultar las palomas: 8.499 s de reloj, incluida la espera y las pausas. Tiempo activo desde habilitar la respuesta: 6.499 s. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia."
+        },
+        "delivered_matches_reference": true
+      },
+      "adapted": {
+        "raw_output": "{\"resumen\": \"Conteo de palomas: ronda completada. Cantidad real: 10 palomas. Respuesta: 12 palomas (incorrecta). Error con signo (respuesta menos real): 2; margen absoluto: 2 palomas. Tiempo de respuesta desde ocultar las palomas: 8.499 s de reloj, incluida la espera. Tiempo activo desde habilitar la respuesta: 6.499 s. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia.\"}",
+        "json_valid": true,
+        "exact_reference_match": false,
+        "trace": {
+          "summarySource": "deterministic_fallback"
+        },
+        "delivered": {
+          "resumen": "Conteo de palomas: ronda completada. Cantidad real: 10 palomas. Respuesta: 12 palomas (incorrecta). Error con signo (respuesta menos real): 2; margen absoluto: 2 palomas. Tiempo de respuesta desde ocultar las palomas: 8.499 s de reloj, incluida la espera y las pausas. Tiempo activo desde habilitar la respuesta: 6.499 s. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia."
+        },
+        "delivered_matches_reference": true
+      }
+    },
+    {
+      "id": "pigeons-p5-v2",
+      "base": {
+        "raw_output": "{\n  \"resumen\": \"Ronda abandonada. El usuario no respondió correctamente. El contador de aves firmado mostró un error de -1, mientras que el contador absoluto mostró un error de 1. La cantidad real de aves fue 3, pero el usuario registró 2. El tiempo activo fue 13.956 segundos, pero no se registró el tiempo de resolución. La respuesta no fue correcta.\",\n  \"metrics\": {\n    \"responseCorrect\": false,\n    \"signedCountError\": -1,\n    \"absoluteCountError\": 1,\n    \"actualPigeonCount\": 3,\n    \"userPigeonCount\": 2,\n    \"enabledResponseActiveSeconds\": 13.956,\n    \"responseTimeSeconds\": 15.956\n  }\n}",
+        "json_valid": true,
+        "exact_reference_match": false,
+        "trace": {
+          "summarySource": "deterministic_fallback"
+        },
+        "delivered": {
+          "resumen": "Conteo de palomas: ronda abandonada. Cantidad real: 3 palomas. Respuesta: 2 palomas (incorrecta). Error con signo (respuesta menos real): -1; margen absoluto: 1 palomas. Tiempo de respuesta desde ocultar las palomas: 15.956 s de reloj, incluida la espera y las pausas. Tiempo activo desde habilitar la respuesta: 13.956 s. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia."
+        },
+        "delivered_matches_reference": true
+      },
+      "adapted": {
+        "raw_output": "{\"resumen\": \"Conteo de palomas: ronda abandonada. Cantidad real: 3 palomas. Respuesta: 2 palomas (incorrecta). Error con signo (respuesta menos real): -1; margen absoluto: 1 palomas. Tiempo de respuesta desde ocultar las palomas: 15.956 s de reloj, incluida la espera; no se registró tiempo de resolución. Tiempo activo desde habilitar la respuesta: 13.956 s. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia.\"}",
+        "json_valid": true,
+        "exact_reference_match": false,
+        "trace": {
+          "summarySource": "deterministic_fallback"
+        },
+        "delivered": {
+          "resumen": "Conteo de palomas: ronda abandonada. Cantidad real: 3 palomas. Respuesta: 2 palomas (incorrecta). Error con signo (respuesta menos real): -1; margen absoluto: 1 palomas. Tiempo de respuesta desde ocultar las palomas: 15.956 s de reloj, incluida la espera y las pausas. Tiempo activo desde habilitar la respuesta: 13.956 s. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia."
+        },
+        "delivered_matches_reference": true
+      }
+    },
+    {
+      "id": "pigeons-p5-v3",
+      "base": {
+        "raw_output": "{\n  \"resumen\": \"Ronda interrumpida. Se registraron 7 aves en el recuento real. El usuario no proporcionó un recuento de aves. No se registraron errores en el recuento firmado ni en el recuento absoluto. El tiempo activo de respuesta y el tiempo de respuesta no están disponibles.\"\n}",
+        "json_valid": true,
+        "exact_reference_match": false,
+        "trace": {
+          "summarySource": "deterministic_fallback"
+        },
+        "delivered": {
+          "resumen": "Conteo de palomas: ronda interrumpida. Cantidad real: 7 palomas. No se registró respuesta; precisión, margen de error y tiempo de respuesta no disponibles. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia."
+        },
+        "delivered_matches_reference": true
+      },
+      "adapted": {
+        "raw_output": "{\"resumen\": \"Conteo de palomas: ronda interrumpida. Cantidad real: 7 palomas. No se registró respuesta; precisión, margen de error y tiempo de respuesta no disponibles. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia.\"}",
+        "json_valid": true,
+        "exact_reference_match": true,
+        "trace": {
+          "summarySource": "model_verified_template"
+        },
+        "delivered": {
+          "resumen": "Conteo de palomas: ronda interrumpida. Cantidad real: 7 palomas. No se registró respuesta; precisión, margen de error y tiempo de respuesta no disponibles. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia."
+        },
+        "delivered_matches_reference": true
+      }
+    },
+    {
+      "id": "pigeons-p5-v4",
+      "base": {
+        "raw_output": "{\n  \"resumen\": \"Ronda completada. El usuario respondió incorrectamente. El conteo de aves registrado fue 3, mientras que el conteo del usuario fue 2. Hubo un error de conteo absoluto de 1. El tiempo activo fue 5.371 segundos, y el tiempo de respuesta fue 7.371 segundos.\",\n  \"metricas\": {\n    \"responseCorrect\": false,\n    \"signedCountError\": -1,\n    \"absoluteCountError\": 1,\n    \"actualPigeonCount\": 3,\n    \"userPigeonCount\": 2,\n    \"enabledResponseActiveSeconds\": 5.371,\n    \"responseTimeSeconds\": 7.371\n  }\n}",
+        "json_valid": true,
+        "exact_reference_match": false,
+        "trace": {
+          "summarySource": "deterministic_fallback"
+        },
+        "delivered": {
+          "resumen": "Conteo de palomas: ronda completada. Cantidad real: 3 palomas. Respuesta: 2 palomas (incorrecta). Error con signo (respuesta menos real): -1; margen absoluto: 1 palomas. Tiempo de respuesta desde ocultar las palomas: 7.371 s de reloj, incluida la espera y las pausas. Tiempo activo desde habilitar la respuesta: 5.371 s. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia."
+        },
+        "delivered_matches_reference": true
+      },
+      "adapted": {
+        "raw_output": "{\"resumen\": \"Conteo de palomas: ronda completada. Cantidad real: 3 palomas. Respuesta: 2 palomas (incorrecta). Error con signo (respuesta menos real): -1; margen absoluto: 1 palomas. Tiempo de respuesta desde ocultar las palomas: 7.371 s de reloj, incluida la espera y la espera de confirmación. Tiempo activo desde habilitar la respuesta: 5.371 s. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia.\"}",
+        "json_valid": true,
+        "exact_reference_match": false,
+        "trace": {
+          "summarySource": "deterministic_fallback"
+        },
+        "delivered": {
+          "resumen": "Conteo de palomas: ronda completada. Cantidad real: 3 palomas. Respuesta: 2 palomas (incorrecta). Error con signo (respuesta menos real): -1; margen absoluto: 1 palomas. Tiempo de respuesta desde ocultar las palomas: 7.371 s de reloj, incluida la espera y las pausas. Tiempo activo desde habilitar la respuesta: 5.371 s. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia."
+        },
+        "delivered_matches_reference": true
+      }
+    },
+    {
+      "id": "pigeons-p5-v5",
+      "base": {
+        "raw_output": "{\n  \"resumen\": \"Ronda abandonada. El usuario no respondió correctamente. El conteo real de palomas fue 11. El tiempo activo no está disponible. No se registraron errores en el conteo firmado o absoluto. El conteo del usuario no está disponible. El tiempo de respuesta no está disponible.\"\n}",
+        "json_valid": true,
+        "exact_reference_match": false,
+        "trace": {
+          "summarySource": "deterministic_fallback"
+        },
+        "delivered": {
+          "resumen": "Conteo de palomas: ronda abandonada. Cantidad real: 11 palomas. No se registró respuesta; precisión, margen de error y tiempo de respuesta no disponibles. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia."
+        },
+        "delivered_matches_reference": true
+      },
+      "adapted": {
+        "raw_output": "{\"resumen\": \"Conteo de palomas: ronda abandonada. Cantidad real: 11 palomas. No se registró respuesta; precisión, margen de error y tiempo de respuesta no disponibles. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia.\"}",
+        "json_valid": true,
+        "exact_reference_match": true,
+        "trace": {
+          "summarySource": "model_verified_template"
+        },
+        "delivered": {
+          "resumen": "Conteo de palomas: ronda abandonada. Cantidad real: 11 palomas. No se registró respuesta; precisión, margen de error y tiempo de respuesta no disponibles. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia."
+        },
+        "delivered_matches_reference": true
+      }
+    },
+    {
+      "id": "pigeons-p5-v6",
+      "base": {
+        "raw_output": "{\n  \"resumen\": \"Ronda completada. El usuario respondió correctamente. No hubo errores en el conteo firmado o absoluto. El conteo de aves registrado fue 16, coincidiendo con el valor esperado. El tiempo activo del usuario fue 7.254 segundos, y el tiempo de respuesta fue 9.254 segundos.\",\n  \"metricas\": {\n    \"responseCorrect\": true,\n    \"signedCountError\": 0,\n    \"absoluteCountError\": 0,\n    \"actualPigeonCount\": 16,\n    \"userPigeonCount\": 16,\n    \"enabledResponseActiveSeconds\": 7.254,\n    \"responseTimeSeconds\": 9.254\n  }\n}",
+        "json_valid": true,
+        "exact_reference_match": false,
+        "trace": {
+          "summarySource": "deterministic_fallback"
+        },
+        "delivered": {
+          "resumen": "Conteo de palomas: ronda completada. Cantidad real: 16 palomas. Respuesta: 16 palomas (correcta). Error con signo (respuesta menos real): 0; margen absoluto: 0 palomas. Tiempo de respuesta desde ocultar las palomas: 9.254 s de reloj, incluida la espera y las pausas. Tiempo activo desde habilitar la respuesta: 7.254 s. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia."
+        },
+        "delivered_matches_reference": true
+      },
+      "adapted": {
+        "raw_output": "{\"resumen\": \"Conteo de palomas: ronda completada. Cantidad real: 16 palomas. Respuesta: 16 palomas (correcta). Error con signo (respuesta menos real): 0; margen absoluto: 0 palomas. Tiempo de respuesta desde ocultar las palomas: 9.254 s de reloj, incluida la espera; no activada, no registrada, no descartada. Tiempo activo desde habilitar la respuesta: 7.254 s. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia.\"}",
+        "json_valid": true,
+        "exact_reference_match": false,
+        "trace": {
+          "summarySource": "deterministic_fallback"
+        },
+        "delivered": {
+          "resumen": "Conteo de palomas: ronda completada. Cantidad real: 16 palomas. Respuesta: 16 palomas (correcta). Error con signo (respuesta menos real): 0; margen absoluto: 0 palomas. Tiempo de respuesta desde ocultar las palomas: 9.254 s de reloj, incluida la espera y las pausas. Tiempo activo desde habilitar la respuesta: 7.254 s. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia."
+        },
+        "delivered_matches_reference": true
+      }
+    },
+    {
+      "id": "pigeons-p5-v7",
+      "base": {
+        "raw_output": "{\n  \"resumen\": \"Ronda interrumpida. El usuario no completó la ronda. Se registraron 16 aves en el sistema, pero el conteo del usuario no fue registrado. No se registraron respuestas correctas, errores en el conteo firmado o absoluto. El tiempo activo y el tiempo de respuesta no están disponibles.\"\n}",
+        "json_valid": true,
+        "exact_reference_match": false,
+        "trace": {
+          "summarySource": "deterministic_fallback"
+        },
+        "delivered": {
+          "resumen": "Conteo de palomas: ronda interrumpida. Cantidad real: 16 palomas. No se registró respuesta; precisión, margen de error y tiempo de respuesta no disponibles. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia."
+        },
+        "delivered_matches_reference": true
+      },
+      "adapted": {
+        "raw_output": "{\"resumen\": \"Conteo de palomas: ronda interrumpida. Cantidad real: 16 palomas. No se registró respuesta; precisión, margen de error y tiempo de respuesta no disponibles. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia.\"}",
+        "json_valid": true,
+        "exact_reference_match": true,
+        "trace": {
+          "summarySource": "model_verified_template"
+        },
+        "delivered": {
+          "resumen": "Conteo de palomas: ronda interrumpida. Cantidad real: 16 palomas. No se registró respuesta; precisión, margen de error y tiempo de respuesta no disponibles. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia."
+        },
+        "delivered_matches_reference": true
+      }
+    }
+  ],
+  "reviewer": "Codex (AI)",
+  "human_review": "not_performed",
+  "summary": {
+    "base": {
+      "total": 24,
+      "json_valid": 24,
+      "raw_exact_reference": 0,
+      "fallback_count": 24,
+      "delivered_exact_reference": 24
+    },
+    "adapted": {
+      "total": 24,
+      "json_valid": 24,
+      "raw_exact_reference": 18,
+      "fallback_count": 6,
+      "delivered_exact_reference": 24
+    }
+  }
+}

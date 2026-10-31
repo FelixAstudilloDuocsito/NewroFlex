@@ -1,0 +1,21 @@
+{
+  "version": "scenes-v1",
+  "source": "synthetic",
+  "reviewer": "Codex (AI)",
+  "human_review": "not_performed",
+  "generator_sha256": "5b5c43244789b6e9ef9a780be384717a4d533fd3be7294ac01374faae110c65f",
+  "files": {
+    "train.jsonl": {
+      "count": 96,
+      "sha256": "3bf469152579a6ec16b7ce71f5a97b7f3aee9095b845e27dfc244b4acf75d810"
+    },
+    "validation.jsonl": {
+      "count": 24,
+      "sha256": "1096c1f0e2f7af410ee9af8939f590c107c46d2f5568d8ed5a315447c4d9888b"
+    },
+    "test.jsonl": {
+      "count": 24,
+      "sha256": "d26056faeaf5f7f56902287c748e62add4bc059aa365770ff1adbcaab65ee42a"
+    }
+  }
+}

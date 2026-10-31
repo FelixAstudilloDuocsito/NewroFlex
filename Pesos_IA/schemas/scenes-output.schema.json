@@ -1,0 +1,490 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "contractVersion": {
+      "type": "string",
+      "enum": [
+        "scenes-v1"
+      ]
+    },
+    "participantId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "rounds": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "items": {
+        "anyOf": [
+          {
+            "type": "object",
+            "properties": {
+              "roundId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "sessionId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "scenarioId": {
+                "type": "string",
+                "enum": [
+                  "puzzle"
+                ]
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "completed",
+                  "abandoned",
+                  "interrupted"
+                ]
+              },
+              "metrics": {
+                "type": "object",
+                "properties": {
+                  "resolutionTimeSeconds": {
+                    "anyOf": [
+                      {
+                        "type": "number",
+                        "minimum": 0
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "activeTimeSeconds": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "incorrectMoves": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2147483647
+                  },
+                  "completedPieces": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2147483647
+                  },
+                  "totalPieces": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 2147483647
+                  },
+                  "aidsUsed": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2147483647
+                  }
+                },
+                "required": [
+                  "resolutionTimeSeconds",
+                  "activeTimeSeconds",
+                  "incorrectMoves",
+                  "completedPieces",
+                  "totalPieces",
+                  "aidsUsed"
+                ],
+                "additionalProperties": false
+              },
+              "warnings": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 6,
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "descriptive_only",
+                    "round_not_completed",
+                    "training_mode",
+                    "distractions_configured",
+                    "no_pair_attempts",
+                    "no_answer"
+                  ]
+                }
+              },
+              "resumen": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 3000
+              },
+              "summarySource": {
+                "type": "string",
+                "enum": [
+                  "model_verified_template",
+                  "deterministic_fallback",
+                  "deterministic_preview"
+                ]
+              }
+            },
+            "required": [
+              "roundId",
+              "sessionId",
+              "scenarioId",
+              "status",
+              "metrics",
+              "warnings",
+              "resumen",
+              "summarySource"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "roundId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "sessionId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "scenarioId": {
+                "type": "string",
+                "enum": [
+                  "memory"
+                ]
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "completed",
+                  "abandoned",
+                  "interrupted"
+                ]
+              },
+              "metrics": {
+                "type": "object",
+                "properties": {
+                  "matchingAccuracyPercent": {
+                    "anyOf": [
+                      {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 100
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "incorrectAttempts": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2147483647
+                  },
+                  "resolutionTimeSeconds": {
+                    "anyOf": [
+                      {
+                        "type": "number",
+                        "minimum": 0
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "activeTimeSeconds": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "cardsShown": {
+                    "type": "integer",
+                    "minimum": 2,
+                    "maximum": 2147483647
+                  },
+                  "pairsFound": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2147483647
+                  },
+                  "totalPairs": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 2147483647
+                  },
+                  "aidsUsed": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2147483647
+                  }
+                },
+                "required": [
+                  "matchingAccuracyPercent",
+                  "incorrectAttempts",
+                  "resolutionTimeSeconds",
+                  "activeTimeSeconds",
+                  "cardsShown",
+                  "pairsFound",
+                  "totalPairs",
+                  "aidsUsed"
+                ],
+                "additionalProperties": false
+              },
+              "warnings": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 6,
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "descriptive_only",
+                    "round_not_completed",
+                    "training_mode",
+                    "distractions_configured",
+                    "no_pair_attempts",
+                    "no_answer"
+                  ]
+                }
+              },
+              "resumen": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 3000
+              },
+              "summarySource": {
+                "type": "string",
+                "enum": [
+                  "model_verified_template",
+                  "deterministic_fallback",
+                  "deterministic_preview"
+                ]
+              }
+            },
+            "required": [
+              "roundId",
+              "sessionId",
+              "scenarioId",
+              "status",
+              "metrics",
+              "warnings",
+              "resumen",
+              "summarySource"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "roundId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "sessionId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "scenarioId": {
+                "type": "string",
+                "enum": [
+                  "pigeons"
+                ]
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "completed",
+                  "abandoned",
+                  "interrupted"
+                ]
+              },
+              "metrics": {
+                "type": "object",
+                "properties": {
+                  "responseCorrect": {
+                    "anyOf": [
+                      {
+                        "type": "boolean"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "signedCountError": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "absoluteCountError": {
+                    "anyOf": [
+                      {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 2147483647
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "actualPigeonCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2147483647
+                  },
+                  "userPigeonCount": {
+                    "anyOf": [
+                      {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 2147483647
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "enabledResponseActiveSeconds": {
+                    "anyOf": [
+                      {
+                        "type": "number",
+                        "minimum": 0
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "responseTimeSeconds": {
+                    "anyOf": [
+                      {
+                        "type": "number",
+                        "minimum": 0
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "responseCorrect",
+                  "signedCountError",
+                  "absoluteCountError",
+                  "actualPigeonCount",
+                  "userPigeonCount",
+                  "enabledResponseActiveSeconds",
+                  "responseTimeSeconds"
+                ],
+                "additionalProperties": false
+              },
+              "warnings": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 6,
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "descriptive_only",
+                    "round_not_completed",
+                    "training_mode",
+                    "distractions_configured",
+                    "no_pair_attempts",
+                    "no_answer"
+                  ]
+                }
+              },
+              "resumen": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 3000
+              },
+              "summarySource": {
+                "type": "string",
+                "enum": [
+                  "model_verified_template",
+                  "deterministic_fallback",
+                  "deterministic_preview"
+                ]
+              }
+            },
+            "required": [
+              "roundId",
+              "sessionId",
+              "scenarioId",
+              "status",
+              "metrics",
+              "warnings",
+              "resumen",
+              "summarySource"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      }
+    },
+    "comparisons": {
+      "type": "array",
+      "maxItems": 100,
+      "items": {
+        "type": "object",
+        "properties": {
+          "comparisonGroupId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "roundIds": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 100,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          "comparable": {
+            "type": "boolean"
+          },
+          "reasons": {
+            "type": "array",
+            "maxItems": 4,
+            "items": {
+              "type": "string",
+              "enum": [
+                "insufficient_rounds",
+                "incomplete_rounds",
+                "not_comparison_mode",
+                "different_conditions"
+              ]
+            }
+          }
+        },
+        "required": [
+          "comparisonGroupId",
+          "roundIds",
+          "comparable",
+          "reasons"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "contractVersion",
+    "participantId",
+    "rounds",
+    "comparisons"
+  ],
+  "additionalProperties": false
+}

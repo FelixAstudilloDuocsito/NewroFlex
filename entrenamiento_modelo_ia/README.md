@@ -4,6 +4,8 @@ La integración nueva de Unity (Puzzle, Memoria y Palomas) utiliza el módulo `s
 
 Para el integrador: [guía paso a paso del modelo, API, datos en AWS y dashboard](docs/guia_integracion_api_dashboard_aws.md).
 
+Para la entrega nueva con base y adaptador ya fusionados: [guía de despliegue del modelo fusionado en AWS](docs/guia_aws_modelo_fusionado.md).
+
 El proyecto utiliza Python y `qwen3:8b` mediante Ollama.
 
 ## Ejecutar en Windows

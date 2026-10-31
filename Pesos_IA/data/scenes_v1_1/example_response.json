@@ -1,0 +1,70 @@
+{
+  "contractVersion": "scenes-v1",
+  "participantId": "synthetic-p0",
+  "rounds": [
+    {
+      "roundId": "puzzle-p0-v0",
+      "sessionId": "synthetic-s0-0",
+      "scenarioId": "puzzle",
+      "status": "completed",
+      "metrics": {
+        "resolutionTimeSeconds": 60.494,
+        "activeTimeSeconds": 60.494,
+        "incorrectMoves": 0,
+        "completedPieces": 18,
+        "totalPieces": 18,
+        "aidsUsed": 2
+      },
+      "warnings": [
+        "descriptive_only",
+        "training_mode"
+      ],
+      "resumen": "Puzzle: ronda completada. Tiempo de resolución: 60.494 s activos. Piezas completadas: 18 de 18. Movimientos incorrectos: 0. Ayudas utilizadas: 2. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia.",
+      "summarySource": "deterministic_preview"
+    },
+    {
+      "roundId": "memory-p0-v0",
+      "sessionId": "synthetic-s0-0",
+      "scenarioId": "memory",
+      "status": "completed",
+      "metrics": {
+        "matchingAccuracyPercent": 100.0,
+        "incorrectAttempts": 0,
+        "resolutionTimeSeconds": 60.494,
+        "activeTimeSeconds": 60.494,
+        "cardsShown": 18,
+        "pairsFound": 9,
+        "totalPairs": 9,
+        "aidsUsed": 2
+      },
+      "warnings": [
+        "descriptive_only",
+        "training_mode"
+      ],
+      "resumen": "Memoria de tarjetas: ronda completada. Tiempo de resolución: 60.494 s activos. Precisión de emparejamiento: 100 %. Intentos incorrectos: 0. Cartas mostradas: 18. Parejas encontradas: 9 de 9. Ayudas utilizadas: 2. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia.",
+      "summarySource": "deterministic_preview"
+    },
+    {
+      "roundId": "pigeons-p0-v0",
+      "sessionId": "synthetic-s0-0",
+      "scenarioId": "pigeons",
+      "status": "completed",
+      "metrics": {
+        "responseCorrect": true,
+        "signedCountError": 0,
+        "absoluteCountError": 0,
+        "actualPigeonCount": 13,
+        "userPigeonCount": 13,
+        "enabledResponseActiveSeconds": 1.163,
+        "responseTimeSeconds": 3.163
+      },
+      "warnings": [
+        "descriptive_only",
+        "training_mode"
+      ],
+      "resumen": "Conteo de palomas: ronda completada. Cantidad real: 13 palomas. Respuesta: 13 palomas (correcta). Error con signo (respuesta menos real): 0; margen absoluto: 0 palomas. Tiempo de respuesta desde ocultar las palomas: 3.163 s de reloj, incluida la espera y las pausas. Tiempo activo desde habilitar la respuesta: 1.163 s. Descripción de esta ronda, sin interpretación clínica ni inferencia de tendencia.",
+      "summarySource": "deterministic_preview"
+    }
+  ],
+  "comparisons": []
+}

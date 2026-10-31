@@ -43,3 +43,12 @@ Desktop.ini
 
 # Unity cache
 Assets/AssetStoreTools*
+
+# Entorno, caché y entregas locales de IA (pesos de varios GB)
+.venv-merge/
+.cache-merge/
+releases-ia/
+Pesos_IA/model/**/*.safetensors
+Pesos_IA/model/**/*.bin
+Pesos_IA/model/**/*.pt
+Pesos_IA/model/**/*.pth
