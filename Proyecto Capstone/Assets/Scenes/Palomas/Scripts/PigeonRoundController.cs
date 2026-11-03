@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using Debug = UnityEngine.Debug;
 
 namespace NeuroFlexVR
@@ -14,66 +15,119 @@ namespace NeuroFlexVR
     /// <summary>
     /// MVP of pigeon-counting assessment. Attach to a permanently active scene object.
     /// Public methods can be wired directly to World Space Canvas Buttons.
-    /// Stores a scenes-v1-compatible, single-round request in persistentDataPath.
+    /// Keeps the last result in memory; patient registration is deferred to reception.
     /// </summary>
     public class PigeonRoundController : MonoBehaviour
     {
-        [Header("Identity and protocol")]
-        [Tooltip("Pseudonymous participant ID. Do not put real names here.")]
-        public string participantId = "p-demo";
-        public string scenarioVersion = "1.1.0";
-        public PigeonAssessmentMode assessmentMode = PigeonAssessmentMode.Training;
-        [Tooltip("Only for rounds truly intended to be compared under identical conditions. Blank = JSON null.")]
-        public string comparisonGroupId = "";
-        [Min(0)] public int difficultyLevel = 1;
+        [Header("Identificación y protocolo")]
+        [Tooltip("Identificador seudónimo del participante. No escribas nombres reales.")]
+        [InspectorName("ID del participante")] public string participantId = "p-demo";
+        [InspectorName("Versión del escenario")] public string scenarioVersion = "1.2.0";
+        [InspectorName("Modo de evaluación")] public PigeonAssessmentMode assessmentMode = PigeonAssessmentMode.Training;
+        [Tooltip("Solo para rondas comparables bajo condiciones equivalentes. Vacío = null en JSON.")]
+        [InspectorName("Grupo de comparación")] public string comparisonGroupId = "";
+        [InspectorName("Nivel de dificultad")] [Min(0)] public int difficultyLevel = 1;
 
-        [Header("Pigeons in the scene")]
-        [Tooltip("Optional. Automatically generates/reuses pigeons before each round.")]
-        public PigeonPoolSpawner poolSpawner;
-        public List<PigeonAgent> pigeons = new List<PigeonAgent>();
-        [Min(0)] public int pigeonCount = 5;
-        public PigeonMovementLevel movementLevel = PigeonMovementLevel.Low;
-        [Min(0.1f)] public float displaySeconds = 8f;
-        [Min(0f)] public float retentionDelaySeconds = 0f;
-        [Min(0)] public int maximumAnswer = 30;
+        [Header("Palomas y dificultad")]
+        [Tooltip("Opcional. Genera y reutiliza palomas antes de cada ronda.")]
+        [InspectorName("Generador de palomas")] public PigeonPoolSpawner poolSpawner;
+        [InspectorName("Palomas disponibles")] public List<PigeonAgent> pigeons = new List<PigeonAgent>();
+        [InspectorName("Cantidad de palomas")] [Min(0)] public int pigeonCount = 5;
+        [InspectorName("Nivel de movimiento")] public PigeonMovementLevel movementLevel = PigeonMovementLevel.Low;
+        [InspectorName("Tiempo de observación (s)")] [Min(0.1f)] public float displaySeconds = 8f;
+        [InspectorName("Demora para responder (s)")] [Min(0f)] public float retentionDelaySeconds = 0f;
+        [InspectorName("Respuesta máxima")] [Min(0)] public int maximumAnswer = 30;
 
-        [Header("Comida: lanzar antes de que entren las palomas")]
+        [Header("Comida y lanzamiento")]
         [Tooltip("Opcional. Visible al terminar StartRound para lanzar la comida.")]
-        public GameObject foodPanel;
+        [InspectorName("Panel de comida")] public GameObject foodPanel;
         [Tooltip("Opcional: mesh de comida que se mueve desde Food Throw Origin a Food Target.")]
-        public GameObject flyingFood;
-        public Transform foodThrowOrigin;
-        public Transform foodTarget;
+        [InspectorName("Comida en vuelo")] public GameObject flyingFood;
+        [InspectorName("Origen del lanzamiento")] public Transform foodThrowOrigin;
+        [InspectorName("Destino de la comida")] public Transform foodTarget;
         [Tooltip("Opcional: comida visible en el suelo tras el lanzamiento.")]
-        public GameObject foodOnGround;
-        [Min(0.1f)] public float foodFlightSeconds = 0.65f;
-        [Min(0f)] public float foodArcHeight = 0.6f;
+        [InspectorName("Comida en el suelo")] public GameObject foodOnGround;
+        [InspectorName("Duración del lanzamiento (s)")] [Min(0.1f)] public float foodFlightSeconds = 0.65f;
+        [InspectorName("Altura del arco")] [Min(0f)] public float foodArcHeight = 0.6f;
 
-        [Header("Optional distractor (one episode during observation)")]
-        public bool distractionsEnabled;
-        public PigeonDistractorType distractorType = PigeonDistractorType.Visual;
-        public PigeonDistractorIntensity distractorIntensity = PigeonDistractorIntensity.Low;
-        [Min(0f)] public float distractorStartsAtSecond = 3f;
-        [Min(0f)] public float distractorDurationSeconds = 2f;
-        [Tooltip("For example, a walking person or animated dog GameObject.")]
-        public GameObject visualDistractor;
-        public AudioSource audioSource;
-        public AudioClip distractorAudio;
+        [Header("Distracciones opcionales")]
+        [InspectorName("Activar distracciones")] public bool distractionsEnabled;
+        [InspectorName("Tipo de distracción")] public PigeonDistractorType distractorType = PigeonDistractorType.Visual;
+        [InspectorName("Intensidad de distracción")] public PigeonDistractorIntensity distractorIntensity = PigeonDistractorIntensity.Low;
+        [InspectorName("Inicio de distracción (s)")] [Min(0f)] public float distractorStartsAtSecond = 3f;
+        [InspectorName("Duración de distracción (s)")] [Min(0f)] public float distractorDurationSeconds = 2f;
+        [Tooltip("Por ejemplo, un personaje caminando o un perro animado.")]
+        [InspectorName("Objeto distractor visual")] public GameObject visualDistractor;
+        [InspectorName("Fuente de audio")] public AudioSource audioSource;
+        [InspectorName("Sonido distractor")] public AudioClip distractorAudio;
 
-        [Header("World Space UI: inicio, comida, observacion, respuesta, resultado")]
+        [Header("Interfaz VR: paneles y textos")]
         [Tooltip("Panel de inicio. Su Canvas padre debe ser exclusivo de este menu: tambien se desactiva al iniciar la ronda.")]
-        public GameObject startPanel;
-        public GameObject observingPanel;
-        public GameObject answerPanel;
-        public GameObject resultPanel;
-        [Tooltip("Optional text outside of the panels, always visible.")]
-        public TMP_Text statusText;
-        public TMP_Text answerNumberText;
-        public TMP_Text resultText;
+        [InspectorName("Panel de inicio")] public GameObject startPanel;
+        [InspectorName("Panel de observación")] public GameObject observingPanel;
+        [InspectorName("Panel de respuesta")] public GameObject answerPanel;
+        [InspectorName("Panel de resultados")] public GameObject resultPanel;
+        [Tooltip("Texto opcional situado fuera de los paneles. Debe permanecer visible.")]
+        [InspectorName("Texto de estado")] public TMP_Text statusText;
+        [InspectorName("Texto del contador")] public TMP_Text answerNumberText;
+        [InspectorName("Texto de resultado (resumen)")] public TMP_Text resultText;
+
+        [Header("Resultados: textos independientes")]
+        [Tooltip("Frase central con cantidad real. Configura la alineación centrada en TextMeshPro.")]
+        [InspectorName("Texto de cantidad real")] public TMP_Text actualCountText;
+        [Tooltip("Respuesta confirmada por el participante.")]
+        [InspectorName("Texto de respuesta")] public TMP_Text userCountText;
+        [Tooltip("Cantidad absoluta de palomas de diferencia.")]
+        [InspectorName("Texto de diferencia")] public TMP_Text errorCountText;
+        [Tooltip("Puntaje porcentual del minijuego.")]
+        [InspectorName("Texto de puntaje")] public TMP_Text scoreText;
+        [Tooltip("Tiempo de respuesta desde que desaparecen las palomas.")]
+        [InspectorName("Texto de tiempo")] public TMP_Text responseTimeText;
+        [Tooltip("Palabra inicial de la frase central. Por defecto: Aparecieron.")]
+        [InspectorName("Prefijo de cantidad real")] public string actualCountPrefix = "Aparecieron";
+        [Tooltip("Color del puntaje normal, editable en el Inspector.")]
+        [InspectorName("Color del puntaje")] public Color scoreColor = new Color(0.45f, 0.82f, 0.95f, 1f);
+        [Tooltip("Color del puntaje perfecto, editable en el Inspector.")]
+        [InspectorName("Color del puntaje perfecto")] public Color perfectScoreColor = new Color(1f, 0.84f, 0.34f, 1f);
+
+
+        [Header("Resultados: imágenes, títulos y sonidos")]
+        [Tooltip("Imagen UI dentro del panel de resultados. Su sprite cambia según el puntaje.")]
+        [InspectorName("Imagen de resultado (UI)")] public Image resultImage;
+        [Tooltip("Sprite cuando el puntaje está entre 0% y 24.99%.")]
+        [InspectorName("Trofeo: nivel bajo")] public Sprite resultImageLow;
+        [Tooltip("Sprite cuando el puntaje está entre 25% y 49.99%.")]
+        [InspectorName("Trofeo: nivel medio")] public Sprite resultImageMedium;
+        [Tooltip("Sprite cuando el puntaje está entre 50% y 74.99%.")]
+        [InspectorName("Trofeo: nivel alto")] public Sprite resultImageHigh;
+        [Tooltip("Sprite cuando el puntaje está entre 75% y 100%.")]
+        [InspectorName("Trofeo: nivel excelente")] public Sprite resultImageExcellent;
+
+        [Tooltip("Texto TMP del título del menu de resultados.")]
+        [InspectorName("Texto del título")] public TMP_Text resultTitleText;
+        [Tooltip("Título editable para 0% - 24.99%.")]
+        [InspectorName("Título: nivel bajo")] public string titleLow = "Sigue intentándolo";
+        [Tooltip("Título editable para 25% - 49.99%.")]
+        [InspectorName("Título: nivel medio")] public string titleMedium = "Buen intento";
+        [Tooltip("Título editable para 50% - 74.99%.")]
+        [InspectorName("Título: nivel alto")] public string titleHigh = "Bien hecho";
+        [Tooltip("Título editable para 75% - 100%.")]
+        [InspectorName("Título: nivel excelente")] public string titleExcellent = "¡Muy bien!";
+        [Tooltip("Título cuando no se completa la ronda.")]
+        [InspectorName("Título: ronda incompleta")] public string titleIncomplete = "Prueba no completada";
+
+        [Tooltip("AudioSource exclusivo de resultados, en el manager o un objeto siempre activo.")]
+        [InspectorName("Fuente de sonido de resultados")] public AudioSource resultAudioSource;
+        [Tooltip("Sonido para resultado positivo, excepto puntaje perfecto.")]
+        [InspectorName("Sonido de victoria")] public AudioClip victorySound;
+        [Tooltip("Sonido especial para resultado exacto: 100%.")]
+        [InspectorName("Sonido de puntaje perfecto")] public AudioClip perfectSound;
 
         private enum Phase { Ready, AwaitFood, FoodFlight, Arrival, Observe, Retain, Answer, Finished }
         private Phase phase = Phase.Ready;
-        private Canvas startCanvas;
+        private PigeonRoundMenu roundMenu;
+        public PigeonRoundRecord LastRoundRecord { get; private set; }
+        public string LastArrivalMetadata { get; private set; }
         private bool isPaused;
         private float observationElapsed;
         private float arrivalElapsed;
@@ -115,8 +169,7 @@ namespace NeuroFlexVR
 
         private void Awake()
         {
-            if (startPanel != null)
-                startCanvas = startPanel.GetComponentInParent<Canvas>(true);
+            ValidateMenuCanvases();
 
             // Existing pigeons are managed by this controller, not by scene activation.
             foreach (PigeonAgent pigeon in pigeons)
@@ -124,6 +177,10 @@ namespace NeuroFlexVR
             if (visualDistractor != null) visualDistractor.SetActive(false);
             if (flyingFood != null) flyingFood.SetActive(false);
             if (foodOnGround != null) foodOnGround.SetActive(false);
+            UpdatePanels(Phase.Ready);
+            roundMenu = GetComponent<PigeonRoundMenu>();
+            if (roundMenu == null) roundMenu = gameObject.AddComponent<PigeonRoundMenu>();
+            roundMenu.Initialize(this);
             UpdatePanels(Phase.Ready);
         }
 
@@ -143,6 +200,7 @@ namespace NeuroFlexVR
                 case Phase.Observe:
                     observationElapsed += dt;
                     UpdateLateArrivals();
+                    if (phase != Phase.Observe) break;
                     UpdateDistractor(dt);
                     if (observationElapsed >= displaySeconds)
                     {
@@ -227,7 +285,8 @@ namespace NeuroFlexVR
             roundMovement = movementLevel;
             roundAssessment = assessmentMode;
             roundGroup = string.IsNullOrWhiteSpace(comparisonGroupId) ? null : comparisonGroupId.Trim();
-            roundParticipant = participantId.Trim();
+            roundParticipant = participantId.Trim() == "p-demo"
+                ? "p-" + Guid.NewGuid().ToString("N") : participantId.Trim();
             roundScenarioVersion = scenarioVersion.Trim();
             roundDistractionsEnabled = distractionsEnabled;
             roundDistractorType = distractorType;
@@ -247,6 +306,8 @@ namespace NeuroFlexVR
             foodLandedUtc = null;
 
             currentRoundId = "r-" + Guid.NewGuid().ToString("N");
+            LastRoundRecord = null;
+            LastArrivalMetadata = null;
             startedUtc = DateTime.UtcNow;
             hiddenUtc = null;
             enabledUtc = null;
@@ -261,6 +322,7 @@ namespace NeuroFlexVR
             distractorCurrentlyActive = false;
             actualDistractionEvents = 0;
             answer = 0;
+            if (resultAudioSource != null) resultAudioSource.Stop();
 
             StopDistractor();
             if (flyingFood != null) flyingFood.SetActive(false);
@@ -336,7 +398,7 @@ namespace NeuroFlexVR
                 observationStartedUtc = DateTime.UtcNow;
                 observationElapsed = 0f;
                 UpdatePanels(phase);
-                SetStatus("Cuenta todas las palomas que aparezcan, incluso las que lleguen después.");
+                SetStatus("Cuenta todas las palomas que veas.");
                 Debug.Log("[NeuroFlex] Observacion iniciada, segundos: " + displaySeconds);
             }
         }
@@ -495,35 +557,103 @@ namespace NeuroFlexVR
             phase = Phase.Finished;
             isPaused = false;
             UpdatePanels(phase);
-            string path;
-            try
-            {
-                path = PigeonTelemetry.Save(record);
-                Debug.Log("[NeuroFlex] Ronda guardada en: " + path);
-            }
-            catch (Exception e)
-            {
-                path = "NO GUARDADO: " + e.Message;
-                Debug.LogError("[NeuroFlex] No se pudo guardar la ronda: " + e);
-            }
+            LastRoundRecord = record;
+            LastArrivalMetadata = BuildArrivalMetadata(terminalStatus);
 
-            if (resultText != null)
+            // Solo las rondas completadas reciben puntaje e imagen de resultado.
+            if (terminalStatus == "completed" && submittedUtc.HasValue && hiddenUtc.HasValue)
             {
-                if (terminalStatus == "completed")
-                {
-                    int signedError = answer - roundPigeonCount;
-                    double timeSinceHidden = (submittedUtc.Value - hiddenUtc.Value).TotalSeconds;
-                    resultText.text = "Había " + roundPigeonCount + " palomas.\n" +
-                                      "Tu respuesta: " + answer + "\n" +
-                                      "Error absoluto: " + Math.Abs(signedError) + "\n" +
-                                      "Tiempo desde ocultación: " + timeSinceHidden.ToString("F1") + " s";
-                }
-                else resultText.text = "Ronda " + terminalStatus + ". No se registró respuesta.";
+                int signedError = answer - roundPigeonCount;
+                int absoluteError = Math.Abs(signedError);
+                // Puntaje ludico, no una evaluacion cognitiva clinica.
+                float scorePercent = roundPigeonCount == 0
+                    ? (answer == 0 ? 100f : 0f)
+                    : Mathf.Clamp01(1f - (float)absoluteError / roundPigeonCount) * 100f;
+                bool perfect = signedError == 0;
+                UpdateResultPresentation(scorePercent, perfect);
+
+                double timeSinceHidden = (submittedUtc.Value - hiddenUtc.Value).TotalSeconds;
+                string countPrefix = string.IsNullOrWhiteSpace(actualCountPrefix)
+                    ? "Aparecieron" : actualCountPrefix.Trim();
+                string countLine = countPrefix + " " + roundPigeonCount +
+                    (roundPigeonCount == 1 ? " paloma" : " palomas");
+                string answerLine = "Tu respuesta: " + answer;
+                string errorLine = "Diferencia: " + absoluteError;
+                string scoreLine = "Puntaje: " + scorePercent.ToString("F0") + "%";
+                string timeLine = "Tiempo de respuesta: " + timeSinceHidden.ToString("F1") + " s";
+
+                bool hasSeparateTexts = actualCountText != null || userCountText != null ||
+                    errorCountText != null || scoreText != null || responseTimeText != null;
+                // El TMP antiguo sirve de respaldo si aun no se asignaron textos separados.
+                if (resultText != null)
+                    resultText.text = hasSeparateTexts ? "" :
+                        countLine + "\n" + answerLine + "\n" + errorLine +
+                        "\n" + scoreLine + "\n" + timeLine;
+                SetResultLines(countLine, answerLine, errorLine, scoreLine, timeLine);
+                if (scoreText != null)
+                    scoreText.color = perfect ? perfectScoreColor : scoreColor;
             }
-            SaveArrivalSidecar(terminalStatus);
-            SetStatus("Ronda finalizada. JSON local: " + path);
+            else
+            {
+                if (resultText != null) resultText.text = "Ronda no completada. No se registro respuesta.";
+                SetResultLines("", "", "", "", "");
+                if (resultTitleText != null) resultTitleText.text = titleIncomplete;
+                if (resultImage != null)
+                {
+                    resultImage.sprite = null;
+                    resultImage.enabled = false;
+                }
+            }
+            SetStatus("Ronda finalizada. Puedes volver al inicio para jugar otra vez.");
+            if (resultPanel == null) ReturnToStart();
         }
 
+        public void ReturnToStart()
+        {
+            if (IsRunning()) return;
+            phase = Phase.Ready;
+            UpdatePanels(phase);
+            SetStatus("Elige una dificultad para comenzar.");
+        }
+
+
+        private void SetResultLines(string count, string user, string error, string score, string time)
+        {
+            if (actualCountText != null) actualCountText.text = count;
+            if (userCountText != null) userCountText.text = user;
+            if (errorCountText != null) errorCountText.text = error;
+            if (scoreText != null) scoreText.text = score;
+            if (responseTimeText != null) responseTimeText.text = time;
+        }
+
+        private void UpdateResultPresentation(float scorePercent, bool perfect)
+        {
+            // 4 rangos visuales, elegidos por puntaje normalizado, no por numero fijo de palomas.
+            Sprite sprite;
+            string title;
+            if (scorePercent < 25f) { sprite = resultImageLow; title = titleLow; }
+            else if (scorePercent < 50f) { sprite = resultImageMedium; title = titleMedium; }
+            else if (scorePercent < 75f) { sprite = resultImageHigh; title = titleHigh; }
+            else { sprite = resultImageExcellent; title = titleExcellent; }
+
+            if (resultImage != null)
+            {
+                resultImage.sprite = sprite;
+                resultImage.enabled = sprite != null;
+            }
+            if (resultTitleText != null) resultTitleText.text = title;
+
+            // El sonido especial tiene prioridad: no reproducimos ambos simultaneamente.
+            if (resultAudioSource != null)
+            {
+                AudioClip clip = perfect ? perfectSound : (scorePercent > 0f ? victorySound : null);
+                if (clip != null)
+                {
+                    resultAudioSource.Stop();
+                    resultAudioSource.PlayOneShot(clip);
+                }
+            }
+        }
 
         [Serializable]
         private class ArrivalMetadata
@@ -532,6 +662,8 @@ namespace NeuroFlexVR
             public string scenarioId = "pigeons";
             public string metadataVersion = "pigeon-arrival-v1";
             public int plannedPigeons;
+            public int minimumPigeons;
+            public int maximumPigeons;
             public int initiallyArriving;
             public int lateArriving;
             public int pigeonsReleased;
@@ -543,34 +675,26 @@ namespace NeuroFlexVR
             public string finalStatus;
         }
 
-        private void SaveArrivalSidecar(string terminalStatus)
+        private string BuildArrivalMetadata(string terminalStatus)
         {
-            if (poolSpawner == null) return;
-            try
+            if (poolSpawner == null) return "null";
+            ArrivalMetadata extra = new ArrivalMetadata
             {
-                ArrivalMetadata extra = new ArrivalMetadata
-                {
-                    roundId = currentRoundId,
-                    plannedPigeons = roundPigeonCount,
-                    initiallyArriving = earlyCount,
-                    lateArriving = lateCount,
-                    pigeonsReleased = launchedPigeonCount,
-                    lateArrivalSecond = latePigeonSecond,
-                    arrivalSpeed = poolSpawner.ApproachSpeed,
-                    foodLandedAt = foodLandedUtc.HasValue ? PigeonTelemetry.TimestampUtc(foodLandedUtc.Value) : null,
-                    observationStartedAt = observationStartedUtc.HasValue ? PigeonTelemetry.TimestampUtc(observationStartedUtc.Value) : null,
-                    pigeonsReleasedAt = releaseTimeline.ToArray(),
-                    finalStatus = terminalStatus
-                };
-                string folder = System.IO.Path.Combine(Application.persistentDataPath, "NeuroFlexTelemetry", "arrival-metadata");
-                System.IO.Directory.CreateDirectory(folder);
-                string metadataPath = System.IO.Path.Combine(folder, currentRoundId + ".json");
-                System.IO.File.WriteAllText(metadataPath, JsonUtility.ToJson(extra, true));
-            }
-            catch (Exception ex)
-            {
-                Debug.LogWarning("[NeuroFlex] No se pudo guardar metadata de llegada: " + ex.Message);
-            }
+                roundId = currentRoundId,
+                plannedPigeons = roundPigeonCount,
+                minimumPigeons = poolSpawner.MinimumPigeons,
+                maximumPigeons = poolSpawner.MaximumPigeons,
+                initiallyArriving = earlyCount,
+                lateArriving = lateCount,
+                pigeonsReleased = launchedPigeonCount,
+                lateArrivalSecond = latePigeonSecond,
+                arrivalSpeed = poolSpawner.ApproachSpeed,
+                foodLandedAt = foodLandedUtc.HasValue ? PigeonTelemetry.TimestampUtc(foodLandedUtc.Value) : null,
+                observationStartedAt = observationStartedUtc.HasValue ? PigeonTelemetry.TimestampUtc(observationStartedUtc.Value) : null,
+                pigeonsReleasedAt = releaseTimeline.ToArray(),
+                finalStatus = terminalStatus
+            };
+            return JsonUtility.ToJson(extra);
         }
 
         private bool IsRunning()
@@ -650,18 +774,80 @@ namespace NeuroFlexVR
             distractorCurrentlyActive = false;
         }
 
+        // Cada menu debe tener su propio Canvas World Space.
+        // Se apaga el Canvas completo: esto desactiva incluso el blur
+        // si la imagen se encuentra fuera del panel pero dentro del Canvas.
         private void UpdatePanels(Phase p)
         {
-            bool showStart = p == Phase.Ready || p == Phase.Finished ||
+            bool showStart = (p == Phase.Ready && (roundMenu == null || !roundMenu.IsInitialized)) ||
                 (p == Phase.AwaitFood && foodPanel == null);
-            if (startPanel != null) startPanel.SetActive(showStart);
-            // Disable the entire start menu, including blur images outside startPanel.
-            if (startCanvas != null) startCanvas.gameObject.SetActive(showStart);
-            if (foodPanel != null) foodPanel.SetActive(p == Phase.AwaitFood);
-            if (observingPanel != null) observingPanel.SetActive(p == Phase.FoodFlight ||
-                p == Phase.Arrival || p == Phase.Observe || p == Phase.Retain);
-            if (answerPanel != null) answerPanel.SetActive(p == Phase.Answer);
-            if (resultPanel != null) resultPanel.SetActive(p == Phase.Finished);
+            bool showFood = p == Phase.AwaitFood && foodPanel != null;
+            bool showObserve = p == Phase.FoodFlight || p == Phase.Arrival ||
+                p == Phase.Observe || p == Phase.Retain;
+            bool showAnswer = p == Phase.Answer;
+            bool showResult = p == Phase.Finished;
+
+            GameObject[] panels = { startPanel, foodPanel, observingPanel, answerPanel, resultPanel };
+            bool[] visible = { showStart, showFood, showObserve, showAnswer, showResult };
+            HashSet<GameObject> canvasRoots = new HashSet<GameObject>();
+
+            // Primero apagar TODOS los Canvas de menu, incluidos sus efectos.
+            for (int i = 0; i < panels.Length; i++)
+            {
+                if (panels[i] == null) continue;
+                Canvas canvas = panels[i].GetComponentInParent<Canvas>(true);
+                if (canvas != null && !transform.IsChildOf(canvas.transform))
+                    canvasRoots.Add(canvas.gameObject);
+            }
+            foreach (GameObject root in canvasRoots)
+                root.SetActive(false);
+
+            // Desactivar todos los paneles. En Canvas compartidos, esto evita
+            // superposicion de paneles, pero NO de efectos ajenos al panel.
+            for (int i = 0; i < panels.Length; i++)
+                if (panels[i] != null) panels[i].SetActive(false);
+
+            // Activar solamente el menu de la fase actual.
+            for (int i = 0; i < panels.Length; i++)
+            {
+                if (!visible[i] || panels[i] == null) continue;
+                Canvas canvas = panels[i].GetComponentInParent<Canvas>(true);
+                if (canvas != null && !transform.IsChildOf(canvas.transform))
+                    canvas.gameObject.SetActive(true);
+                panels[i].SetActive(true);
+            }
+            if (roundMenu != null)
+                roundMenu.ShowPhase(p == Phase.Ready);
+        }
+
+        private void ValidateMenuCanvases()
+        {
+            GameObject[] panels = { startPanel, foodPanel, observingPanel, answerPanel, resultPanel };
+            string[] names = { "Start", "Food", "Observing", "Answer", "Result" };
+            HashSet<Canvas> used = new HashSet<Canvas>();
+
+            for (int i = 0; i < panels.Length; i++)
+            {
+                if (panels[i] == null) continue;
+                Canvas canvas = panels[i].GetComponentInParent<Canvas>(true);
+                if (canvas == null)
+                {
+                    Debug.LogWarning("[NeuroFlex] El panel " + names[i] +
+                        " no tiene un Canvas padre; se desactivara solo el panel.", this);
+                    continue;
+                }
+                if (transform.IsChildOf(canvas.transform))
+                {
+                    Debug.LogError("[NeuroFlex] El manager esta DENTRO del Canvas " +
+                        canvas.name + ". Mueve PalomaTrialManager fuera de los menus " +
+                        "para poder desactivarlos sin detener el controlador.", this);
+                    continue;
+                }
+                if (!used.Add(canvas))
+                    Debug.LogWarning("[NeuroFlex] Varios paneles comparten el Canvas " +
+                        canvas.name + ". Para apagar completamente cada blur, " +
+                        "usa un Canvas independiente por menu.", this);
+            }
         }
 
         private void UpdateAnswerText()

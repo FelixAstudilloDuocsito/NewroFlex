@@ -93,12 +93,53 @@ namespace NeuroFlexVR
             return sb.ToString();
         }
 
-        public static string Save(PigeonRoundRecord r)
+        public static string SaveConsented(PigeonRoundRecord r, string patientNick, string arrivalMetadataJson)
         {
-            string directory = Path.Combine(Application.persistentDataPath, "NeuroFlexTelemetry");
+            patientNick = (patientNick ?? "").Trim();
+            if (patientNick.Length < 2 || patientNick.Length > 32)
+                throw new ArgumentException("Escribe un nick de entre 2 y 32 caracteres.");
+            foreach (char c in patientNick)
+                if (!char.IsLetterOrDigit(c) && c != '_' && c != '-')
+                    throw new ArgumentException("Usa letras, números, guion o guion bajo en el nick.");
+            if (r == null || !Guid.TryParse((r.roundId ?? "").Replace("r-", ""), out Guid recordId))
+                throw new ArgumentException("La ronda necesita un UUID válido.");
+
+            const string deviceKey = "NeuroFlex.LocalDeviceId";
+            string deviceId = PlayerPrefs.GetString(deviceKey, "");
+            if (string.IsNullOrEmpty(deviceId))
+            {
+                deviceId = "d-" + Guid.NewGuid().ToString("N");
+                PlayerPrefs.SetString(deviceKey, deviceId);
+                PlayerPrefs.Save();
+            }
+
+            StringBuilder sb = new StringBuilder(2000);
+            sb.Append('{');
+            bool first = true;
+            Add(sb, ref first, "schemaVersion", "pigeon-local-v1");
+            Add(sb, ref first, "recordId", recordId.ToString("D"));
+            Add(sb, ref first, "patientNick", patientNick);
+            Add(sb, ref first, "deviceId", deviceId);
+            Add(sb, ref first, "savedAt", TimestampUtc(DateTime.UtcNow));
+            Add(sb, ref first, "consentGranted", true);
+            sb.Append(",\"request\":").Append(ToRequestJson(r));
+            sb.Append(",\"arrivalMetadata\":").Append(arrivalMetadataJson ?? "null").Append('}');
+
+            string directory = Path.Combine(Application.persistentDataPath, "NeuroFlexTelemetry", "accepted");
             Directory.CreateDirectory(directory);
-            string path = Path.Combine(directory, r.roundId + ".json");
-            File.WriteAllText(path, ToRequestJson(r), new UTF8Encoding(false));
+            string path = Path.Combine(directory, recordId.ToString("D") + ".json");
+            // Una ronda aceptada es inmutable. Un reintento nunca pisa un registro.
+            if (File.Exists(path)) return path;
+            string temporaryPath = path + ".tmp";
+            try
+            {
+                File.WriteAllText(temporaryPath, sb.ToString(), new UTF8Encoding(false));
+                File.Move(temporaryPath, path);
+            }
+            finally
+            {
+                if (File.Exists(temporaryPath)) File.Delete(temporaryPath);
+            }
             return path;
         }
 

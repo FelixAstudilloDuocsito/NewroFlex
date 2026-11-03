@@ -1,0 +1,6 @@
+__pycache__/
+entradas/
+exportaciones/
+*.sqlite3-journal
+*.sqlite3-wal
+*.sqlite3-shm

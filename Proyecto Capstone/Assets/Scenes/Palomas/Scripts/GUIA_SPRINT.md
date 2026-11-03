@@ -1,10 +1,20 @@
 # NeuroFlex VR — Sprint 1: Conteo de Palomas
 
+> Actualización: el flujo actual agrega tres dificultades con rangos aleatorios,
+> llegadas tardías solo en Difícil. La dificultad seleccionada tiene un borde con
+> brillo; el menú no revela cantidades ni tiempos de llegada. El registro de
+> pacientes se pospuso para recepción y Palomas no guarda archivos actualmente.
+> Los menús son copias editables del estilo original y están en la escena bajo
+> `Palomas - Menús`; sus botones se conectan automáticamente. Consulta
+> [la guía actual de dificultades y datos locales](../../../../../datos_locales/README.md)
+> para configuración, rutas e importación al pool SQLite. Las instrucciones de
+> guardado de este documento describen versiones anteriores.
+
 Versión MVP para Unity 2022.3 LTS+ / Quest 2, Quest 3 y 3S. **No requiere API, AWS, NavMesh ni scripts adicionales**. Sí necesita TextMeshPro y, para apuntar a botones en VR, una UI XR ya configurada.
 
 ## Objetivo y definición de terminado
 
-Una persona pulsa **Iniciar**, observa N palomas durante unos segundos (algunas pueden caminar o volar), ve un distractor opcional, deja de ver las palomas, responde mediante `− / + / Confirmar`, recibe una devolución descriptiva y Unity genera **un JSON `scenes-v1` por ronda**. Puede interrumpir y pausar una ronda.
+Una persona elige dificultad, pulsa **Iniciar**, observa N palomas durante unos segundos (algunas pueden caminar o volar), ve un distractor opcional, deja de ver las palomas, responde mediante `− / + / Confirmar` y recibe una devolución descriptiva. Al continuar, decide si quiere guardar la ronda con un nick. Solo al aceptar Unity genera un JSON local que contiene el contrato `scenes-v1` y la metadata de la prueba. Puede interrumpir y pausar una ronda.
 
 ## Tareas (en orden)
 
@@ -97,10 +107,10 @@ Prueba estas situaciones:
 Los JSON se guardan por ronda en:
 
 ```
-Application.persistentDataPath/NeuroFlexTelemetry/r-<guid>.json
+Application.persistentDataPath/NeuroFlexTelemetry/accepted/<UUID>.json
 ```
 
-La ruta concreta aparece en la Consola de Unity. En el Editor, la ruta depende del nombre y compañía del proyecto; en Quest queda en el almacenamiento privado de la aplicación y puede extraerse para inspección con ADB. **No se envía nada por Internet.**
+La ruta concreta aparece en la Consola de Unity después de aceptar y guardar con un nick. En el Editor, la ruta depende del nombre y compañía del proyecto; en Quest queda en el almacenamiento privado de la aplicación y puede extraerse para inspección con ADB. **No se envía nada por Internet.** El contrato para el procesador está dentro de `request`; la herramienta `datos_locales/pool.py export --format scenes-v1` permite exportarlo desde el pool.
 
 Si trabajas en el repositorio del procesador de métricas, puedes probar un archivo copiado en Windows con:
 
@@ -120,4 +130,4 @@ Si trabajas en el repositorio del procesador de métricas, puedes probar un arch
 
 ## Próximo sprint (no incluido)
 
-Múltiples distractores programados, diferentes conteos y patrones, contrabalanceo de pruebas, selector de dificultad durante ejecución, control de colisiones/NavMesh, y comparaciones estadísticas longitudinales. No presentar los datos como diagnóstico ni puntaje clínico.
+Múltiples distractores programados, contrabalanceo de pruebas, control de colisiones/NavMesh y comparaciones estadísticas longitudinales. No presentar los datos como diagnóstico ni puntaje clínico.

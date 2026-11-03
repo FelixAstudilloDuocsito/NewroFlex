@@ -8,7 +8,8 @@ namespace NeuroFlexVR
     public class PigeonDifficultyPreset
     {
         [Min(1)] public int level = 1;
-        [Min(1)] public int pigeonCount = 4;
+        [Min(1)] public int minimumPigeons = 3;
+        [Min(1)] public int maximumPigeons = 5;
         public PigeonMovementLevel movementLevel = PigeonMovementLevel.Low;
         [Min(0.1f)] public float displaySeconds = 10f;
         [Min(0)] public int latePigeons = 0;
@@ -61,15 +62,16 @@ namespace NeuroFlexVR
         [Min(1)] public int initialDifficulty = 1;
         public PigeonDifficultyPreset[] presets =
         {
-            new PigeonDifficultyPreset { level = 1, pigeonCount = 4, movementLevel = PigeonMovementLevel.Low, displaySeconds = 10f, latePigeons = 0, lateArrivalSecond = 2f },
-            new PigeonDifficultyPreset { level = 2, pigeonCount = 6, movementLevel = PigeonMovementLevel.Medium, displaySeconds = 11f, latePigeons = 1, lateArrivalSecond = 2f },
-            new PigeonDifficultyPreset { level = 3, pigeonCount = 8, movementLevel = PigeonMovementLevel.High, displaySeconds = 12f, latePigeons = 2, lateArrivalSecond = 2f }
+            new PigeonDifficultyPreset { level = 1, minimumPigeons = 3, maximumPigeons = 5, movementLevel = PigeonMovementLevel.Low, displaySeconds = 10f },
+            new PigeonDifficultyPreset { level = 2, minimumPigeons = 6, maximumPigeons = 9, movementLevel = PigeonMovementLevel.Medium, displaySeconds = 11f },
+            new PigeonDifficultyPreset { level = 3, minimumPigeons = 10, maximumPigeons = 14, movementLevel = PigeonMovementLevel.High, displaySeconds = 12f, latePigeons = 2, lateArrivalSecond = 2f }
         };
 
         private readonly List<PigeonAgent> pool = new List<PigeonAgent>();
         private readonly List<Vector3> positions = new List<Vector3>();
         private readonly List<Vector3> entryPositions = new List<Vector3>();
         private int selectedDifficulty;
+        private PigeonDifficultyPreset selectedPreset;
         private int selectedCount;
         private bool initialized;
         private int selectedLatePigeons;
@@ -81,6 +83,9 @@ namespace NeuroFlexVR
         public float ApproachSpeed => approachSpeed;
         public float ApproachAnimationMultiplier => approachAnimationMultiplier;
         public int SelectedCount => selectedCount;
+        public int SelectedDifficulty => selectedDifficulty;
+        public int MinimumPigeons => selectedPreset != null ? selectedPreset.minimumPigeons : 0;
+        public int MaximumPigeons => selectedPreset != null ? selectedPreset.maximumPigeons : 0;
 
         private void Start()
         {
@@ -113,15 +118,18 @@ namespace NeuroFlexVR
             {
                 if (p != null && p.level == level) { preset = p; break; }
             }
-            if (preset == null || preset.pigeonCount < 1 ||
-                preset.latePigeons < 0 || preset.latePigeons >= preset.pigeonCount)
+            if (level < 1 || level > 3 || preset == null || preset.minimumPigeons < 1 ||
+                preset.maximumPigeons < preset.minimumPigeons ||
+                preset.maximumPigeons > roundController.maximumAnswer ||
+                preset.displaySeconds <= 0f || preset.lateArrivalSecond < 0f ||
+                preset.latePigeons < 0 || preset.latePigeons >= preset.minimumPigeons)
             {
                 Debug.LogError("[NeuroFlex] Nivel no encontrado o cantidad invalida: " + level);
                 return;
             }
 
             // Expand once, on difficulty selection, never during the timed exercise.
-            while (pool.Count < preset.pigeonCount)
+            while (pool.Count < preset.maximumPigeons)
             {
                 PigeonAgent instance = Instantiate(
                     pigeonPrefab, spawnCenter.position, spawnCenter.rotation,
@@ -135,34 +143,33 @@ namespace NeuroFlexVR
 
             roundController.pigeons.Clear();
             roundController.pigeons.AddRange(pool);
-            roundController.pigeonCount = preset.pigeonCount;
+            roundController.pigeonCount = 0; // Se sortea al iniciar cada ronda.
             roundController.difficultyLevel = preset.level;
             roundController.movementLevel = preset.movementLevel;
             roundController.displaySeconds = preset.displaySeconds;
             roundController.poolSpawner = this;
             selectedDifficulty = preset.level;
-            selectedCount = preset.pigeonCount;
-            selectedLatePigeons = preset.latePigeons;
+            selectedPreset = preset;
+            selectedCount = 0;
+            selectedLatePigeons = level == 3 ? preset.latePigeons : 0;
             selectedLateArrivalSecond = preset.lateArrivalSecond;
 
             Debug.Log($"[NeuroFlex] Dificultad {selectedDifficulty}: " +
-                      $"{selectedCount} palomas en memoria, inactivas. Presiona Iniciar.");
+                      $"rango {preset.minimumPigeons}–{preset.maximumPigeons}. Presiona Iniciar.");
         }
 
         /// <summary>Called by the Round Controller before showing pigeons.</summary>
         public bool PrepareRound()
         {
-            if (roundController == null || selectedCount <= 0 || pool.Count < selectedCount)
+            if (roundController == null || selectedPreset == null ||
+                pool.Count < selectedPreset.maximumPigeons)
             {
                 Debug.LogError("[NeuroFlex] Primero elige una dificultad valida.");
                 return false;
             }
-            if (roundController.pigeonCount != selectedCount)
-            {
-                Debug.LogError("[NeuroFlex] La cantidad del controlador difiere del pool. " +
-                               "Cambia la dificultad desde PigeonPoolSpawner.");
-                return false;
-            }
+            // Random.Range(int, int) excluye el extremo superior: incluir ambos limites.
+            selectedCount = UnityEngine.Random.Range(selectedPreset.minimumPigeons, selectedPreset.maximumPigeons + 1);
+            roundController.pigeonCount = selectedCount;
 
             // Compute all locations first. No partial relocation on failure.
             positions.Clear();
