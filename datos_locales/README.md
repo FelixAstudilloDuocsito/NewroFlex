@@ -2,16 +2,24 @@
 
 ## Uso desde Unity
 
-1. Abrir `Assets/Scenes/Recepción.unity` y entrar en Play.
-2. Pulsar **Gestionar perfiles**. Crear un nombre o alias de 2–40 caracteres,
-   usando el teclado físico o los botones del teclado en VR, o seleccionar un
-   perfil existente. La lista tiene paginación.
-3. Elegir Palomas, Juego de memoria o Biblioteca. El perfil se conserva al cambiar
-   de escena. Para cambiar de paciente, volver a Recepción y seleccionar otro.
-4. Cada ronda terminada guarda sus métricas automáticamente. Una ronda iniciada
-   que se abandona o interrumpe también queda registrada con su estado.
-5. En Recepción, **Ver historial** muestra fecha, actividad, dificultad, estado y
-   un resumen de las métricas del perfil seleccionado.
+1. Abrir `Assets/Scenes/Recepción.unity` y entrar en Play. Aceptar los términos
+   con los botones existentes.
+2. Girar hacia atrás: `PerfilesCanvas` está detrás del punto de inicio del XR Rig.
+   Crear un nombre o alias de 2–40 caracteres con el teclado físico o el teclado
+   virtual, o seleccionar un perfil existente en la lista paginada.
+3. Girar hacia los accesos originales de Palomas, Juego de memoria y Biblioteca.
+   Se habilitan al seleccionar un perfil; el cartel superior indica el perfil
+   activo. El perfil se conserva al cambiar de escena y al regresar a Recepción.
+4. Para cambiar de paciente, volver a Recepción y usar el panel trasero.
+5. Cada ronda terminada guarda sus métricas automáticamente en SQLite con el
+   perfil capturado al iniciar. Las rondas abandonadas o interrumpidas también se
+   registran con su estado. Los perfiles y resultados pueden consultarse con un
+   visor de SQLite o con la consulta del final de este documento.
+6. En el panel trasero, **Ver datos guardados** abre la escena **Datos Guardados**.
+   Seleccionar un perfil para ver sus rondas. Los filtros recorren actividades,
+   niveles y estados; **Métricas** y **Contexto** muestran el detalle de la ronda.
+   La consulta no cambia el perfil con el que se juega. **Volver a Recepción**
+   conserva la selección del jugador.
 
 Al volver a abrir la aplicación, hay que seleccionar el perfil nuevamente. Los
 perfiles y su historial permanecen en disco. Los nombres duplicados se rechazan
@@ -60,68 +68,101 @@ una base con resultados.
   cartas totales, vista previa configurada y tiempo activo después de la vista
   previa. Los resultados muestran precisión y duración. Cada dificultad es una
   ronda independiente y se vuelve al menú conservando la selección.
-- **Biblioteca:** piezas distintas colocadas correctamente, total de piezas,
+- **Biblioteca:** piezas que están correctamente colocadas al cerrar la ronda, total de piezas,
   colocaciones incorrectas y tiempo activo por nivel. El flujo de preguntas y
   avance entre niveles se mantiene; las respuestas de esas preguntas todavía
   no tienen telemetría propia.
 
 ## Menús
 
-Todos los paneles y sus controles están guardados en las escenas y pueden
-editarse **fuera de Play** desde la jerarquía:
+Los paneles y sus controles están guardados en las escenas y se pueden editar
+**fuera de Play**:
 
 ```text
 Recepción.unity
-└── Recepción - Menús
-    ├── RecepcionMenuCanvas / RecepcionMenuPanel
-    ├── PerfilesCanvas / PerfilesPanel
-    └── HistorialCanvas / HistorialPanel
+├── Canvas_Escenario
+│   ├── Panel_Terminos (controles originales)
+│   └── Escenarios (accesos originales y EstadoPerfilRecepcion)
+└── PerfilesCanvas (detrás del jugador)
+    └── PerfilesPanel
 
 Juego De Memoria.unity
 └── Memoria - Menús
     ├── MemoriaMenuCanvas / MemoriaMenuPanel
     └── ResultadosMemoriaCanvas / ResultadosMemoriaPanel
+
+Datos Guardados.unity
+└── DatosGuardadosCanvas / DatosGuardadosPanel
+    ├── DatosPerfil1…5 y paginación
+    ├── FiltrarActividad, FiltrarDificultad, FiltrarEstado
+    ├── Ronda1…4 y paginación
+    ├── TituloDetalle, FechasDetalle, MetricasDetalle
+    └── VolverRecepcion, ActualizarDatos, ReintentarDatos
 ```
 
-`PerfilesPanel` contiene las cinco filas reutilizables, el campo TMP de nombre,
-el teclado virtual completo, paginación, mensajes y botones de creación/regreso.
-Las filas usan textos de muestra para poder diseñarlas sin datos de pacientes.
-`ResultadosMemoriaPanel` incluye el resumen, estado de guardado y sus botones.
-La navegación y los mensajes nuevos de Palomas también están en su escena.
+`PerfilesCanvas` está en `(-2.97, 1.94, -64.03)`, con rotación Y de 180° y escala
+uniforme de 0.005. El punto de inicio del rig está en `(-2.97, 0.7, -61.53)`,
+mirando hacia +Z. El panel está 2.5 metros detrás y orientado hacia el jugador.
+Seleccionarlo en la jerarquía y pulsar **F** en Scene permite enfocarlo.
 
-**Recepción se guarda con `PerfilesCanvas` visible para facilitar la edición**;
-al entrar en Play, el controlador muestra la pantalla de recepción. Para editar
-otra pantalla, desactivar el Canvas visible y activar el deseado en el Inspector.
-Seleccionar el Panel y pulsar **F** en Scene permite enfocarlo: son Canvas en
-World Space y están ubicados frente a la cámara de cada escenario.
+`ReceptionProfileStation` conecta las cinco filas de perfiles, el campo TMP de
+alias, las 37 teclas virtuales, Espacio, Borrar, Crear perfil, la paginación y
+Actualizar lista. Muestra el perfil activo y habilita los tres accesos existentes;
+`ImageSceneLoaderVR.requierePerfil` también comprueba la selección antes de cargar
+una escena, incluidos los eventos de puntero XR. Los términos conservan sus
+acciones de aceptar y rechazar. No se sustituyen los botones de escenas.
 
-Se pueden cambiar RectTransform, fuentes, colores, sprites y textos estáticos
-directamente desde Unity. Los scripts no crean controles ni cambian tamaños,
-posiciones o fuentes al iniciar. Solo conectan acciones, alternan pantallas y
-actualizan los datos variables (perfil, filas, métricas y estado de guardado).
-`ThemedSceneMenu` conserva referencias a los controles de cada pantalla; los
-controladores están en los objetos padre `Recepción - Menús` y `Memoria - Menús`,
-para seguir activos aunque se oculte un Canvas.
+Los scripts no generan controles ni cambian su geometría al iniciar. Recuperan
+referencias vacías buscando controles existentes, incluidos los inactivos. Si se
+cambia el nombre de un objeto, conservar su referencia en el Inspector.
 
-Los controladores recuperan referencias vacías buscando los controles existentes
-de su propia escena, incluso en Canvas inactivos. Esto evita que una referencia
-perdida tras recargar scripts detenga la conexión de todos los botones. No se
-crean controles de reemplazo ni se modifica su diseño. Si se cambia el nombre de
-un objeto, conservar su referencia asignada en el Inspector.
+Los Canvas usan World Space y los raycasters normales y de dispositivos XR con
+el `EventSystem` ya existente. El teclado virtual permite escribir con los mandos
+sin depender del teclado del sistema operativo del visor. La escala horizontal
+del texto es 1 y los RectTransform nuevos tienen escalas uniformes.
 
-Recepción y Memoria tienen un `EventSystem` con `XRUIInputModule`, configurado
-para XR y ratón, igual que Palomas. No se añade un segundo módulo de entrada
-competidor. El simulador XR puede alternar la entrada del ratón al cambiar entre
-sus modos de interacción.
+Memoria y Palomas ya guardan por perfil. `PuzzleProfileRecorder`, añadido a cada
+gestor de Biblioteca con dificultad 1/2/3, observa el inicio, las colocaciones y
+la resolución. Captura el perfil al comenzar y guarda antes de disparar el evento
+de victoria. El intercambio de piezas, el tutorial, las preguntas y el avance
+originales se mantienen. Sin perfil, las actividades todavía pueden probarse
+directamente en Editor, pero sus resultados no se atribuyen a un paciente.
 
-El Canvas antiguo de Recepción se conserva desactivado como referencia. El
-video tutorial de Memoria sigue disponible mediante **Ver tutorial**. Las tres
-variantes del tablero y sus cartas se conservan; el nuevo controlador gestiona
-su activación y sustituye el avance automático por el resumen de la ronda.
-Palomas incluye acceso de vuelta a Recepción y estado del guardado.
+### Consulta de métricas y contrato del entrenamiento
 
-Los menús nuevos requieren un perfil antes de comenzar. Para probar una escena
-de actividad directamente en Editor, entrar primero a Recepción y seleccionarlo.
+`SavedDataSceneMenu` lee perfiles e historiales con paginación y filtros desde
+SQLite. Puede consultar más de 1.000 rondas sin truncar el historial. Muestra
+fechas locales, dificultad y estado; las fechas guardadas siguen en UTC. Abrir
+la escena con la base vacía presenta un mensaje y permite volver a Recepción.
+Una ronda con JSON inválido muestra un error en su detalle y conserva el resto
+de la navegación. El botón de reintento aparece si hay escrituras pendientes.
+
+`SavedRoundMetrics` implementa los cálculos de
+`entrenamiento_modelo_ia/scenes/contracts.py`, descritos en
+`entrenamiento_modelo_ia/docs/metricas_unity.md`, contrato **scenes-v1**:
+
+- Biblioteca: piezas completadas y totales, movimientos incorrectos, ayudas,
+  tiempo activo y tiempo de resolución solo en rondas completadas.
+- Memoria: precisión sobre intentos correctos + incorrectos, intentos erróneos,
+  parejas encontradas y totales, cartas, ayudas y tiempos. Sin intentos, la
+  precisión es ausente; no se muestra 0 % como si fuera una medida observada.
+- Palomas: respuesta correcta, error firmado y absoluto, conteos real y
+  confirmado, tiempo activo desde habilitar respuesta y tiempo de reloj desde
+  ocultar hasta confirmar. Una respuesta de cero conserva su significado y se
+  distingue de una respuesta ausente.
+
+Se admiten las métricas planas de los registros locales de Memoria/Biblioteca
+y el envoltorio `request.rounds[0]` de Palomas, además de rondas planas y solicitudes
+`scenes-v1` de una sola ronda. Los números ausentes se muestran como **No registrado**,
+sin convertirlos en cero. El contexto incluye versión, modo, pausas, distractores,
+grupo de comparación y la configuración específica de la actividad cuando se
+guardaron. Los registros locales antiguos de Memoria/Biblioteca no contienen todo
+el contexto del contrato; la vista lo indica y no inventa esos campos.
+
+El visor usa Newtonsoft JSON, que ya estaba instalado como dependencia de Unity
+y ahora está declarado directamente en `Packages/manifest.json`. Conserva los
+valores JSON `null`. Esta escena consulta datos y calcula métricas descriptivas;
+no ejecuta el modelo de IA ni genera comparaciones longitudinales.
 
 ## Verificación
 
@@ -140,16 +181,24 @@ foráneas, separación entre pacientes, restricciones de actividad/estado/nivel,
 reintentos sin duplicación y recuperación después de una falla de escritura.
 La suite anterior de `pool.py` se mantiene.
 
+`test_saved_data.py` compara los cálculos C# con el módulo Python original para
+los 144 ejemplos de entrenamiento/validación/prueba de `scenes_v1_1` y dos casos
+adicionales con respuesta cero, en los tres formatos JSON admitidos. También
+ejecuta el controlador real con una jerarquía extraída de la escena: consulta de
+otro perfil sin cambiar el jugador, filtros combinados, rondas inválidas, base
+vacía, actualización y paginación más allá de 1.000 resultados. Usa bases temporales.
+
 `test_menu_bindings.py` comprueba las referencias y el módulo de entrada de las
 escenas, y ejecuta los controladores C# de producción con referencias inicialmente
 vacías. Usa una jerarquía extraída de las escenas y reemplazos mínimos del árbol
 de objetos/eventos de Unity para verificar navegación, teclado, creación y
-selección de pacientes, historial y flujo de Memoria. Esta prueba no simula los
+selección y paginación de pacientes, retorno a Recepción, flujo de Memoria y
+registro de Biblioteca con el perfil inicial y sin duplicaciones. Esta prueba no simula los
 raycasts, renderizado ni mandos VR; esas comprobaciones requieren Unity.
 
 Verificación manual pendiente en Unity/VR: crear varios perfiles, navegar las
 páginas, escribir con el teclado virtual, jugar cada dificultad dos veces,
-volver al inicio, revisar los bordes y el historial, reiniciar la aplicación y
+volver a Recepción, revisar el perfil activo y los datos en SQLite, reiniciar la aplicación y
 seleccionar el mismo perfil. Revisar también el tutorial de Memoria y las
 transiciones de nivel de Biblioteca.
 

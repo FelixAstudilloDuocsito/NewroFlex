@@ -130,9 +130,36 @@ namespace NeuroFlexVR
             return results;
         }
 
-        public int CountResults(string profileId)
+        public List<PatientResult> ListResultsPage(string profileId, int offset, int limit = 4,
+            string scenarioId = "", int difficulty = 0, string status = "")
         {
-            return int.Parse(database.Query("SELECT COUNT(*) FROM activity_results WHERE profile_id = ?", profileId)[0][0], CultureInfo.InvariantCulture);
+            var arguments = new List<string>();
+            string filter = ResultFilter(profileId, scenarioId, difficulty, status, arguments);
+            arguments.Add(Math.Max(1, Math.Min(limit, 100)).ToString(CultureInfo.InvariantCulture));
+            arguments.Add(Math.Max(0, offset).ToString(CultureInfo.InvariantCulture));
+            var results = new List<PatientResult>();
+            foreach (string[] r in database.Query("SELECT result_id, profile_id, session_id, scenario_id, difficulty, status, started_at, ended_at, metrics_json " +
+                "FROM activity_results WHERE " + filter + " ORDER BY ended_at DESC, result_id DESC LIMIT ? OFFSET ?", arguments.ToArray()))
+                results.Add(new PatientResult { id = r[0], profileId = r[1], sessionId = r[2], scenarioId = r[3],
+                    difficulty = int.Parse(r[4], CultureInfo.InvariantCulture), status = r[5], startedAt = r[6], endedAt = r[7], metricsJson = r[8] });
+            return results;
+        }
+
+        public int CountResults(string profileId, string scenarioId = "", int difficulty = 0, string status = "")
+        {
+            var arguments = new List<string>();
+            string filter = ResultFilter(profileId, scenarioId, difficulty, status, arguments);
+            return int.Parse(database.Query("SELECT COUNT(*) FROM activity_results WHERE " + filter, arguments.ToArray())[0][0], CultureInfo.InvariantCulture);
+        }
+
+        private static string ResultFilter(string profileId, string scenarioId, int difficulty, string status, List<string> arguments)
+        {
+            string filter = "profile_id = ?";
+            arguments.Add(profileId);
+            if (!string.IsNullOrEmpty(scenarioId)) { filter += " AND scenario_id = ?"; arguments.Add(scenarioId); }
+            if (difficulty > 0) { filter += " AND difficulty = ?"; arguments.Add(difficulty.ToString(CultureInfo.InvariantCulture)); }
+            if (!string.IsNullOrEmpty(status)) { filter += " AND status = ?"; arguments.Add(status); }
+            return filter;
         }
 
         public static string UtcNow() => DateTime.UtcNow.ToString("o", CultureInfo.InvariantCulture);

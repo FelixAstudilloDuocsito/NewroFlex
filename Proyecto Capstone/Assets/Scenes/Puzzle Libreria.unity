@@ -2453,6 +2453,7 @@ GameObject:
   m_Component:
   - component: {fileID: 247065197}
   - component: {fileID: 247065198}
+  - component: {fileID: 850000000000000001}
   m_Layer: 0
   m_Name: Swap Puzzle Manager
   m_TagString: Untagged
@@ -7173,6 +7174,7 @@ GameObject:
   m_Component:
   - component: {fileID: 695864444}
   - component: {fileID: 695864445}
+  - component: {fileID: 850000000000000002}
   m_Layer: 0
   m_Name: Swap Puzzle Manager
   m_TagString: Untagged
@@ -17629,6 +17631,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1474339890}
   - component: {fileID: 1474339891}
+  - component: {fileID: 850000000000000003}
   m_Layer: 0
   m_Name: Swap Puzzle Manager
   m_TagString: Untagged
@@ -28883,6 +28886,45 @@ Transform:
   - {fileID: 4248599018165289622}
   m_Father: {fileID: 543450653170480157}
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: -105.494}
+--- !u!114 &850000000000000001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 247065196}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 46235705c736472a9e62fc893d01487a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NeuroFlexVR.PuzzleProfileRecorder
+  difficulty: 1
+--- !u!114 &850000000000000002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 695864443}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 46235705c736472a9e62fc893d01487a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NeuroFlexVR.PuzzleProfileRecorder
+  difficulty: 3
+--- !u!114 &850000000000000003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1474339889}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 46235705c736472a9e62fc893d01487a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NeuroFlexVR.PuzzleProfileRecorder
+  difficulty: 2
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

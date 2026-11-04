@@ -40,7 +40,7 @@ def fixture(name, output):
         parents[go] = transform_to_object.get(parent[1], "0") if parent else "0"
     lines = ["\t".join(("go", i, parents.get(i, "0"), base64.b64encode(name.encode()).decode()))
              for i, name in objects.items()]
-    recognized = {"NeuroFlexVR.ReceptionProfileMenu", "NeuroFlexVR.MemorySceneMenu", "NeuroFlexVR.ThemedSceneMenu",
+    recognized = {"NeuroFlexVR.ReceptionProfileMenu", "NeuroFlexVR.ReceptionProfileStation", "NeuroFlexVR.SavedDataSceneMenu", "NeuroFlexVR.MemorySceneMenu", "NeuroFlexVR.ThemedSceneMenu",
                   "NeuroFlexVR.PigeonDifficultyHighlight", "MemoryGameManager", "TutorialPanelController"}
     for _, (_, body) in blocks.items():
         owner = re.search(r"m_GameObject: \{fileID: (\d+)\}", body)
@@ -64,12 +64,31 @@ class MenuBindingsTests(unittest.TestCase):
         self.assertEqual({re.search(r"nombreEscena: (.+)", b)[1] for b in loaders.values()},
                          {"Palomas", "Juego De Memoria", "Puzzle Libreria"})
         for component_id, body in loaders.items():
+            self.assertIn("requierePerfil: 1", body)
             owner = re.search(r"m_GameObject: \{fileID: (\d+)\}", body)[1]
             self.assertIn("m_IsActive: 1", reception[owner][1])
             button = next(b for _, b in reception.values() if "::UnityEngine.UI.Button" in b and
                           f"m_GameObject: {{fileID: {owner}}}" in b)
             self.assertIn(f"m_Target: {{fileID: {component_id}}}", button)
             self.assertIn("m_MethodName: EjecutarCarga", button)
+            self.assertIn("m_Interactable: 0", button)
+        station = next(b for _, b in reception.values() if "::NeuroFlexVR.ReceptionProfileStation" in b)
+        for field in ["aliasInput", "activeProfileText", "frontProfileText", "refreshButton", "createProfileButton"]:
+            self.assertIn(re.search(r"^  " + field + r": \{fileID: (\d+)\}", station, re.M)[1], reception)
+        canvas = next(i for i, (kind, body) in reception.items() if kind == "1" and object_name(body) == "PerfilesCanvas")
+        transform = next(body for kind, body in reception.values() if kind == "224" and f"m_GameObject: {{fileID: {canvas}}}" in body)
+        self.assertIn("m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}", transform)
+        self.assertIn("m_LocalPosition: {x: 0, y: 0, z: -64.03}", transform)
+        self.assertIn("m_AnchoredPosition: {x: -2.97, y: 1.94}", transform)
+        puzzle = scene_blocks("Puzzle Libreria")
+        managers = [body for _, body in puzzle.values() if "::SwapPuzzleManager" in body]
+        recorders = [body for _, body in puzzle.values() if "::NeuroFlexVR.PuzzleProfileRecorder" in body]
+        self.assertEqual(len(recorders), 3)
+        for manager in managers:
+            owner = re.search(r"m_GameObject: \{fileID: (\d+)\}", manager)[1]
+            recorder = next(body for body in recorders if f"m_GameObject: {{fileID: {owner}}}" in body)
+            count = len(re.search(r"  pieces:\n((?:  - \{fileID: \d+\}\n)+)", manager)[1].splitlines())
+            self.assertIn(f"difficulty: { {6: 1, 9: 2, 12: 3}[count]}", recorder)
         for name, controller in [("Juego De Memoria", "MemorySceneMenu")]:
             blocks = scene_blocks(name)
             body = next(b for _, b in blocks.values() if f"::NeuroFlexVR.{controller}" in b)
@@ -94,13 +113,14 @@ class MenuBindingsTests(unittest.TestCase):
             self.skipTest("Set UNITY_EDITOR_PATH to run C# menu callback checks")
         with tempfile.TemporaryDirectory(prefix="neuroflex-menus-") as temporary:
             temporary = Path(temporary)
-            memory = temporary / "memory.txt"
+            memory, reception = temporary / "memory.txt", temporary / "reception.txt"
             fixture("Juego De Memoria", memory)
+            fixture("Recepción", reception)
             sources = [ROOT / "Proyecto Capstone/Assets/Scripts" / (name + ".cs") for name in
-                       ["LocalProfileDatabase", "ThemedSceneMenu", "MemorySceneMenu"]]
+                       ["LocalProfileDatabase", "ThemedSceneMenu", "MemorySceneMenu", "ReceptionProfileStation", "PuzzleProfileRecorder"]]
             sources += [ROOT / "datos_locales/tests" / (name + ".cs") for name in
                         ["UnityDatabaseStubs", "MenuUnityStubs", "MenuBindingsChecks"]]
             program = temporary / "MenuBindingsChecks.exe"
             subprocess.run([str(mono), str(compiler), "-nologo", "-langversion:9.0", "-r:System.Web.Extensions.dll",
                             f"-out:{program}", *map(str, sources)], check=True)
-            subprocess.run([str(mono), str(program), str(memory), str(temporary)], check=True)
+            subprocess.run([str(mono), str(program), str(memory), str(temporary), str(reception)], check=True)

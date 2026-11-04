@@ -46,7 +46,12 @@ namespace UnityEngine
     }
     public class HeaderAttribute : Attribute { public HeaderAttribute(string value) { } }
     public class DefaultExecutionOrderAttribute : Attribute { public DefaultExecutionOrderAttribute(int value) { } }
-    public static class Mathf { public static int Clamp(int value, int min, int max) => Math.Max(min, Math.Min(value, max)); }
+    public static class Mathf
+    {
+        public static int Clamp(int value, int min, int max) => Math.Max(min, Math.Min(value, max));
+        public static int RoundToInt(float value) => (int)Math.Round(value);
+    }
+    public static class Time { public static float timeScale = 1, unscaledDeltaTime = 1; }
 }
 namespace UnityEngine.Events
 {
@@ -87,7 +92,11 @@ namespace UnityEngine.SceneManagement
         public static void LoadSceneAsync(string value) { lastLoaded = value; }
     }
 }
-namespace NeuroFlexVR { public class PigeonDifficultyHighlight : UnityEngine.UI.Graphic { } }
+namespace NeuroFlexVR
+{
+    public class PigeonDifficultyHighlight : UnityEngine.UI.Graphic { }
+    public static class NeuroFlexSession { public static string SessionId = "menu-test-session"; }
+}
 public class MemoryGameManager : UnityEngine.Component
 {
     public bool esperarTutorial;
@@ -104,3 +113,5 @@ public class TutorialPanelController : UnityEngine.Component
     public Player videoPlayer;
     public UnityEngine.Events.UnityEvent onTutorialCerrado = new UnityEngine.Events.UnityEvent();
 }
+public class SwapPuzzleManager : UnityEngine.Component { public List<PuzzlePiece> pieces = new List<PuzzlePiece>(); }
+public class PuzzlePiece { public int pieceID, currentSlotIndex; }

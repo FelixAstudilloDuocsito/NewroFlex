@@ -60,6 +60,7 @@ public class SwapPuzzleManager : MonoBehaviour
         }
 
         ShufflePieces();
+        GetComponent<NeuroFlexVR.PuzzleProfileRecorder>()?.BeginRound(this);
     }
 
     public void OnPieceReleased(PuzzlePiece releasedPiece)
@@ -87,6 +88,7 @@ public class SwapPuzzleManager : MonoBehaviour
 
             if (otherPiece != null)
             {
+                GetComponent<NeuroFlexVR.PuzzleProfileRecorder>()?.RecordPlacement(releasedPiece.pieceID == nearestSlotIndex);
                 StartCoroutine(SwapRoutine(releasedPiece, otherPiece, nearestSlotIndex));
                 return;
             }
@@ -151,6 +153,7 @@ public class SwapPuzzleManager : MonoBehaviour
         }
 
         Debug.Log("¡Puzzle Completado!");
+        GetComponent<NeuroFlexVR.PuzzleProfileRecorder>()?.CompleteRound();
         onPuzzleSolved?.Invoke();
     }
 

@@ -9,6 +9,8 @@ public class ImageSceneLoaderVR : MonoBehaviour, IPointerDownHandler, IPointerCl
 {
     [Header("Escena a Cargar")]
     public string nombreEscena;
+    [Tooltip("Requiere elegir un perfil en el panel de Recepción antes de entrar.")]
+    public bool requierePerfil;
 
     [Header("Feedback de Texto")]
     [Tooltip("Arrastra aquí el componente TextMeshPro que mostrará el mensaje")]
@@ -82,6 +84,15 @@ public class ImageSceneLoaderVR : MonoBehaviour, IPointerDownHandler, IPointerCl
     public void EjecutarCarga()
     {
         if (yaCargando) return;
+        if (requierePerfil && NeuroFlexVR.PatientSession.ActiveProfile == null)
+        {
+            if (textoMensaje != null)
+            {
+                textoMensaje.text = "Crea o elige tu perfil en el panel detrás de ti.";
+                textoMensaje.gameObject.SetActive(true);
+            }
+            return;
+        }
 
         if (string.IsNullOrEmpty(nombreEscena))
         {
