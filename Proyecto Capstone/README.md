@@ -4,6 +4,12 @@
 
 **NeuroFlex** es un sistema de evaluación cognitiva basado en realidad virtual. Este repositorio contiene el **cliente Unity en VR**, donde los participantes interactúan con escenarios inmersivos diseñados para estimular y medir distintas capacidades cognitivas.
 
+**Perfiles y guardado local:** Recepción permite crear y seleccionar pacientes y
+consultar su historial. Las rondas de Palomas, Memoria y Biblioteca se guardan
+en `../datos_locales/neuroflex.sqlite3`. Los menús de Recepción y Memoria
+reutilizan el estilo de Palomas. Ver [uso, almacenamiento y pruebas](../datos_locales/README.md).
+La versión exacta del Editor está en `ProjectSettings/ProjectVersion.txt`.
+
 ---
 
 ## 📋 Tabla de Contenidos

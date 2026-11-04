@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 namespace NeuroFlexVR
 {
@@ -21,6 +22,11 @@ namespace NeuroFlexVR
 
         private PigeonRoundController controller;
         private bool initialized;
+        [Header("Perfil y navegación: objetos de la escena")]
+        [SerializeField] private TMP_Text profileLabel = null;
+        [SerializeField] private Button[] receptionButtons = System.Array.Empty<Button>();
+        [SerializeField] private TMP_Text saveStatus = null;
+        [SerializeField] private Button retrySave = null;
         public bool IsInitialized => initialized;
 
         public bool Initialize(PigeonRoundController owner)
@@ -46,10 +52,33 @@ namespace NeuroFlexVR
             startButton.onClick.AddListener(controller.StartRound);
             if (continueButton != null)
                 continueButton.onClick.AddListener(controller.ReturnToStart);
+            AddProfileNavigation();
             initialized = true;
             ShowPhase(true);
             return true;
         }
+
+        private void AddProfileNavigation()
+        {
+            if (profileLabel != null)
+                profileLabel.text = PatientSession.ActiveProfile == null
+                    ? "Selecciona un perfil en Recepción" : "Perfil: " + PatientSession.ActiveProfile.alias;
+            startButton.interactable = true;
+            if (receptionButtons != null)
+                foreach (Button button in receptionButtons)
+                    ThemedSceneMenu.Bind(button, () => SceneManager.LoadScene("Recepción"));
+            ThemedSceneMenu.Bind(retrySave, () => PatientSession.RetryPending());
+            PatientSession.SaveStateChanged += RefreshSaveStatus;
+            RefreshSaveStatus();
+        }
+
+        private void RefreshSaveStatus()
+        {
+            if (saveStatus != null) saveStatus.text = PatientSession.LastSaveMessage;
+            if (retrySave != null) retrySave.gameObject.SetActive(PatientSession.HasPendingResults);
+        }
+
+        private void OnDestroy() { PatientSession.SaveStateChanged -= RefreshSaveStatus; }
 
         private void RecoverSceneReferences()
         {
@@ -86,11 +115,7 @@ namespace NeuroFlexVR
                         continueButton = button;
                         break;
                     }
-            if (continueButton != null)
-            {
-                TMP_Text label = continueButton.GetComponentInChildren<TMP_Text>(true);
-                if (label != null && label.text.Trim() == "Continuar") label.text = "Volver al inicio";
-            }
+
         }
 
         private void RecoverSelectionBorders()
@@ -103,16 +128,8 @@ namespace NeuroFlexVR
                 PigeonDifficultyHighlight border = difficultyButtons[i].GetComponentInChildren<PigeonDifficultyHighlight>(true);
                 if (border == null)
                 {
-                    GameObject obj = new GameObject("BordeSeleccion", typeof(RectTransform), typeof(PigeonDifficultyHighlight));
-                    obj.layer = difficultyButtons[i].gameObject.layer;
-                    obj.transform.SetParent(difficultyButtons[i].transform, false);
-                    RectTransform rect = (RectTransform)obj.transform;
-                    rect.anchorMin = Vector2.zero;
-                    rect.anchorMax = Vector2.one;
-                    rect.offsetMin = rect.offsetMax = Vector2.zero;
-                    border = obj.GetComponent<PigeonDifficultyHighlight>();
-                    border.color = new Color(0.4f, 1f, 0.8f, 1f);
-                    border.raycastTarget = false;
+                    Debug.LogWarning("[NeuroFlex] Falta el borde de selección de " + difficultyButtons[i].name + ". Asígnalo en la escena.", this);
+                    continue;
                 }
                 border.gameObject.SetActive(true);
                 selectionBorders[i] = border;
@@ -133,7 +150,7 @@ namespace NeuroFlexVR
                 ? (spawner.SelectedDifficulty > 0 ? spawner.SelectedDifficulty : spawner.initialDifficulty)
                 : 0;
             for (int i = 0; i < selectionBorders.Length; i++)
-                selectionBorders[i].enabled = selected == i + 1;
+                if (selectionBorders[i] != null) selectionBorders[i].enabled = selected == i + 1;
         }
 
         public void ShowPhase(bool ready)

@@ -1,136 +1,127 @@
-# Datos locales de Palomas
+# Perfiles y resultados locales de NeuroFlex
 
-El pool es **`palomas.sqlite3`**, una base SQLite versionada en este repositorio.
-Se entrega vacía. `pool.py` usa Python 3.9+ y su biblioteca estándar; no requiere
-servidor, conexión a Internet ni instalar paquetes.
+## Uso desde Unity
 
-**Estado actual:** el registro de pacientes se pospuso para recepción. Palomas
-no solicita nick ni guarda archivos al terminar. La base y las herramientas de
-importación se conservan para retomar ese flujo después; sirven para registros
-ya exportados, pero la escena actual no genera nuevas exportaciones.
+1. Abrir `Assets/Scenes/Recepción.unity` y entrar en Play.
+2. Pulsar **Gestionar perfiles**. Crear un nombre o alias de 2–40 caracteres,
+   usando el teclado físico o los botones del teclado en VR, o seleccionar un
+   perfil existente. La lista tiene paginación.
+3. Elegir Palomas, Juego de memoria o Biblioteca. El perfil se conserva al cambiar
+   de escena. Para cambiar de paciente, volver a Recepción y seleccionar otro.
+4. Cada ronda terminada guarda sus métricas automáticamente. Una ronda iniciada
+   que se abandona o interrumpe también queda registrada con su estado.
+5. En Recepción, **Ver historial** muestra fecha, actividad, dificultad, estado y
+   un resumen de las métricas del perfil seleccionado.
 
-## Qué hace el juego
+Al volver a abrir la aplicación, hay que seleccionar el perfil nuevamente. Los
+perfiles y su historial permanecen en disco. Los nombres duplicados se rechazan
+sin distinguir mayúsculas/minúsculas; cada perfil tiene un UUID estable.
 
-1. Permite elegir Fácil, Medio o Difícil. Un borde verde menta con brillo indica
-   la opción seleccionada y permanece aunque cambie el foco del puntero. El menú
-   no muestra cantidades de palomas ni información de llegadas.
-2. Sortea una nueva cantidad al iniciar cada ronda, incluyendo ambos extremos.
-   En Difícil, 2 del total entran después de 2 segundos de observación del primer
-   grupo. Fácil y Medio no tienen llegadas tardías.
-3. Muestra los resultados y un botón **Volver al inicio**, que permite jugar otra
-   ronda conservando la dificultad seleccionada.
-4. Conserva únicamente la última ronda en memoria, en `LastRoundRecord` y
-   `LastArrivalMetadata`. Al iniciar otra ronda se reemplaza; al cerrar la
-   aplicación se pierde. No se escribe telemetría en disco desde esta escena.
+## Base de datos
 
-No se envía nada a la nube. La integración de paciente, aceptación y guardado en
-recepción queda pendiente.
+**`datos_locales/neuroflex.sqlite3`** es la nueva base SQLite, entregada vacía y
+ubicada dentro del repositorio. Unity la abre directamente: no requiere Python,
+un servidor ni conexión a Internet.
 
-Los rangos, movimiento, tiempo de observación, cantidad de palomas tardías y su
-demora se editan en **PigeonPoolSpawner → Presets**, en la escena Palomas. El total
-de Difícil incluye las tardías: con estos valores son 8–12 iniciales más 2 tardías.
-Los menús están guardados en la escena, bajo **Palomas - Menús**, y conservan el
-fondo, blur, hojas, icono y estilo de botones del menú original. La escena usa
-tiempos de observación de 8, 8 y 15 segundos.
+- `patient_profiles`: identificador, nombre/alias y fecha de creación.
+- `activity_results`: identificador único de ronda, perfil, sesión de ejecución,
+  actividad (`pigeons`, `memory`, `puzzle`), dificultad, estado, fechas UTC y
+  métricas JSON. Una clave foránea impide resultados sin perfil.
+- Las escrituras usan parámetros SQL. Un mismo identificador de ronda no genera
+  resultados duplicados al repetirse una llamada de cierre o recuperación.
 
-Para ajustar su apariencia, fuera de Play, activa temporalmente
-`DificultadCanvas` y edita sus textos, RectTransform,
-imágenes y botones. Desactiva los otros Canvas mientras previsualizas para evitar
-superposiciones. El Canvas queda desactivado en la escena guardada;
-el controlador lo activa al jugar. El botón `VolverAlInicioButton` también
-queda guardado dentro de `ResultadoPanel`.
+En Editor y en una compilación de escritorio ejecutada dentro del repositorio,
+se busca `datos_locales` entre los directorios ascendientes de
+`Application.dataPath`. Fuera del repositorio, y en Android/Quest, la ubicación
+es `Application.persistentDataPath/NeuroFlex/neuroflex.sqlite3`: una aplicación
+instalada no tiene acceso al repositorio del equipo de desarrollo.
 
-`PalomaTrialManager → PigeonRoundMenu` contiene las referencias de esos objetos.
-Los botones se conectan automáticamente al iniciar: no necesitan eventos OnClick
-manuales. Se pueden cambiar posiciones, tamaños, fuentes, colores y textos
-estáticos desde Unity. Cada botón de dificultad tiene un hijo `BordeSeleccion`:
-en su componente `PigeonDifficultyHighlight` se ajustan color, grosor, radio de
-esquina y ancho del brillo. El controlador activa solo el borde elegido.
-Al iniciar, el menú recupera referencias antiguas y reconstruye bordes faltantes.
-Si no encuentra el Canvas de dificultad completo, mantiene visible el inicio
-original para evitar quedarse sin interfaz.
+Linux usa `libsqlite3.so.0`; macOS usa `libsqlite3.dylib`; Windows usa
+`winsqlite3`. Android utiliza la API pública `android.database.sqlite` de Java,
+sin depender de una biblioteca SQLite privada del sistema. El backend nativo se
+ha probado en Linux; Android y los demás sistemas requieren prueba en dispositivo.
 
-## Archivos que se copian desde cada equipo
+Si SQLite falla, la pantalla de resultados indica el problema y ofrece
+**Reintentar guardado**. Se escribe un respaldo en
+`Application.persistentDataPath/NeuroFlex/pending-results.json` antes de guardar;
+Recepción reintenta importarlo al abrirse. Solo se elimina después del guardado.
+El respaldo se conserva entre ejecuciones y mantiene el UUID del perfil original.
 
-Formato preparado para el futuro flujo de recepción y para registros exportados
-por la versión anterior con aceptación. Actualmente Palomas no crea estos archivos.
+La base está dentro del repositorio, pero los perfiles reales no se incluyen en
+la entrega. Git trata SQLite como un archivo binario; para reunir bases con datos
+se necesita una importación, no una fusión textual. Usar alias si se va a versionar
+una base con resultados.
+
+### Métricas guardadas
+
+- **Palomas:** contrato `scenes-v1` completo, respuesta confirmada, cantidad real,
+  dificultad, tiempos, pausas, distractores y metadatos de llegadas.
+- **Memoria:** parejas encontradas y totales, aciertos, intentos incorrectos,
+  cartas totales, vista previa configurada y tiempo activo después de la vista
+  previa. Los resultados muestran precisión y duración. Cada dificultad es una
+  ronda independiente y se vuelve al menú conservando la selección.
+- **Biblioteca:** piezas distintas colocadas correctamente, total de piezas,
+  colocaciones incorrectas y tiempo activo por nivel. El flujo de preguntas y
+  avance entre niveles se mantiene; las respuestas de esas preguntas todavía
+  no tienen telemetría propia.
+
+## Menús
+
+Todos los paneles y sus controles están guardados en las escenas y pueden
+editarse **fuera de Play** desde la jerarquía:
 
 ```text
-Application.persistentDataPath/NeuroFlexTelemetry/accepted/<UUID>.json
+Recepción.unity
+└── Recepción - Menús
+    ├── RecepcionMenuCanvas / RecepcionMenuPanel
+    ├── PerfilesCanvas / PerfilesPanel
+    └── HistorialCanvas / HistorialPanel
+
+Juego De Memoria.unity
+└── Memoria - Menús
+    ├── MemoriaMenuCanvas / MemoriaMenuPanel
+    └── ResultadosMemoriaCanvas / ResultadosMemoriaPanel
 ```
 
-La ruta exacta aparece en la consola de Unity después de guardar. En un equipo
-se encuentra en la carpeta persistente de la aplicación; en Quest puede copiarse
-con ADB desde `Android/data/<identificador-de-la-app>/files/NeuroFlexTelemetry/accepted`.
-El identificador se consulta en Player Settings de Unity, en Android.
+`PerfilesPanel` contiene las cinco filas reutilizables, el campo TMP de nombre,
+el teclado virtual completo, paginación, mensajes y botones de creación/regreso.
+Las filas usan textos de muestra para poder diseñarlas sin datos de pacientes.
+`ResultadosMemoriaPanel` incluye el resumen, estado de guardado y sus botones.
+La navegación y los mensajes nuevos de Palomas también están en su escena.
 
-Cada JSON incluye:
+**Recepción se guarda con `PerfilesCanvas` visible para facilitar la edición**;
+al entrar en Play, el controlador muestra la pantalla de recepción. Para editar
+otra pantalla, desactivar el Canvas visible y activar el deseado en el Inspector.
+Seleccionar el Panel y pulsar **F** en Scene permite enfocarlo: son Canvas en
+World Space y están ubicados frente a la cámara de cada escenario.
 
-- `recordId`: UUID aleatorio de la ronda, independiente del equipo y del nick.
-- `patientNick`, `deviceId`, `savedAt` y `consentGranted`.
-- `request`: ronda completa compatible con `scenes-v1`, con respuesta, dificultad,
-  tiempos, pausas y distractores.
-- `arrivalMetadata`: rango configurado, cantidad inicial/tardía, cantidades
-  planificadas y liberadas, y marcas de tiempo de las llegadas.
+Se pueden cambiar RectTransform, fuentes, colores, sprites y textos estáticos
+directamente desde Unity. Los scripts no crean controles ni cambian tamaños,
+posiciones o fuentes al iniciar. Solo conectan acciones, alternan pantallas y
+actualizan los datos variables (perfil, filas, métricas y estado de guardado).
+`ThemedSceneMenu` conserva referencias a los controles de cada pantalla; los
+controladores están en los objetos padre `Recepción - Menús` y `Memoria - Menús`,
+para seguir activos aunque se oculte un Canvas.
 
-`roundId` contiene el mismo UUID que `recordId`, con prefijo `r-`; `sessionId`
-identifica una ejecución de la aplicación. `deviceId` se genera al primer
-guardado y se conserva entre ejecuciones mediante PlayerPrefs. Reinstalar o
-borrar los datos de la aplicación puede cambiarlo. El valor predeterminado
-`participantId = p-demo` se reemplaza por un UUID de participante por ronda;
-también se admite configurar un código explícito en el Inspector.
+Los controladores recuperan referencias vacías buscando los controles existentes
+de su propia escena, incluso en Canvas inactivos. Esto evita que una referencia
+perdida tras recargar scripts detenga la conexión de todos los botones. No se
+crean controles de reemplazo ni se modifica su diseño. Si se cambia el nombre de
+un objeto, conservar su referencia asignada en el Inspector.
 
-**El nick no es una clave única**: dos sedes pueden usar el mismo nick y sus
-registros se mantienen separados. Para seguir a una misma persona entre sedes,
-acuerden un código de participante explícito; el programa no deduce que dos
-personas sean la misma solo porque sus nicks coinciden.
+Recepción y Memoria tienen un `EventSystem` con `XRUIInputModule`, configurado
+para XR y ratón, igual que Palomas. No se añade un segundo módulo de entrada
+competidor. El simulador XR puede alternar la entrada del ratón al cambiar entre
+sus modos de interacción.
 
-## Reunir las pruebas
+El Canvas antiguo de Recepción se conserva desactivado como referencia. El
+video tutorial de Memoria sigue disponible mediante **Ver tutorial**. Las tres
+variantes del tablero y sus cartas se conservan; el nuevo controlador gestiona
+su activación y sustituye el avance automático por el resumen de la ronda.
+Palomas incluye acceso de vuelta a Recepción y estado del guardado.
 
-Ejecutar desde la raíz del repositorio (`python` en Windows, `python3` en Linux/macOS):
-
-```bash
-# Copiar antes las carpetas accepted a datos_locales/entradas/sede-a y sede-b.
-python3 datos_locales/pool.py import datos_locales/entradas/sede-a datos_locales/entradas/sede-b
-
-# Consultar cantidad de registros por dificultad y estado.
-python3 datos_locales/pool.py stats
-
-# Exportar una tabla para analizarla en una planilla.
-mkdir -p datos_locales/exportaciones
-python3 datos_locales/pool.py export datos_locales/exportaciones/resultados.csv
-
-# Exportar únicamente el contrato scenes-v1 para el procesador de métricas.
-python3 datos_locales/pool.py export datos_locales/exportaciones/rondas.json --format scenes-v1
-```
-
-La importación busca JSON recursivamente. Volver a importar el mismo registro no
-lo duplica. Si un UUID ya existe con contenido diferente, informa el conflicto y
-conserva el original. Los archivos inválidos se reportan, los válidos se importan,
-y el comando termina con código 1 si hubo errores. No borra los archivos originales.
-Los JSON del sistema antiguo que se guardaban sin preguntar no se importan como
-registros aceptados; necesitan el formato `pigeon-local-v1` y aceptación explícita.
-
-También se pueden mantener pools independientes y reunirlos después:
-
-```bash
-python3 datos_locales/pool.py --db datos_locales/entradas/sede-b.sqlite3 init
-python3 datos_locales/pool.py --db datos_locales/entradas/sede-b.sqlite3 import RUTA_A_ACCEPTED
-python3 datos_locales/pool.py import datos_locales/entradas/sede-b.sqlite3
-```
-
-Los datos completos están en la tabla `submissions`; la vista `results` expone
-las columnas de análisis e incluye el error absoluto de las rondas completadas.
-Una respuesta `0` se conserva como cero; una respuesta ausente se conserva como
-`NULL`. El puntaje del juego puede derivarse de la respuesta y del total y no es
-una evaluación clínica.
-
-Git no fusiona bases SQLite binarias. Designen un equipo para importar los
-archivos o pools de las distintas sedes al `palomas.sqlite3` central y luego
-versionar ese archivo. Conserven las carpetas originales como respaldo. Las
-carpetas `entradas/` y `exportaciones/` están excluidas de Git; la base central sí
-queda dentro del repositorio. Usen nicks seudónimos: el historial del repositorio
-conservará los registros de las versiones que incorporen.
+Los menús nuevos requieren un perfil antes de comenzar. Para probar una escena
+de actividad directamente en Editor, entrar primero a Recepción y seleccionarlo.
 
 ## Verificación
 
@@ -138,7 +129,50 @@ conservará los registros de las versiones que incorporen.
 python3 -m unittest discover -s datos_locales -v
 ```
 
-En Unity, probar que solo el botón elegido tenga borde, que este permanezca al
-apuntar a otros controles y que se conserve al volver desde los resultados.
-Probar varias rondas seguidas: no debe aparecer ningún formulario de paciente ni
-crearse un archivo de telemetría.
+`test_profiles.py` compila y ejecuta el código C# de producción con las
+herramientas incluidas en Unity, sin abrir el proyecto. Por defecto busca
+`~/Applications/Unity/<versión-del-proyecto>/Editor`; se puede ajustar mediante
+`UNITY_EDITOR_PATH`. Los reemplazos mínimos de Unity están fuera de `Assets`
+y solo los usa el ejecutable de pruebas. SQLite es la implementación real.
+
+Se comprueban persistencia entre procesos, alias Unicode y duplicados, claves
+foráneas, separación entre pacientes, restricciones de actividad/estado/nivel,
+reintentos sin duplicación y recuperación después de una falla de escritura.
+La suite anterior de `pool.py` se mantiene.
+
+`test_menu_bindings.py` comprueba las referencias y el módulo de entrada de las
+escenas, y ejecuta los controladores C# de producción con referencias inicialmente
+vacías. Usa una jerarquía extraída de las escenas y reemplazos mínimos del árbol
+de objetos/eventos de Unity para verificar navegación, teclado, creación y
+selección de pacientes, historial y flujo de Memoria. Esta prueba no simula los
+raycasts, renderizado ni mandos VR; esas comprobaciones requieren Unity.
+
+Verificación manual pendiente en Unity/VR: crear varios perfiles, navegar las
+páginas, escribir con el teclado virtual, jugar cada dificultad dos veces,
+volver al inicio, revisar los bordes y el historial, reiniciar la aplicación y
+seleccionar el mismo perfil. Revisar también el tutorial de Memoria y las
+transiciones de nivel de Biblioteca.
+
+## Pool antiguo de Palomas
+
+`palomas.sqlite3`, `pool.py` y `test_pool.py` se conservan para los registros
+antiguos `pigeon-local-v1`. Esta base es independiente: los nuevos perfiles y
+resultados no se escriben allí. El contrato de importación antiguo sigue
+requiriendo aceptación explícita en los archivos exportados.
+
+```bash
+python3 datos_locales/pool.py import datos_locales/entradas/sede-a
+python3 datos_locales/pool.py stats
+mkdir -p datos_locales/exportaciones
+python3 datos_locales/pool.py export datos_locales/exportaciones/resultados.csv
+python3 datos_locales/pool.py export datos_locales/exportaciones/rondas.json --format scenes-v1
+```
+
+Los comandos anteriores exportan únicamente el pool antiguo, no la base de
+perfiles. Para consultar la base nueva se puede abrir `neuroflex.sqlite3` con un
+visor de SQLite o ejecutar, por ejemplo:
+
+```bash
+sqlite3 datos_locales/neuroflex.sqlite3 \
+  'SELECT p.alias, r.scenario_id, r.difficulty, r.status, r.ended_at FROM activity_results r JOIN patient_profiles p ON p.profile_id = r.profile_id ORDER BY r.ended_at DESC;'
+```

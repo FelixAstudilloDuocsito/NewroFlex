@@ -10,7 +10,9 @@ namespace NeuroFlexVR
     // Replace with your existing global session manager if you have one.
     public static class NeuroFlexSession
     {
-        public static readonly string SessionId = "s-" + Guid.NewGuid().ToString("N");
+        public static string SessionId { get; private set; } = "s-" + Guid.NewGuid().ToString("N");
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void Reset() { SessionId = "s-" + Guid.NewGuid().ToString("N"); }
     }
 
     /// <summary>

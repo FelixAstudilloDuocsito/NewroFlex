@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using NeuroFlexVR;
 
 public class MemoryGameManager : MonoBehaviour
 {
@@ -27,6 +28,33 @@ public class MemoryGameManager : MonoBehaviour
     private bool isPreviewActive = false; // Bloquea la interacción durante la muestra inicial
     private int pairsFound = 0;
     private int totalPairs;
+    public int difficultyLevel = 1;
+    public int PairsFound => pairsFound;
+    public int TotalPairs => totalPairs;
+    public int IncorrectAttempts { get; private set; }
+    public float ActiveSeconds { get; private set; }
+    private bool roundActive;
+    private bool applicationPaused;
+    private string roundId;
+    private string startedAt;
+    private string profileId;
+
+    [System.Serializable]
+    private class RoundMetrics
+    {
+        public int correctPairAttempts, incorrectPairAttempts, pairsFound, totalPairs, totalCards, activeTimeMs, aidsUsed, previewDurationMs;
+        public string deckId;
+    }
+
+    private void Update()
+    {
+        if (roundActive && !isPreviewActive && !applicationPaused && Time.timeScale > 0)
+            ActiveSeconds += Time.unscaledDeltaTime;
+    }
+
+    private void OnApplicationPause(bool paused) { applicationPaused = paused; }
+    private void OnDisable() { FinishRecord("abandoned"); StopAllCoroutines(); }
+    private void OnApplicationQuit() { FinishRecord("interrupted"); }
 
     [Header("Control de Flujo")]
     [Tooltip("Marcar si este nivel espera a que se cierre el video tutorial. Desmarcar si debe arrancar solo al activarse.")]
@@ -45,6 +73,22 @@ public class MemoryGameManager : MonoBehaviour
 
     public void IniciarJuego()
     {
+        FinishRecord("abandoned");
+        totalPairs = allCards.Count / 2;
+        if (allCards.Count == 0 || allCards.Count % 2 != 0 || allCards.Exists(card => card == null))
+        {
+            Debug.LogError("[NeuroFlex] Configura una lista completa de parejas de cartas.");
+            return;
+        }
+        firstCard = secondCard = null;
+        pairsFound = 0;
+        IncorrectAttempts = 0;
+        ActiveSeconds = 0;
+        isEvaluating = false;
+        profileId = PatientSession.ActiveProfile?.id;
+        roundId = "r-" + System.Guid.NewGuid().ToString("N");
+        startedAt = LocalProfileDatabase.UtcNow();
+        roundActive = true;
         // Detener corrutinas previas por seguridad para evitar solapamientos
         StopAllCoroutines();
         StartCoroutine(RutinaInicioJuego());
@@ -90,6 +134,7 @@ public class MemoryGameManager : MonoBehaviour
 
     public bool CanFlipCard(MemoryCard card)
     {
+        if (!roundActive || card == null || card.isMatched || applicationPaused) return false;
         // No permite voltear si la vista previa inicial está activa o si se está evaluando un par
         if (isPreviewActive || isEvaluating) return false;
         if (card == firstCard) return false;
@@ -100,6 +145,7 @@ public class MemoryGameManager : MonoBehaviour
 
     public void OnCardFlipped(MemoryCard card)
     {
+        if (!CanFlipCard(card)) return;
         if (firstCard == null)
         {
             firstCard = card;
@@ -131,11 +177,13 @@ public class MemoryGameManager : MonoBehaviour
             if (pairsFound >= totalPairs)
             {
                 Debug.Log("¡Juego de Memoria Completado!");
+                FinishRecord("completed");
                 onGameWon?.Invoke();
             }
         }
         else
         {
+            IncorrectAttempts++;
             yield return new WaitForSeconds(tiempoMemorizacion);
 
             firstCard.FlipCard(false);
@@ -145,6 +193,26 @@ public class MemoryGameManager : MonoBehaviour
         firstCard = null;
         secondCard = null;
         isEvaluating = false;
+    }
+
+    private void FinishRecord(string status)
+    {
+        if (!roundActive) return;
+        roundActive = false;
+        PatientSession.Save(new PatientResult
+        {
+            id = roundId, profileId = profileId, sessionId = NeuroFlexSession.SessionId,
+            scenarioId = "memory", difficulty = difficultyLevel, status = status,
+            startedAt = startedAt, endedAt = LocalProfileDatabase.UtcNow(),
+            metricsJson = JsonUtility.ToJson(new RoundMetrics
+            {
+                correctPairAttempts = pairsFound, incorrectPairAttempts = IncorrectAttempts,
+                pairsFound = pairsFound, totalPairs = totalPairs,
+                totalCards = allCards.Count, previewDurationMs = Mathf.RoundToInt(tiempoVistaPrevia * 1000),
+                deckId = "memory-level-" + difficultyLevel,
+                activeTimeMs = Mathf.RoundToInt(ActiveSeconds * 1000), aidsUsed = 0
+            })
+        });
     }
 
     private void ShufflePositions()

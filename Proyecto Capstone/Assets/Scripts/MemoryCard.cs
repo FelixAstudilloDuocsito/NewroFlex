@@ -40,11 +40,15 @@ public class MemoryCard : MonoBehaviour
 
     private void OnDisable()
     {
-        interactable.selectEntered.RemoveAllListeners();
+        interactable.selectEntered.RemoveListener(OnCardSelected);
+        StopAllCoroutines();
+        isAnimating = false;
     }
 
     public void InitCard(MemoryGameManager manager, int id)
     {
+        StopAllCoroutines();
+        isAnimating = false;
         gameManager = manager;
         cardID = id;
         isFlipped = false;

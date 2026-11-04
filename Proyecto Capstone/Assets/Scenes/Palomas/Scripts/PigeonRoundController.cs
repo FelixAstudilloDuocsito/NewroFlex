@@ -15,7 +15,7 @@ namespace NeuroFlexVR
     /// <summary>
     /// MVP of pigeon-counting assessment. Attach to a permanently active scene object.
     /// Public methods can be wired directly to World Space Canvas Buttons.
-    /// Keeps the last result in memory; patient registration is deferred to reception.
+    /// Saves each terminal round against the patient selected in reception.
     /// </summary>
     public class PigeonRoundController : MonoBehaviour
     {
@@ -162,6 +162,7 @@ namespace NeuroFlexVR
         private PigeonAssessmentMode roundAssessment;
         private string roundGroup;
         private string roundParticipant;
+        private string roundProfileId;
         private string roundScenarioVersion;
         private bool roundDistractionsEnabled;
         private PigeonDistractorType roundDistractorType;
@@ -285,8 +286,9 @@ namespace NeuroFlexVR
             roundMovement = movementLevel;
             roundAssessment = assessmentMode;
             roundGroup = string.IsNullOrWhiteSpace(comparisonGroupId) ? null : comparisonGroupId.Trim();
-            roundParticipant = participantId.Trim() == "p-demo"
-                ? "p-" + Guid.NewGuid().ToString("N") : participantId.Trim();
+            roundProfileId = PatientSession.ActiveProfile?.id;
+            roundParticipant = roundProfileId ?? (participantId.Trim() == "p-demo"
+                ? "p-" + Guid.NewGuid().ToString("N") : participantId.Trim());
             roundScenarioVersion = scenarioVersion.Trim();
             roundDistractionsEnabled = distractionsEnabled;
             roundDistractorType = distractorType;
@@ -559,6 +561,14 @@ namespace NeuroFlexVR
             UpdatePanels(phase);
             LastRoundRecord = record;
             LastArrivalMetadata = BuildArrivalMetadata(terminalStatus);
+            PatientSession.Save(new PatientResult
+            {
+                id = record.roundId, profileId = roundProfileId, sessionId = record.sessionId,
+                scenarioId = "pigeons", difficulty = record.difficultyLevel, status = record.status,
+                startedAt = record.startedAt, endedAt = record.endedAt,
+                metricsJson = "{\"request\":" + PigeonTelemetry.ToRequestJson(record) +
+                    ",\"arrivalMetadata\":" + LastArrivalMetadata + "}"
+            });
 
             // Solo las rondas completadas reciben puntaje e imagen de resultado.
             if (terminalStatus == "completed" && submittedUtc.HasValue && hiddenUtc.HasValue)
@@ -866,6 +876,16 @@ namespace NeuroFlexVR
         }
 
         private void OnDestroy()
+        {
+            if (IsRunning()) FinishRound("interrupted");
+        }
+
+        private void OnDisable()
+        {
+            if (IsRunning()) FinishRound("interrupted");
+        }
+
+        private void OnApplicationQuit()
         {
             if (IsRunning()) FinishRound("interrupted");
         }
