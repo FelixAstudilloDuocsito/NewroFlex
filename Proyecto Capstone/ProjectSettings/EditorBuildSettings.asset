@@ -6,7 +6,7 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: "Assets/Scenes/Recepci\xF3n.unity"
+    path: Assets/Scenes/Yes baby.unity
     guid: 1ef844d3e601ae649862fac3f161fca0
   - enabled: 1
     path: Assets/Scenes/Puzzle Libreria.unity
