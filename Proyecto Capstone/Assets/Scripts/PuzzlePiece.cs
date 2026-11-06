@@ -13,16 +13,26 @@ public class PuzzlePiece : MonoBehaviour
     [Header("Velocidad de Movimiento Suave")]
     public float returnSpeed = 8f;
 
+    [Header("Efecto al Agarrar (Z-Fighting)")]
+    [Tooltip("Distancia extra que se desplaza la pieza hacia el usuario (en el eje X local) al tomarla.")]
+    public float desplazamientoAdelante = 0.02f; // Puedes subirlo o bajarlo desde el Inspector
+
     private SwapPuzzleManager puzzleManager;
     private XRGrabInteractable grabInteractable;
     private Rigidbody rb;
     private Coroutine moveCoroutine;
+    private Transform boardParent; // Referencia al contenedor del tablero
 
     private void Awake()
     {
         puzzleManager = FindAnyObjectByType<SwapPuzzleManager>();
         grabInteractable = GetComponent<XRGrabInteractable>();
         rb = GetComponent<Rigidbody>();
+
+        // Guardar la referencia al tablero
+        boardParent = puzzleManager != null && puzzleManager.slots.Length > 0
+            ? puzzleManager.slots[0].parent
+            : null;
 
         if (grabInteractable != null)
         {
@@ -63,6 +73,25 @@ public class PuzzlePiece : MonoBehaviour
         if (puzzleManager != null)
         {
             puzzleManager.OnPieceReleased(this);
+        }
+    }
+
+    private void LateUpdate()
+    {
+        if (grabInteractable != null && grabInteractable.isSelected
+            && puzzleManager != null && boardParent != null
+            && currentSlotIndex >= 0 && currentSlotIndex < puzzleManager.slots.Length
+            && puzzleManager.slots[currentSlotIndex] != null)
+        {
+            // Pasar a espacio local del tablero
+            Transform slot = puzzleManager.slots[currentSlotIndex];
+            Vector3 local = boardParent.InverseTransformPoint(transform.position);
+            Vector3 slotLocal = boardParent.InverseTransformPoint(slot.position);
+
+            // Fijar la profundidad (X local) de la casilla, pero aplicarle un pequeño desplazamiento hacia adelante al estar agarrada
+            local.x = slotLocal.x - desplazamientoAdelante;  
+
+            transform.position = boardParent.TransformPoint(local);
         }
     }
 
