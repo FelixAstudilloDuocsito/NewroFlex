@@ -261,6 +261,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5167925059111895691, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -1158,7 +1162,7 @@ GameObject:
   - component: {fileID: 860000000000000006}
   - component: {fileID: 860000000000000288}
   m_Layer: 5
-  m_Name: "DatosGuardadosCanvas"
+  m_Name: DatosGuardadosCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1279,7 +1283,7 @@ GameObject:
   - component: {fileID: 860000000000000009}
   - component: {fileID: 860000000000000010}
   m_Layer: 5
-  m_Name: "DatosGuardadosPanel"
+  m_Name: DatosGuardadosPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1388,7 +1392,7 @@ GameObject:
   - component: {fileID: 860000000000000013}
   - component: {fileID: 860000000000000014}
   m_Layer: 5
-  m_Name: "TituloDatos"
+  m_Name: TituloDatos
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1441,7 +1445,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Datos guardados"
+  m_text: Datos guardados
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1525,7 +1529,7 @@ GameObject:
   - component: {fileID: 860000000000000017}
   - component: {fileID: 860000000000000018}
   m_Layer: 5
-  m_Name: "PerfilesTitulo"
+  m_Name: PerfilesTitulo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1578,7 +1582,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Perfiles"
+  m_text: Perfiles
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1662,7 +1666,7 @@ GameObject:
   - component: {fileID: 860000000000000021}
   - component: {fileID: 860000000000000022}
   m_Layer: 5
-  m_Name: "ResumenDatos"
+  m_Name: ResumenDatos
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1715,7 +1719,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Selecciona un perfil para consultar sus datos"
+  m_text: Selecciona un perfil para consultar sus datos
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1800,7 +1804,7 @@ GameObject:
   - component: {fileID: 860000000000000026}
   - component: {fileID: 860000000000000027}
   m_Layer: 5
-  m_Name: "DatosPerfil1"
+  m_Name: DatosPerfil1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1921,7 +1925,7 @@ GameObject:
   - component: {fileID: 860000000000000030}
   - component: {fileID: 860000000000000031}
   m_Layer: 5
-  m_Name: "DatosPerfil1Texto"
+  m_Name: DatosPerfil1Texto
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1974,7 +1978,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Perfil 1"
+  m_text: Perfil 1
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -2058,7 +2062,7 @@ GameObject:
   - component: {fileID: 860000000000000034}
   - component: {fileID: 860000000000000035}
   m_Layer: 5
-  m_Name: "DatosPerfil1Borde"
+  m_Name: DatosPerfil1Borde
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2128,7 +2132,7 @@ GameObject:
   - component: {fileID: 860000000000000039}
   - component: {fileID: 860000000000000040}
   m_Layer: 5
-  m_Name: "DatosPerfil2"
+  m_Name: DatosPerfil2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2249,7 +2253,7 @@ GameObject:
   - component: {fileID: 860000000000000043}
   - component: {fileID: 860000000000000044}
   m_Layer: 5
-  m_Name: "DatosPerfil2Texto"
+  m_Name: DatosPerfil2Texto
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2302,7 +2306,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Perfil 2"
+  m_text: Perfil 2
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -2386,7 +2390,7 @@ GameObject:
   - component: {fileID: 860000000000000047}
   - component: {fileID: 860000000000000048}
   m_Layer: 5
-  m_Name: "DatosPerfil2Borde"
+  m_Name: DatosPerfil2Borde
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2456,7 +2460,7 @@ GameObject:
   - component: {fileID: 860000000000000052}
   - component: {fileID: 860000000000000053}
   m_Layer: 5
-  m_Name: "DatosPerfil3"
+  m_Name: DatosPerfil3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2577,7 +2581,7 @@ GameObject:
   - component: {fileID: 860000000000000056}
   - component: {fileID: 860000000000000057}
   m_Layer: 5
-  m_Name: "DatosPerfil3Texto"
+  m_Name: DatosPerfil3Texto
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2630,7 +2634,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Perfil 3"
+  m_text: Perfil 3
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -2714,7 +2718,7 @@ GameObject:
   - component: {fileID: 860000000000000060}
   - component: {fileID: 860000000000000061}
   m_Layer: 5
-  m_Name: "DatosPerfil3Borde"
+  m_Name: DatosPerfil3Borde
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2784,7 +2788,7 @@ GameObject:
   - component: {fileID: 860000000000000065}
   - component: {fileID: 860000000000000066}
   m_Layer: 5
-  m_Name: "DatosPerfil4"
+  m_Name: DatosPerfil4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2905,7 +2909,7 @@ GameObject:
   - component: {fileID: 860000000000000069}
   - component: {fileID: 860000000000000070}
   m_Layer: 5
-  m_Name: "DatosPerfil4Texto"
+  m_Name: DatosPerfil4Texto
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2958,7 +2962,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Perfil 4"
+  m_text: Perfil 4
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -3042,7 +3046,7 @@ GameObject:
   - component: {fileID: 860000000000000073}
   - component: {fileID: 860000000000000074}
   m_Layer: 5
-  m_Name: "DatosPerfil4Borde"
+  m_Name: DatosPerfil4Borde
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3112,7 +3116,7 @@ GameObject:
   - component: {fileID: 860000000000000078}
   - component: {fileID: 860000000000000079}
   m_Layer: 5
-  m_Name: "DatosPerfil5"
+  m_Name: DatosPerfil5
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3233,7 +3237,7 @@ GameObject:
   - component: {fileID: 860000000000000082}
   - component: {fileID: 860000000000000083}
   m_Layer: 5
-  m_Name: "DatosPerfil5Texto"
+  m_Name: DatosPerfil5Texto
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3286,7 +3290,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Perfil 5"
+  m_text: Perfil 5
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -3370,7 +3374,7 @@ GameObject:
   - component: {fileID: 860000000000000086}
   - component: {fileID: 860000000000000087}
   m_Layer: 5
-  m_Name: "DatosPerfil5Borde"
+  m_Name: DatosPerfil5Borde
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3440,7 +3444,7 @@ GameObject:
   - component: {fileID: 860000000000000091}
   - component: {fileID: 860000000000000092}
   m_Layer: 5
-  m_Name: "PerfilesAnteriores"
+  m_Name: PerfilesAnteriores
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3560,7 +3564,7 @@ GameObject:
   - component: {fileID: 860000000000000095}
   - component: {fileID: 860000000000000096}
   m_Layer: 5
-  m_Name: "PerfilesAnterioresTexto"
+  m_Name: PerfilesAnterioresTexto
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3613,7 +3617,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "<"
+  m_text: <
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -3697,7 +3701,7 @@ GameObject:
   - component: {fileID: 860000000000000099}
   - component: {fileID: 860000000000000100}
   m_Layer: 5
-  m_Name: "PaginaPerfiles"
+  m_Name: PaginaPerfiles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3750,7 +3754,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "1 / 1"
+  m_text: 1 / 1
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -3835,7 +3839,7 @@ GameObject:
   - component: {fileID: 860000000000000104}
   - component: {fileID: 860000000000000105}
   m_Layer: 5
-  m_Name: "PerfilesSiguientes"
+  m_Name: PerfilesSiguientes
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3955,7 +3959,7 @@ GameObject:
   - component: {fileID: 860000000000000108}
   - component: {fileID: 860000000000000109}
   m_Layer: 5
-  m_Name: "PerfilesSiguientesTexto"
+  m_Name: PerfilesSiguientesTexto
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4008,7 +4012,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: ">"
+  m_text: '>'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -4092,7 +4096,7 @@ GameObject:
   - component: {fileID: 860000000000000112}
   - component: {fileID: 860000000000000113}
   m_Layer: 5
-  m_Name: "AyudaPerfiles"
+  m_Name: AyudaPerfiles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4145,7 +4149,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Consultar otro perfil no cambia el perfil con el que juegas."
+  m_text: Consultar otro perfil no cambia el perfil con el que juegas.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -4230,7 +4234,7 @@ GameObject:
   - component: {fileID: 860000000000000117}
   - component: {fileID: 860000000000000118}
   m_Layer: 5
-  m_Name: "FiltrarActividad"
+  m_Name: FiltrarActividad
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4350,7 +4354,7 @@ GameObject:
   - component: {fileID: 860000000000000121}
   - component: {fileID: 860000000000000122}
   m_Layer: 5
-  m_Name: "FiltrarActividadTexto"
+  m_Name: FiltrarActividadTexto
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4403,7 +4407,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Todas las actividades"
+  m_text: Todas las actividades
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -4488,7 +4492,7 @@ GameObject:
   - component: {fileID: 860000000000000126}
   - component: {fileID: 860000000000000127}
   m_Layer: 5
-  m_Name: "FiltrarDificultad"
+  m_Name: FiltrarDificultad
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4608,7 +4612,7 @@ GameObject:
   - component: {fileID: 860000000000000130}
   - component: {fileID: 860000000000000131}
   m_Layer: 5
-  m_Name: "FiltrarDificultadTexto"
+  m_Name: FiltrarDificultadTexto
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4661,7 +4665,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Todos los niveles"
+  m_text: Todos los niveles
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -4746,7 +4750,7 @@ GameObject:
   - component: {fileID: 860000000000000135}
   - component: {fileID: 860000000000000136}
   m_Layer: 5
-  m_Name: "FiltrarEstado"
+  m_Name: FiltrarEstado
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4866,7 +4870,7 @@ GameObject:
   - component: {fileID: 860000000000000139}
   - component: {fileID: 860000000000000140}
   m_Layer: 5
-  m_Name: "FiltrarEstadoTexto"
+  m_Name: FiltrarEstadoTexto
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4919,7 +4923,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Todos los estados"
+  m_text: Todos los estados
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -5003,7 +5007,7 @@ GameObject:
   - component: {fileID: 860000000000000143}
   - component: {fileID: 860000000000000144}
   m_Layer: 5
-  m_Name: "RondasTitulo"
+  m_Name: RondasTitulo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5056,7 +5060,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Rondas"
+  m_text: Rondas
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -5141,7 +5145,7 @@ GameObject:
   - component: {fileID: 860000000000000148}
   - component: {fileID: 860000000000000149}
   m_Layer: 5
-  m_Name: "Ronda1"
+  m_Name: Ronda1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5262,7 +5266,7 @@ GameObject:
   - component: {fileID: 860000000000000152}
   - component: {fileID: 860000000000000153}
   m_Layer: 5
-  m_Name: "Ronda1Texto"
+  m_Name: Ronda1Texto
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5315,7 +5319,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Actividad \u00b7 Nivel 1\nEstado \u00b7 Fecha de cierre"
+  m_text: "Actividad \xB7 Nivel 1\nEstado \xB7 Fecha de cierre"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -5399,7 +5403,7 @@ GameObject:
   - component: {fileID: 860000000000000156}
   - component: {fileID: 860000000000000157}
   m_Layer: 5
-  m_Name: "Ronda1Borde"
+  m_Name: Ronda1Borde
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5469,7 +5473,7 @@ GameObject:
   - component: {fileID: 860000000000000161}
   - component: {fileID: 860000000000000162}
   m_Layer: 5
-  m_Name: "Ronda2"
+  m_Name: Ronda2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5590,7 +5594,7 @@ GameObject:
   - component: {fileID: 860000000000000165}
   - component: {fileID: 860000000000000166}
   m_Layer: 5
-  m_Name: "Ronda2Texto"
+  m_Name: Ronda2Texto
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5643,7 +5647,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Actividad \u00b7 Nivel 1\nEstado \u00b7 Fecha de cierre"
+  m_text: "Actividad \xB7 Nivel 1\nEstado \xB7 Fecha de cierre"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -5727,7 +5731,7 @@ GameObject:
   - component: {fileID: 860000000000000169}
   - component: {fileID: 860000000000000170}
   m_Layer: 5
-  m_Name: "Ronda2Borde"
+  m_Name: Ronda2Borde
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5797,7 +5801,7 @@ GameObject:
   - component: {fileID: 860000000000000174}
   - component: {fileID: 860000000000000175}
   m_Layer: 5
-  m_Name: "Ronda3"
+  m_Name: Ronda3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5918,7 +5922,7 @@ GameObject:
   - component: {fileID: 860000000000000178}
   - component: {fileID: 860000000000000179}
   m_Layer: 5
-  m_Name: "Ronda3Texto"
+  m_Name: Ronda3Texto
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5971,7 +5975,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Actividad \u00b7 Nivel 1\nEstado \u00b7 Fecha de cierre"
+  m_text: "Actividad \xB7 Nivel 1\nEstado \xB7 Fecha de cierre"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -6055,7 +6059,7 @@ GameObject:
   - component: {fileID: 860000000000000182}
   - component: {fileID: 860000000000000183}
   m_Layer: 5
-  m_Name: "Ronda3Borde"
+  m_Name: Ronda3Borde
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6125,7 +6129,7 @@ GameObject:
   - component: {fileID: 860000000000000187}
   - component: {fileID: 860000000000000188}
   m_Layer: 5
-  m_Name: "Ronda4"
+  m_Name: Ronda4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6246,7 +6250,7 @@ GameObject:
   - component: {fileID: 860000000000000191}
   - component: {fileID: 860000000000000192}
   m_Layer: 5
-  m_Name: "Ronda4Texto"
+  m_Name: Ronda4Texto
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6299,7 +6303,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Actividad \u00b7 Nivel 1\nEstado \u00b7 Fecha de cierre"
+  m_text: "Actividad \xB7 Nivel 1\nEstado \xB7 Fecha de cierre"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -6383,7 +6387,7 @@ GameObject:
   - component: {fileID: 860000000000000195}
   - component: {fileID: 860000000000000196}
   m_Layer: 5
-  m_Name: "Ronda4Borde"
+  m_Name: Ronda4Borde
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6453,7 +6457,7 @@ GameObject:
   - component: {fileID: 860000000000000200}
   - component: {fileID: 860000000000000201}
   m_Layer: 5
-  m_Name: "RondasAnteriores"
+  m_Name: RondasAnteriores
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6573,7 +6577,7 @@ GameObject:
   - component: {fileID: 860000000000000204}
   - component: {fileID: 860000000000000205}
   m_Layer: 5
-  m_Name: "RondasAnterioresTexto"
+  m_Name: RondasAnterioresTexto
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6626,7 +6630,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "<"
+  m_text: <
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -6710,7 +6714,7 @@ GameObject:
   - component: {fileID: 860000000000000208}
   - component: {fileID: 860000000000000209}
   m_Layer: 5
-  m_Name: "PaginaRondas"
+  m_Name: PaginaRondas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6763,7 +6767,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "1 / 1"
+  m_text: 1 / 1
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -6848,7 +6852,7 @@ GameObject:
   - component: {fileID: 860000000000000213}
   - component: {fileID: 860000000000000214}
   m_Layer: 5
-  m_Name: "RondasSiguientes"
+  m_Name: RondasSiguientes
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6968,7 +6972,7 @@ GameObject:
   - component: {fileID: 860000000000000217}
   - component: {fileID: 860000000000000218}
   m_Layer: 5
-  m_Name: "RondasSiguientesTexto"
+  m_Name: RondasSiguientesTexto
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7021,7 +7025,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: ">"
+  m_text: '>'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -7106,7 +7110,7 @@ GameObject:
   - component: {fileID: 860000000000000222}
   - component: {fileID: 860000000000000223}
   m_Layer: 5
-  m_Name: "VerMetricas"
+  m_Name: VerMetricas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7226,7 +7230,7 @@ GameObject:
   - component: {fileID: 860000000000000226}
   - component: {fileID: 860000000000000227}
   m_Layer: 5
-  m_Name: "VerMetricasTexto"
+  m_Name: VerMetricasTexto
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7279,7 +7283,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "M\u00e9tricas"
+  m_text: "M\xE9tricas"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -7364,7 +7368,7 @@ GameObject:
   - component: {fileID: 860000000000000231}
   - component: {fileID: 860000000000000232}
   m_Layer: 5
-  m_Name: "VerContexto"
+  m_Name: VerContexto
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7484,7 +7488,7 @@ GameObject:
   - component: {fileID: 860000000000000235}
   - component: {fileID: 860000000000000236}
   m_Layer: 5
-  m_Name: "VerContextoTexto"
+  m_Name: VerContextoTexto
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7537,7 +7541,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Contexto"
+  m_text: Contexto
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -7621,7 +7625,7 @@ GameObject:
   - component: {fileID: 860000000000000239}
   - component: {fileID: 860000000000000240}
   m_Layer: 5
-  m_Name: "TituloDetalle"
+  m_Name: TituloDetalle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7674,7 +7678,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Selecciona una ronda"
+  m_text: Selecciona una ronda
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -7758,7 +7762,7 @@ GameObject:
   - component: {fileID: 860000000000000243}
   - component: {fileID: 860000000000000244}
   m_Layer: 5
-  m_Name: "FechasDetalle"
+  m_Name: FechasDetalle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7895,7 +7899,7 @@ GameObject:
   - component: {fileID: 860000000000000247}
   - component: {fileID: 860000000000000248}
   m_Layer: 5
-  m_Name: "MetricasDetalle"
+  m_Name: MetricasDetalle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7948,7 +7952,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Aqu\u00ed se mostrar\u00e1n las m\u00e9tricas registradas de la actividad."
+  m_text: "Aqu\xED se mostrar\xE1n las m\xE9tricas registradas de la actividad."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -8032,7 +8036,7 @@ GameObject:
   - component: {fileID: 860000000000000251}
   - component: {fileID: 860000000000000252}
   m_Layer: 5
-  m_Name: "EstadoDatos"
+  m_Name: EstadoDatos
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8085,7 +8089,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Datos locales \u00b7 C\u00e1lculos seg\u00fan scenes-v1"
+  m_text: "Datos locales \xB7 C\xE1lculos seg\xFAn scenes-v1"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -8170,7 +8174,7 @@ GameObject:
   - component: {fileID: 860000000000000256}
   - component: {fileID: 860000000000000257}
   m_Layer: 5
-  m_Name: "VolverRecepcion"
+  m_Name: VolverRecepcion
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8290,7 +8294,7 @@ GameObject:
   - component: {fileID: 860000000000000260}
   - component: {fileID: 860000000000000261}
   m_Layer: 5
-  m_Name: "VolverRecepcionTexto"
+  m_Name: VolverRecepcionTexto
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8343,7 +8347,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Volver a Recepci\u00f3n"
+  m_text: "Volver a Recepci\xF3n"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -8428,7 +8432,7 @@ GameObject:
   - component: {fileID: 860000000000000265}
   - component: {fileID: 860000000000000266}
   m_Layer: 5
-  m_Name: "ActualizarDatos"
+  m_Name: ActualizarDatos
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8548,7 +8552,7 @@ GameObject:
   - component: {fileID: 860000000000000269}
   - component: {fileID: 860000000000000270}
   m_Layer: 5
-  m_Name: "ActualizarDatosTexto"
+  m_Name: ActualizarDatosTexto
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8601,7 +8605,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Actualizar"
+  m_text: Actualizar
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -8686,7 +8690,7 @@ GameObject:
   - component: {fileID: 860000000000000274}
   - component: {fileID: 860000000000000275}
   m_Layer: 5
-  m_Name: "ReintentarDatos"
+  m_Name: ReintentarDatos
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8806,7 +8810,7 @@ GameObject:
   - component: {fileID: 860000000000000278}
   - component: {fileID: 860000000000000279}
   m_Layer: 5
-  m_Name: "ReintentarDatosTexto"
+  m_Name: ReintentarDatosTexto
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8859,7 +8863,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Reintentar guardado"
+  m_text: Reintentar guardado
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -8943,7 +8947,7 @@ GameObject:
   - component: {fileID: 860000000000000282}
   - component: {fileID: 860000000000000283}
   m_Layer: 5
-  m_Name: "Separador"
+  m_Name: Separador
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9018,7 +9022,7 @@ GameObject:
   - component: {fileID: 860000000000000286}
   - component: {fileID: 860000000000000287}
   m_Layer: 5
-  m_Name: "Separador"
+  m_Name: Separador
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

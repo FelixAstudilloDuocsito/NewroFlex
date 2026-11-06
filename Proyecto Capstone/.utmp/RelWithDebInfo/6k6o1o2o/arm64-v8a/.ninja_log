@@ -1,19 +1,10 @@
 # ninja log v5
-71	3505	8155274756894014	GameActivity/CMakeFiles/game.dir/UGAInputKeyEvent.cpp.o	a96847ab3a6ea0a
-4031	4296	8155274764856336	C:/Neuroflex/NewroFlex/Proyecto Capstone/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/RelWithDebInfo/6k6o1o2o/obj/arm64-v8a/libgame.so	f450558b7a380aa0
-54	3537	8155274757121367	GameActivity/CMakeFiles/game.dir/UGAEntry.cpp.o	b92cb746f1b3c73b
-131	3999	8155274761720512	GameActivity/CMakeFiles/game.dir/UGASoftKeyboard.cpp.o	71fa2261a5f7b2aa
-1	3541	8155274757172098	GameActivity/CMakeFiles/game.dir/UGAConfiguration.cpp.o	2b39d362711a4af1
-21	3616	8155274757899571	GameActivity/CMakeFiles/game.dir/UGADebug.cpp.o	a5b63660b830362f
-109	3567	8155274757429418	GameActivity/CMakeFiles/game.dir/UGAInputMotionEvent.cpp.o	c511117e9475d2e
-90	3892	8155274760800209	GameActivity/CMakeFiles/game.dir/UGAInput.cpp.o	5c34d15db9f2e47c
-38	4030	8155274762152990	GameActivity/CMakeFiles/game.dir/UGAApplication.cpp.o	9f7e2cc0838f9880
-63	9105	8155286177827697	GameActivity/CMakeFiles/game.dir/UGAConfiguration.cpp.o	2b39d362711a4af1
-135	9108	8155286177988823	GameActivity/CMakeFiles/game.dir/UGAInputMotionEvent.cpp.o	c511117e9475d2e
-38	9111	8155286177827697	GameActivity/CMakeFiles/game.dir/UGAEntry.cpp.o	b92cb746f1b3c73b
-112	9115	8155286177827697	GameActivity/CMakeFiles/game.dir/UGAInputKeyEvent.cpp.o	a96847ab3a6ea0a
-78	9117	8155286178124588	GameActivity/CMakeFiles/game.dir/UGADebug.cpp.o	a5b63660b830362f
-154	9267	8155286179707580	GameActivity/CMakeFiles/game.dir/UGAInput.cpp.o	5c34d15db9f2e47c
-178	9304	8155286180052482	GameActivity/CMakeFiles/game.dir/UGASoftKeyboard.cpp.o	71fa2261a5f7b2aa
-94	9370	8155286180694332	GameActivity/CMakeFiles/game.dir/UGAApplication.cpp.o	9f7e2cc0838f9880
-9371	9727	8155286184320747	C:/Neuroflex/NewroFlex/Proyecto Capstone/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/RelWithDebInfo/6k6o1o2o/obj/arm64-v8a/libgame.so	f450558b7a380aa0
+38	2500	8156451225867534	GameActivity/CMakeFiles/game.dir/UGAInputKeyEvent.cpp.o	302569ec18fab5d5
+51	2517	8156451225966796	GameActivity/CMakeFiles/game.dir/UGAEntry.cpp.o	b9525f6235c51c28
+1	2525	8156451226155354	GameActivity/CMakeFiles/game.dir/UGAConfiguration.cpp.o	7750602d2e2cbdd5
+99	2541	8156451226334381	GameActivity/CMakeFiles/game.dir/UGAInputMotionEvent.cpp.o	1216f2c7d2c5b297
+24	2550	8156451226466223	GameActivity/CMakeFiles/game.dir/UGADebug.cpp.o	15e94dae3308d0
+82	2750	8156451228515619	GameActivity/CMakeFiles/game.dir/UGASoftKeyboard.cpp.o	69f3222ca0ef5da
+67	2804	8156451229037664	GameActivity/CMakeFiles/game.dir/UGAInput.cpp.o	e108c54fd3cfaa56
+12	2922	8156451230220617	GameActivity/CMakeFiles/game.dir/UGAApplication.cpp.o	37d6c2fc082f6a51
+2922	3166	8156451232686701	C:/Neuroflex/NewroFlex/Proyecto Capstone/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/RelWithDebInfo/6k6o1o2o/obj/arm64-v8a/libgame.so	e6c511da524492d7

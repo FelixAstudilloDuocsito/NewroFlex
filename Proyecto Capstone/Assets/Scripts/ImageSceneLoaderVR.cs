@@ -18,7 +18,9 @@ public class ImageSceneLoaderVR : MonoBehaviour, IPointerDownHandler, IPointerCl
     [Tooltip("Texto que se mostrará al presionar la foto/botón")]
     public string mensajeSeleccion = "Cargando escena seleccionada...";
 
-    [Header("Configuración de Transición")]
+    [Header("Configuración de Transición (Fade)")]
+    [Tooltip("El GameObject del Canvas o Panel de la pantalla en negro que estará desactivado al inicio.")]
+    public GameObject objetoCanvasFade;
     [Tooltip("Panel o CanvasGroup que se oscurecerá al presionar")]
     public CanvasGroup panelFade;
     [Tooltip("Tiempo en segundos que tardará el fundido")]
@@ -48,7 +50,12 @@ public class ImageSceneLoaderVR : MonoBehaviour, IPointerDownHandler, IPointerCl
             textoMensaje.gameObject.SetActive(false);
         }
 
-        // Asegurar que el panel de fundido comience invisible
+        // Asegurar que el canvas/panel de fundido comience DESACTIVADO e invisible al iniciar la escena
+        if (objetoCanvasFade != null)
+        {
+            objetoCanvasFade.SetActive(false);
+        }
+
         if (panelFade != null)
         {
             panelFade.alpha = 0f;
@@ -113,7 +120,13 @@ public class ImageSceneLoaderVR : MonoBehaviour, IPointerDownHandler, IPointerCl
             textoMensaje.gameObject.SetActive(true);
         }
 
-        // 2. Fundido a Negro (Fade Out)
+        // 2. ACTIVAR EL CANVAS DE FADE AQUÍ MISMO AL CLICKEAR
+        if (objetoCanvasFade != null)
+        {
+            objetoCanvasFade.SetActive(true);
+        }
+
+        // 3. Fundido a Negro (Fade Out) progresivo
         if (panelFade != null)
         {
             panelFade.blocksRaycasts = true; // Bloquea nuevos clics
@@ -133,7 +146,7 @@ public class ImageSceneLoaderVR : MonoBehaviour, IPointerDownHandler, IPointerCl
             yield return new WaitForSeconds(0.8f);
         }
 
-        // 3. Carga asíncrona de la escena en segundo plano
+        // 4. Carga asíncrona de la escena en segundo plano
         AsyncOperation operacionCarga = SceneManager.LoadSceneAsync(nombreEscena);
         operacionCarga.allowSceneActivation = false;
 
