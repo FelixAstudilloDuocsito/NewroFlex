@@ -13,6 +13,7 @@ namespace NeuroFlexVR
     {
         public string id;
         public string alias;
+        public int age;
         public string createdAt;
     }
 
@@ -33,14 +34,13 @@ namespace NeuroFlexVR
     /// <summary>SQLite transactions shared by the Editor and desktop/Android players. No server required.</summary>
     public sealed class LocalProfileDatabase : IDisposable
     {
-        public const int SchemaVersion = 1;
+        public const int SchemaVersion = 2;
         // Kept here so the same schema is available in an Android APK without reading StreamingAssets.
         private static readonly string[] Schema =
         {
             "CREATE TABLE IF NOT EXISTS patient_profiles (profile_id TEXT PRIMARY KEY, alias TEXT NOT NULL, alias_key TEXT NOT NULL UNIQUE, created_at TEXT NOT NULL)",
             "CREATE TABLE IF NOT EXISTS activity_results (result_id TEXT PRIMARY KEY, profile_id TEXT NOT NULL REFERENCES patient_profiles(profile_id), session_id TEXT NOT NULL, scenario_id TEXT NOT NULL CHECK(scenario_id IN ('pigeons','memory','puzzle')), difficulty INTEGER NOT NULL CHECK(difficulty BETWEEN 1 AND 3), status TEXT NOT NULL CHECK(status IN ('completed','abandoned','interrupted')), started_at TEXT NOT NULL, ended_at TEXT NOT NULL, metrics_json TEXT NOT NULL)",
-            "CREATE INDEX IF NOT EXISTS idx_activity_profile ON activity_results(profile_id, ended_at)",
-            "PRAGMA user_version = 1"
+            "CREATE INDEX IF NOT EXISTS idx_activity_profile ON activity_results(profile_id, ended_at)"
         };
 
         private readonly ISqlite database;
@@ -58,12 +58,15 @@ namespace NeuroFlexVR
                 database.Execute("PRAGMA foreign_keys = ON");
                 database.Execute("PRAGMA busy_timeout = 5000");
                 int version = int.Parse(database.Query("PRAGMA user_version")[0][0], CultureInfo.InvariantCulture);
-                if (version != 0 && version != SchemaVersion)
+                if (version < 0 || version > SchemaVersion)
                     throw new InvalidOperationException("Versión de base de datos no compatible: " + version);
                 database.Execute("BEGIN IMMEDIATE");
                 try
                 {
                     foreach (string sql in Schema) database.Execute(sql);
+                    if (version < 2)
+                        database.Execute("ALTER TABLE patient_profiles ADD COLUMN age INTEGER NOT NULL DEFAULT 0 CHECK(age BETWEEN 0 AND 120)");
+                    database.Execute("PRAGMA user_version = 2");
                     database.Execute("COMMIT");
                 }
                 catch { database.Execute("ROLLBACK"); throw; }
@@ -82,17 +85,19 @@ namespace NeuroFlexVR
             return value;
         }
 
-        public PatientProfile CreateProfile(string alias)
+        public PatientProfile CreateProfile(string alias, int age = 0)
         {
             alias = ValidateAlias(alias);
+            if (age < 0 || age > 120) throw new ArgumentException("La edad debe estar entre 0 y 120 años.");
             var profile = new PatientProfile { id = "p-" + Guid.NewGuid().ToString("N"), alias = alias, createdAt = UtcNow() };
             string key = alias.ToUpperInvariant();
+            profile.age = age;
             database.Execute("BEGIN IMMEDIATE");
             try
             {
                 if (database.Query("SELECT profile_id FROM patient_profiles WHERE alias_key = ?", key).Count > 0)
                     throw new ArgumentException("Ya existe un perfil con ese nombre o alias.");
-                database.Execute("INSERT INTO patient_profiles VALUES (?,?,?,?)", profile.id, alias, key, profile.createdAt);
+                database.Execute("INSERT INTO patient_profiles (profile_id,alias,alias_key,created_at,age) VALUES (?,?,?,?,?)", profile.id, alias, key, profile.createdAt, age.ToString(CultureInfo.InvariantCulture));
                 database.Execute("COMMIT");
             }
             catch { database.Execute("ROLLBACK"); throw; }
@@ -102,8 +107,8 @@ namespace NeuroFlexVR
         public List<PatientProfile> ListProfiles()
         {
             var profiles = new List<PatientProfile>();
-            foreach (string[] row in database.Query("SELECT profile_id, alias, created_at FROM patient_profiles ORDER BY alias_key, profile_id"))
-                profiles.Add(new PatientProfile { id = row[0], alias = row[1], createdAt = row[2] });
+            foreach (string[] row in database.Query("SELECT profile_id, alias, created_at, age FROM patient_profiles ORDER BY alias_key, profile_id"))
+                profiles.Add(new PatientProfile { id = row[0], alias = row[1], createdAt = row[2], age = int.Parse(row[3], CultureInfo.InvariantCulture) });
             return profiles;
         }
 
@@ -322,6 +327,22 @@ namespace NeuroFlexVR
 
         public static LocalProfileDatabase OpenDatabase() => new LocalProfileDatabase(DatabasePath);
         public static void Select(PatientProfile profile) { ActiveProfile = profile; }
+
+        public static bool IsDifficultyUnlocked(string scenario, int difficulty)
+        {
+            if (difficulty == 1) return true;
+            if (difficulty < 1 || difficulty > 3 || ActiveProfile == null) return false;
+            try
+            {
+                using (var db = OpenDatabase())
+                    for (int level = 1; level < difficulty; level++)
+                        if (db.CountResults(ActiveProfile.id, scenario, level, "completed") == 0 &&
+                            !Pending.Exists(r => r.profileId == ActiveProfile.id && r.scenarioId == scenario && r.difficulty == level && r.status == "completed"))
+                            return false;
+                return true;
+            }
+            catch (Exception ex) { Debug.LogWarning("[NeuroFlex] No se pudo leer el progreso: " + ex.Message); return false; }
+        }
 
         public static bool Save(PatientResult result)
         {

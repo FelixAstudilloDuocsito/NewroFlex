@@ -40,6 +40,13 @@ namespace NeuroFlexVR
             }
         }
 
+        public static void ReplaceAction(Button button, UnityAction action)
+        {
+            if (button == null) return;
+            button.onClick = new Button.ButtonClickedEvent();
+            button.onClick.AddListener(action);
+        }
+
         public static void Bind(Button button, UnityAction action)
         {
             if (button != null && action != null) button.onClick.AddListener(action);

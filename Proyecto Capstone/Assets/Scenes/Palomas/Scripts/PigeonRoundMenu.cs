@@ -49,9 +49,10 @@ namespace NeuroFlexVR
                 int level = i + 1;
                 difficultyButtons[i].onClick.AddListener(() => SelectDifficulty(level));
             }
-            startButton.onClick.AddListener(controller.StartRound);
+            ThemedSceneMenu.ReplaceAction(startButton, () => { if (PatientSession.IsDifficultyUnlocked("pigeons", controller.difficultyLevel)) controller.StartRound(); });
             if (continueButton != null)
-                continueButton.onClick.AddListener(controller.ReturnToStart);
+                ThemedSceneMenu.ReplaceAction(continueButton, NextRound);
+            if (continueButton != null) continueButton.GetComponentInChildren<TMP_Text>(true).text = "Siguiente";
             AddProfileNavigation();
             initialized = true;
             ShowPhase(true);
@@ -66,7 +67,10 @@ namespace NeuroFlexVR
             startButton.interactable = true;
             if (receptionButtons != null)
                 foreach (Button button in receptionButtons)
-                    ThemedSceneMenu.Bind(button, () => SceneManager.LoadScene("Recepción"));
+                {
+                    ThemedSceneMenu.ReplaceAction(button, () => SceneManager.LoadScene("Recepción"));
+                    button.GetComponentInChildren<TMP_Text>(true).text = "Salir";
+                }
             ThemedSceneMenu.Bind(retrySave, () => PatientSession.RetryPending());
             PatientSession.SaveStateChanged += RefreshSaveStatus;
             RefreshSaveStatus();
@@ -75,7 +79,10 @@ namespace NeuroFlexVR
         private void RefreshSaveStatus()
         {
             if (saveStatus != null) saveStatus.text = PatientSession.LastSaveMessage;
-            if (retrySave != null) retrySave.gameObject.SetActive(PatientSession.HasPendingResults);
+            if (retrySave != null) retrySave.gameObject.SetActive(false);
+            if (continueButton != null) continueButton.interactable = controller.LastRoundRecord != null &&
+                controller.LastRoundRecord.status == "completed" && controller.LastRoundRecord.difficultyLevel < 3 &&
+                PatientSession.IsDifficultyUnlocked("pigeons", controller.LastRoundRecord.difficultyLevel + 1);
         }
 
         private void OnDestroy() { PatientSession.SaveStateChanged -= RefreshSaveStatus; }
@@ -138,9 +145,19 @@ namespace NeuroFlexVR
 
         private void SelectDifficulty(int level)
         {
-            if (controller.poolSpawner == null) return;
+            if (controller.poolSpawner == null || !PatientSession.IsDifficultyUnlocked("pigeons", level)) return;
             controller.poolSpawner.SelectDifficulty(level);
             RefreshSelection();
+        }
+
+        private void NextRound()
+        {
+            var record = controller.LastRoundRecord;
+            if (record == null || record.status != "completed" || record.difficultyLevel >= 3) return;
+            int next = record.difficultyLevel + 1;
+            if (!PatientSession.IsDifficultyUnlocked("pigeons", next)) return;
+            SelectDifficulty(next);
+            controller.StartRound();
         }
 
         private void RefreshSelection()
@@ -149,6 +166,13 @@ namespace NeuroFlexVR
             int selected = spawner != null
                 ? (spawner.SelectedDifficulty > 0 ? spawner.SelectedDifficulty : spawner.initialDifficulty)
                 : 0;
+            for (int i = 0; i < difficultyButtons.Length; i++)
+                difficultyButtons[i].interactable = PatientSession.IsDifficultyUnlocked("pigeons", i + 1);
+            if (!PatientSession.IsDifficultyUnlocked("pigeons", selected) && spawner != null)
+            {
+                spawner.SelectDifficulty(1);
+                selected = 1;
+            }
             for (int i = 0; i < selectionBorders.Length; i++)
                 if (selectionBorders[i] != null) selectionBorders[i].enabled = selected == i + 1;
         }

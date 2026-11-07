@@ -94,12 +94,16 @@ namespace NeuroFlexVR
             for (int i = 0; i < difficultyView.optionButtons.Length; i++)
             {
                 int difficulty = i + 1;
-                ThemedSceneMenu.Bind(difficultyView.optionButtons[i], () => { selected = difficulty; RefreshSelection(); });
+                ThemedSceneMenu.Bind(difficultyView.optionButtons[i], () => { if (PatientSession.IsDifficultyUnlocked("memory", difficulty)) { selected = difficulty; RefreshSelection(); } });
             }
             ThemedSceneMenu.Bind(difficultyView.primaryButton, StartRound);
-            ThemedSceneMenu.Bind(resultsView.primaryButton, ShowMenu);
+            ThemedSceneMenu.ReplaceAction(resultsView.primaryButton, NextRound);
+            resultsView.primaryButton.GetComponentInChildren<TMP_Text>(true).text = "Siguiente";
             foreach (Button button in receptionButtons)
-                ThemedSceneMenu.Bind(button, () => SceneManager.LoadScene("Recepción"));
+            {
+                ThemedSceneMenu.ReplaceAction(button, () => SceneManager.LoadScene("Recepción"));
+                button.GetComponentInChildren<TMP_Text>(true).text = "Salir";
+            }
             ThemedSceneMenu.Bind(tutorialButton, ShowTutorial);
             ThemedSceneMenu.Bind(retryButton, () => PatientSession.RetryPending());
             PatientSession.SaveStateChanged += RefreshSaveStatus;
@@ -118,18 +122,30 @@ namespace NeuroFlexVR
                 ? "Selecciona un perfil en Recepción" : "Perfil: " + PatientSession.ActiveProfile.alias;
             difficultyView.primaryButton.interactable = true;
             tutorialButton.interactable = tutorial != null;
+            if (!PatientSession.IsDifficultyUnlocked("memory", selected)) selected = 1;
             RefreshSelection();
+        }
+
+        private void NextRound()
+        {
+            if (selected >= 3 || !PatientSession.IsDifficultyUnlocked("memory", selected + 1)) return;
+            selected++;
+            StartRound();
         }
 
         private void RefreshSelection()
         {
             for (int i = 0; i < difficultyView.optionButtons.Length; i++)
+            {
+                difficultyView.optionButtons[i].interactable = PatientSession.IsDifficultyUnlocked("memory", i + 1);
                 foreach (var border in difficultyView.optionButtons[i].GetComponentsInChildren<PigeonDifficultyHighlight>(true))
                     border.enabled = selected == i + 1;
+            }
         }
 
         private void StartRound()
         {
+            if (!PatientSession.IsDifficultyUnlocked("memory", selected)) return;
             difficultyView.gameObject.SetActive(false);
             resultsView.gameObject.SetActive(false);
             levels[selected - 1].SetActive(true);
@@ -138,6 +154,8 @@ namespace NeuroFlexVR
 
         private void ShowResults(int index)
         {
+            selected = index + 1;
+            resultsView.primaryButton.interactable = selected < 3 && PatientSession.IsDifficultyUnlocked("memory", selected + 1);
             var manager = managers[index];
             levels[index].SetActive(false);
             difficultyView.gameObject.SetActive(false);
@@ -154,7 +172,7 @@ namespace NeuroFlexVR
         private void RefreshSaveStatus()
         {
             saveStatus.text = PatientSession.LastSaveMessage;
-            retryButton.gameObject.SetActive(PatientSession.HasPendingResults);
+            retryButton.gameObject.SetActive(false);
         }
 
         private void ShowTutorial()

@@ -229,6 +229,7 @@ namespace NeuroFlexVR
         // Call from the "Iniciar" button.
         public void StartRound()
         {
+            if (!PatientSession.IsDifficultyUnlocked("pigeons", difficultyLevel)) return;
             if (IsRunning())
             {
                 Debug.LogWarning("[NeuroFlex] La ronda ya está activa.");
@@ -614,7 +615,7 @@ namespace NeuroFlexVR
                     resultImage.enabled = false;
                 }
             }
-            SetStatus("Ronda finalizada. Puedes volver al inicio para jugar otra vez.");
+            SetStatus("Ronda finalizada. Elige Siguiente o Salir.");
             if (resultPanel == null) ReturnToStart();
         }
 

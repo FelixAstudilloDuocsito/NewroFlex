@@ -11,6 +11,8 @@ namespace NeuroFlexVR
     public sealed class ReceptionProfileStation : MonoBehaviour
     {
         public TMP_InputField aliasInput;
+        public TMP_InputField ageInput;
+        private TMP_InputField keyboardTarget;
         public TMP_Text activeProfileText;
         public TMP_Text frontProfileText;
         public TMP_Text feedback;
@@ -37,6 +39,9 @@ namespace NeuroFlexVR
                 Debug.LogError("[NeuroFlex] Faltan controles del panel de perfiles de Recepción.", this);
                 return;
             }
+            keyboardTarget = aliasInput;
+            aliasInput.onSelect.AddListener(_ => keyboardTarget = aliasInput);
+            ageInput.onSelect.AddListener(_ => keyboardTarget = ageInput);
             for (int i = 0; i < profileRows.Length; i++)
             {
                 int row = i;
@@ -50,7 +55,7 @@ namespace NeuroFlexVR
             ThemedSceneMenu.Bind(spaceButton, () => AppendAlias(" "));
             ThemedSceneMenu.Bind(backspaceButton, () =>
             {
-                if (aliasInput.text.Length > 0) aliasInput.text = aliasInput.text.Substring(0, aliasInput.text.Length - 1);
+                if (keyboardTarget.text.Length > 0) keyboardTarget.text = keyboardTarget.text.Substring(0, keyboardTarget.text.Length - 1);
             });
             ThemedSceneMenu.Bind(createProfileButton, CreateProfile);
             ThemedSceneMenu.Bind(refreshButton, ReloadProfiles);
@@ -65,6 +70,7 @@ namespace NeuroFlexVR
         private bool RecoverReferences()
         {
             if (aliasInput == null) aliasInput = SceneMenuReferences.Find<TMP_InputField>(this, "NombreOAlias", this);
+            if (ageInput == null) ageInput = SceneMenuReferences.Find<TMP_InputField>(this, "Edad", this);
             if (activeProfileText == null) activeProfileText = SceneMenuReferences.Find<TMP_Text>(this, "PerfilActivo", this);
             if (frontProfileText == null) frontProfileText = SceneMenuReferences.Find<TMP_Text>(this, "PerfilActivoRecepcion");
             if (feedback == null) feedback = SceneMenuReferences.Find<TMP_Text>(this, "EstadoPerfiles", this);
@@ -88,7 +94,7 @@ namespace NeuroFlexVR
             string[] entrances = { "Boton_Parque_Palomas", "Boton_Juego_Memoria", "Boton_Puzzle_Libreria" };
             for (int i = 0; i < sceneButtons.Length; i++)
                 if (sceneButtons[i] == null) sceneButtons[i] = SceneMenuReferences.Find<Button>(this, entrances[i]);
-            return aliasInput != null && activeProfileText != null && frontProfileText != null && feedback != null &&
+            return aliasInput != null && ageInput != null && activeProfileText != null && frontProfileText != null && feedback != null &&
                 pageText != null && previous != null && next != null && createProfileButton != null &&
                 refreshButton != null && spaceButton != null && backspaceButton != null && dataButton != null &&
                 SceneMenuReferences.Complete(profileRows, 5) && SceneMenuReferences.Complete(sceneButtons, 3) &&
@@ -97,7 +103,8 @@ namespace NeuroFlexVR
 
         private void AppendAlias(string key)
         {
-            if (aliasInput.text.Length < aliasInput.characterLimit) aliasInput.text += key;
+            if (keyboardTarget == ageInput && (key.Length != 1 || !char.IsDigit(key[0]))) return;
+            if (keyboardTarget.text.Length < keyboardTarget.characterLimit) keyboardTarget.text += key;
         }
 
         private void ReloadProfiles()
@@ -128,7 +135,7 @@ namespace NeuroFlexVR
                 profileRows[i].gameObject.SetActive(index < profiles.Count);
                 if (index >= profiles.Count) continue;
                 var profile = profiles[index];
-                profileRows[i].GetComponentInChildren<TMP_Text>(true).text = profile.alias;
+                profileRows[i].GetComponentInChildren<TMP_Text>(true).text = profile.alias + (profile.age > 0 ? " - " + profile.age + " años" : " - Edad sin registrar");
                 foreach (var border in profileRows[i].GetComponentsInChildren<PigeonDifficultyHighlight>(true))
                     border.enabled = PatientSession.ActiveProfile?.id == profile.id;
             }
@@ -138,9 +145,13 @@ namespace NeuroFlexVR
         {
             try
             {
+                if (!int.TryParse(ageInput.text, out int age) || age < 1 || age > 120)
+                    throw new ArgumentException("Escribe una edad entre 1 y 120 años.");
                 PatientProfile profile;
-                using (var database = PatientSession.OpenDatabase()) profile = database.CreateProfile(aliasInput.text);
+                using (var database = PatientSession.OpenDatabase()) profile = database.CreateProfile(aliasInput.text, age);
                 aliasInput.text = "";
+                ageInput.text = "";
+                keyboardTarget = aliasInput;
                 PatientSession.Select(profile);
                 ReloadProfiles();
                 int index = profiles.FindIndex(item => item.id == profile.id);
@@ -168,7 +179,7 @@ namespace NeuroFlexVR
         private void RefreshActiveProfile()
         {
             var profile = PatientSession.ActiveProfile;
-            activeProfileText.text = profile == null ? "Selecciona un perfil o crea uno nuevo" : "Perfil activo: " + profile.alias;
+            activeProfileText.text = profile == null ? "Selecciona un perfil o crea uno nuevo" : "Perfil activo: " + profile.alias + (profile.age > 0 ? " - " + profile.age + " años" : " - Edad sin registrar");
             frontProfileText.text = profile == null
                 ? "Gira: crea o elige tu perfil en el panel detrás de ti para jugar."
                 : "Perfil: " + profile.alias + " · Elige una escena. Puedes cambiar de perfil detrás de ti.";
