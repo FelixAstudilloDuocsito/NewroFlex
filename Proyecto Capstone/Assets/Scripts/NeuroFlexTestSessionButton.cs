@@ -21,6 +21,7 @@ namespace NeuroFlexVR
         private int successfulUploads;
         private bool awaitingUploads;
         private string testSessionId;
+        private string testSessionCode;
 
         private void Awake()
         {
@@ -55,17 +56,18 @@ namespace NeuroFlexVR
                 expectedUploads.Clear();
                 uploadErrors.Clear();
                 successfulUploads = 0;
+                testSessionCode = null;
                 foreach (PatientResult result in results) expectedUploads.Add(result.id);
                 awaitingUploads = true;
                 FirebaseTelemetryUploader.UploadCompleted += OnUploadCompleted;
+                FirebaseTelemetryUploader.SessionCodeAssigned += OnSessionCodeAssigned;
                 FirebaseTelemetryUploader.InitializationFailed += OnInitializationFailed;
 
                 foreach (PatientResult result in results)
                     if (!PatientSession.Save(result))
                         throw new InvalidOperationException("No se pudo guardar localmente la ronda " + result.id + ".");
 
-                Debug.Log("[NeuroFlex] Sesión de prueba " + testSessionId +
-                    " creada con " + results.Count + " rondas.");
+                Debug.Log("[NeuroFlex] Sesión de prueba creada con " + results.Count + " rondas.");
                 if (!FirebaseTelemetryUploader.IsAvailable)
                 {
                     FinishWithError("El cargador de Firebase no está activo. Las rondas quedaron guardadas localmente.");
@@ -105,9 +107,12 @@ namespace NeuroFlexVR
             int total = successfulUploads + uploadErrors.Count;
             if (uploadErrors.Count == 0)
             {
-                SetStatus("Firebase confirmó las " + total + " métricas de la sesión " + testSessionId + ".");
+                string sessionLabel = string.IsNullOrEmpty(testSessionCode)
+                    ? "sesión de prueba"
+                    : testSessionCode;
+                SetStatus("Firebase confirmó las " + total + " métricas de " + sessionLabel + ".");
                 Debug.Log("[NeuroFlex] Firebase confirmó las " + total +
-                    " métricas de la sesión de prueba " + testSessionId + ".");
+                    " métricas de " + sessionLabel + ".");
             }
             else
             {
@@ -128,6 +133,11 @@ namespace NeuroFlexVR
             Debug.LogError("[NeuroFlex] No se pudieron subir las métricas de prueba: " + error);
         }
 
+        private void OnSessionCodeAssigned(string sessionId, string sessionCode)
+        {
+            if (sessionId == testSessionId) testSessionCode = sessionCode;
+        }
+
         private void FinishWithError(string message)
         {
             StopWatchingUploads();
@@ -138,6 +148,7 @@ namespace NeuroFlexVR
         private void StopWatchingUploads()
         {
             FirebaseTelemetryUploader.UploadCompleted -= OnUploadCompleted;
+            FirebaseTelemetryUploader.SessionCodeAssigned -= OnSessionCodeAssigned;
             FirebaseTelemetryUploader.InitializationFailed -= OnInitializationFailed;
             awaitingUploads = false;
             expectedUploads.Clear();

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Threading.Tasks;
 using Firebase;
 using Firebase.Extensions;
@@ -21,8 +22,14 @@ namespace NeuroFlexVR
         private FirebaseFirestore firestore;
         private bool ready;
         private readonly List<PatientResult> waitingResults = new List<PatientResult>();
+        private readonly Dictionary<string, Task<string>> sessionCodeTasks =
+            new Dictionary<string, Task<string>>();
+        private readonly Dictionary<string, string> sessionStartedAtById =
+            new Dictionary<string, string>();
+        private readonly HashSet<string> publishedSessionCodes = new HashSet<string>();
 
         public static event Action<string, bool, string> UploadCompleted;
+        public static event Action<string, string> SessionCodeAssigned;
         public static event Action<string> InitializationFailed;
         public static bool IsAvailable => instance != null;
         public static string InitializationError => initializationError;
@@ -104,12 +111,46 @@ namespace NeuroFlexVR
 
         private void UploadExistingResults()
         {
+            const int pageSize = 100;
+            var profiles = new List<PatientProfile>();
             try
             {
                 using (var database = PatientSession.OpenDatabase())
-                    foreach (PatientProfile profile in database.ListProfiles())
+                {
+                    profiles = database.ListProfiles();
+                    foreach (PatientProfile profile in profiles)
                     {
-                        const int pageSize = 100;
+                        for (int offset = 0; ; offset += pageSize)
+                        {
+                            List<PatientResult> results = database.ListResultsPage(profile.id, offset, pageSize);
+                            foreach (PatientResult result in results)
+                                RememberSessionStart(result);
+                            if (results.Count < pageSize) break;
+                        }
+                    }
+            }
+            catch (Exception exception)
+            {
+                Debug.LogWarning("[NeuroFlex] No se pudo preparar el historial local para Firebase: " + exception.Message);
+            }
+
+            List<PatientResult> pendingResults = new List<PatientResult>();
+            try
+            {
+                pendingResults = PatientSession.PendingResults;
+                foreach (PatientResult result in pendingResults)
+                    RememberSessionStart(result);
+            }
+            catch (Exception exception)
+            {
+                Debug.LogWarning("[NeuroFlex] No se pudieron preparar las métricas anónimas para Firebase: " + exception.Message);
+            }
+
+            try
+            {
+                using (var database = PatientSession.OpenDatabase())
+                    foreach (PatientProfile profile in profiles)
+                    {
                         for (int offset = 0; ; offset += pageSize)
                         {
                             List<PatientResult> results = database.ListResultsPage(profile.id, offset, pageSize);
@@ -120,17 +161,23 @@ namespace NeuroFlexVR
             }
             catch (Exception exception)
             {
-                Debug.LogWarning("[NeuroFlex] No se pudo preparar el historial local para Firebase: " + exception.Message);
+                Debug.LogWarning("[NeuroFlex] No se pudo subir todo el historial local a Firebase: " + exception.Message);
             }
 
-            try
+            foreach (PatientResult result in pendingResults) Upload(result);
+        }
+
+        private void RememberSessionStart(PatientResult result)
+        {
+            if (result == null || string.IsNullOrWhiteSpace(result.startedAt)) return;
+            string sessionId = string.IsNullOrWhiteSpace(result.sessionId)
+                ? NeuroFlexSession.SessionId
+                : result.sessionId;
+
+            if (!sessionStartedAtById.TryGetValue(sessionId, out string currentStart) ||
+                string.Compare(result.startedAt, currentStart, StringComparison.Ordinal) < 0)
             {
-                foreach (PatientResult result in PatientSession.PendingResults)
-                    Upload(result);
-            }
-            catch (Exception exception)
-            {
-                Debug.LogWarning("[NeuroFlex] No se pudieron preparar las métricas anónimas para Firebase: " + exception.Message);
+                sessionStartedAtById[sessionId] = result.startedAt;
             }
         }
 
@@ -167,6 +214,9 @@ namespace NeuroFlexVR
             string sessionId = string.IsNullOrWhiteSpace(result.sessionId)
                 ? NeuroFlexSession.SessionId
                 : result.sessionId;
+            string sessionStartedAt = sessionStartedAtById.TryGetValue(sessionId, out string earliestStart)
+                ? earliestStart
+                : result.startedAt;
             string difficultyId = result.difficulty.ToString(System.Globalization.CultureInfo.InvariantCulture);
 
             DocumentReference sessionDocument = firestore.Collection(CollectionName).Document(sessionId);
@@ -210,14 +260,26 @@ namespace NeuroFlexVR
 
             try
             {
-                ContinueWrite(sessionDocument.SetAsync(sessionData, SetOptions.MergeAll), result, attempt, () =>
-                    ContinueWrite(sceneDocument.SetAsync(sceneData, SetOptions.MergeAll), result, attempt, () =>
-                        ContinueWrite(difficultyDocument.SetAsync(difficultyData, SetOptions.MergeAll), result, attempt, () =>
-                            ContinueWrite(roundDocument.SetAsync(roundData), result, attempt, () =>
-                            {
-                                Debug.Log("[NeuroFlex] Métrica guardada en Firestore: " + result.id);
-                                UploadCompleted?.Invoke(result.id, true, "");
-                            }))));
+                UploadAsync(
+                    result,
+                    sessionId,
+                    sessionStartedAt,
+                    sessionDocument,
+                    sceneDocument,
+                    difficultyDocument,
+                    roundDocument,
+                    sessionData,
+                    sceneData,
+                    difficultyData,
+                    roundData).ContinueWithOnMainThread(task =>
+                    {
+                        if (task.IsFaulted || task.IsCanceled)
+                        {
+                            string error = task.Exception?.GetBaseException().Message ??
+                                "La escritura en Firestore fue cancelada.";
+                            HandleUploadFailure(result, attempt, error);
+                        }
+                    });
             }
             catch (Exception exception)
             {
@@ -225,25 +287,125 @@ namespace NeuroFlexVR
             }
         }
 
-        private void ContinueWrite(Task writeTask, PatientResult result, int attempt, Action onSuccess)
+        private async Task UploadAsync(
+            PatientResult result,
+            string sessionId,
+            string startedAt,
+            DocumentReference sessionDocument,
+            DocumentReference sceneDocument,
+            DocumentReference difficultyDocument,
+            DocumentReference roundDocument,
+            Dictionary<string, object> sessionData,
+            Dictionary<string, object> sceneData,
+            Dictionary<string, object> difficultyData,
+            Dictionary<string, object> roundData)
         {
-            writeTask.ContinueWithOnMainThread(task =>
+            string sessionCode = await GetSessionCodeAsync(sessionId, sessionDocument, startedAt);
+            if (publishedSessionCodes.Add(sessionId))
+                SessionCodeAssigned?.Invoke(sessionId, sessionCode);
+            sessionData["session_code"] = sessionCode;
+            roundData["session_code"] = sessionCode;
+
+            await sessionDocument.SetAsync(sessionData, SetOptions.MergeAll);
+            await sceneDocument.SetAsync(sceneData, SetOptions.MergeAll);
+            await difficultyDocument.SetAsync(difficultyData, SetOptions.MergeAll);
+            await roundDocument.SetAsync(roundData);
+            Debug.Log("[NeuroFlex] Métrica guardada en Firestore: " + result.id);
+            UploadCompleted?.Invoke(result.id, true, "");
+        }
+
+        private Task<string> GetSessionCodeAsync(
+            string sessionId,
+            DocumentReference sessionDocument,
+            string startedAt)
+        {
+            if (sessionCodeTasks.TryGetValue(sessionId, out Task<string> existingTask))
+                return existingTask;
+
+            Task<string> codeTask = AllocateSessionCodeAsync(sessionDocument, startedAt);
+            sessionCodeTasks.Add(sessionId, codeTask);
+            codeTask.ContinueWithOnMainThread(task =>
             {
-                if (task.IsCanceled || task.IsFaulted)
+                if (task.IsFaulted || task.IsCanceled)
+                    sessionCodeTasks.Remove(sessionId);
+            });
+            return codeTask;
+        }
+
+        private Task<string> AllocateSessionCodeAsync(
+            DocumentReference sessionDocument,
+            string startedAt)
+        {
+            DocumentReference counterDocument = firestore
+                .Collection("metadata")
+                .Document("sessionCodeCounter");
+
+            return firestore.RunTransactionAsync(async transaction =>
+            {
+                DocumentSnapshot sessionSnapshot = await transaction.GetSnapshotAsync(sessionDocument);
+                if (sessionSnapshot.Exists && sessionSnapshot.ContainsField("session_code"))
                 {
-                    HandleUploadFailure(result, attempt, TaskError(task));
-                    return;
+                    string existingCode = sessionSnapshot.GetValue<string>("session_code");
+                    if (!string.IsNullOrWhiteSpace(existingCode))
+                    {
+                        if (!sessionSnapshot.ContainsField("session_started_at") &&
+                            !string.IsNullOrWhiteSpace(startedAt))
+                        {
+                            transaction.Set(sessionDocument, new Dictionary<string, object>
+                            {
+                                ["session_started_at"] = startedAt
+                            }, SetOptions.MergeAll);
+                        }
+                        return existingCode;
+                    }
                 }
 
-                try
+                DocumentSnapshot counterSnapshot = await transaction.GetSnapshotAsync(counterDocument);
+                long lastValue = 0;
+                if (counterSnapshot.Exists)
                 {
-                    onSuccess();
+                    if (!counterSnapshot.ContainsField("value"))
+                        throw new InvalidOperationException(
+                            "El contador de códigos de sesión no contiene el campo 'value'.");
+                    lastValue = counterSnapshot.GetValue<long>("value");
+                    if (lastValue < 0)
+                        throw new InvalidOperationException(
+                            "El contador de códigos de sesión contiene un valor negativo.");
                 }
-                catch (Exception exception)
+
+                long nextValue = checked(lastValue + 1);
+                string sessionCode = FormatSessionCode(nextValue);
+                transaction.Set(counterDocument, new Dictionary<string, object>
                 {
-                    HandleUploadFailure(result, attempt, exception.Message);
-                }
+                    ["value"] = nextValue,
+                    ["updated_at"] = Timestamp.GetCurrentTimestamp()
+                }, SetOptions.MergeAll);
+                var sessionMetadata = new Dictionary<string, object>
+                {
+                    ["session_code"] = sessionCode
+                };
+                if (!string.IsNullOrWhiteSpace(startedAt) &&
+                    (!sessionSnapshot.Exists || !sessionSnapshot.ContainsField("session_started_at")))
+                    sessionMetadata["session_started_at"] = startedAt;
+                transaction.Set(sessionDocument, sessionMetadata, SetOptions.MergeAll);
+                return sessionCode;
             });
+        }
+
+        private static string FormatSessionCode(long sequence)
+        {
+            long letterIndex = (sequence - 1) / 999;
+            int number = (int)((sequence - 1) % 999) + 1;
+            var letters = new Stack<char>();
+
+            while (letterIndex >= 0)
+            {
+                letters.Push((char)('A' + letterIndex % 26));
+                letterIndex = letterIndex / 26 - 1;
+            }
+
+            return "sesion-" + new string(letters.ToArray()) +
+                number.ToString("D3", CultureInfo.InvariantCulture);
         }
 
         private static string SceneName(string scenarioId)
@@ -267,11 +429,6 @@ namespace NeuroFlexVR
             }
 
             UploadCompleted?.Invoke(result.id, false, error);
-        }
-
-        private static string TaskError(Task task)
-        {
-            return task.Exception?.GetBaseException().Message ?? "La escritura en Firestore fue cancelada.";
         }
 
         private IEnumerator RetryUpload(PatientResult result, int attempt)

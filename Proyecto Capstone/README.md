@@ -261,6 +261,15 @@ también sincroniza el historial local existente al iniciar, por lo que puede
 reaparecer junto a la sesión de prueba si aún hay rondas locales. Para probarlo,
 configura Firestore y sus reglas de escritura en el proyecto Firebase correspondiente.
 
+El cargador asigna a cada sesión un código legible global (`sesion-A001`,
+`sesion-A002`, ..., `sesion-A999`, `sesion-B001`) mediante una transacción en
+`metadata/sessionCodeCounter`. El ID técnico del documento Firestore se conserva
+para enlazar rondas y no se muestra en el visor; el botón de prueba informa el
+código legible al terminar. Las reglas de Firestore deben
+permitir a Unity leer y escribir el documento contador. `session_started_at`
+conserva la fecha original de la sesión para que volver a sincronizar datos
+locales no los agrupe como si fueran sesiones de hoy.
+
 Estos datos alimentan el **pipeline de IA** (`entrenamiento_modelo_ia/`) que, mediante distintos *prompts* o *semillas*, genera resúmenes descriptivos del rendimiento —siempre sin interpretación clínica— usando modelos locales vía Ollama.
 
 ---
