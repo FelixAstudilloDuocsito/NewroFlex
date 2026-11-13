@@ -21508,7 +21508,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ImageSceneLoaderVR
   nombreEscena: Palomas
-  requierePerfil: 1
+  requierePerfil: 0
   textoMensaje: {fileID: 1708666922}
   mensajeSeleccion: Seleccionado
   objetoCanvasFade: {fileID: 970224011}
@@ -31867,7 +31867,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ImageSceneLoaderVR
   nombreEscena: Puzzle Libreria
-  requierePerfil: 1
+  requierePerfil: 0
   textoMensaje: {fileID: 652587359}
   mensajeSeleccion: Seleccionado
   objetoCanvasFade: {fileID: 970224011}
@@ -86582,7 +86582,7 @@ Canvas:
   m_GameObject: {fileID: 970224011}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
+  m_RenderMode: 1
   m_Camera: {fileID: 0}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
@@ -115061,7 +115061,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ImageSceneLoaderVR
   nombreEscena: Juego De Memoria
-  requierePerfil: 1
+  requierePerfil: 0
   textoMensaje: {fileID: 1073739274}
   mensajeSeleccion: Seleccionado
   objetoCanvasFade: {fileID: 970224011}
@@ -187127,7 +187127,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8563a398d56ae6a87b089eb53c1cf270, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NeuroFlexVR.NeuroFlexTestSessionButton
   confirmBeforeRunning: 0
   statusText: {fileID: 1843926984}
