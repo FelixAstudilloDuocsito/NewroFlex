@@ -436,7 +436,7 @@ function RoundCard({ round, sceneId, showMissing }) {
   );
 }
 
-function SceneSection({ scene, showMissing }) {
+function SceneSection({ scene, index, showMissing }) {
   const sceneId = scene.scenario_id || scene.id;
   const sceneName = scene.scenario_name || SCENES[sceneId] || sceneId;
   const roundCount = scene.difficulties.reduce(
@@ -450,8 +450,9 @@ function SceneSection({ scene, showMissing }) {
   ).length;
 
   return (
-    <section className={`scene-section scene-theme-${sceneIcons[sceneId] ? sceneId : "default"}`}>
-      <header className="scene-heading">
+    <details className={`scene-section scene-theme-${sceneIcons[sceneId] ? sceneId : "default"}`}>
+      <summary className="scene-heading scene-toggle">
+        <span className="scene-index">{String(index).padStart(2, "0")}</span>
         <div className="scene-title">
           <span className="scene-icon" aria-hidden="true">{sceneIcons[sceneId] || "◉"}</span>
           <div>
@@ -464,34 +465,52 @@ function SceneSection({ scene, showMissing }) {
         <span className="count-pill">
           {roundCount} {roundCount === 1 ? "ronda" : "rondas"}
         </span>
-      </header>
-      {scene.difficulties.map((difficulty) => (
-        <div
-          className={`difficulty-group difficulty-color-${Number(difficulty.difficulty || difficulty.id)}`}
-          key={difficulty.id}
-        >
-          <header className="difficulty-heading">
-            <span className="difficulty-marker" aria-hidden="true">
-              {difficulty.difficulty || difficulty.id}
-            </span>
-            <h4>{difficulty.difficulty_name || `Dificultad ${difficulty.difficulty || difficulty.id}`}</h4>
-            <span className={`difficulty-status${difficulty.rounds.length > 0 && difficulty.rounds.every((round) => round.status?.toLowerCase() === "completed") ? " complete" : ""}`}>
-              {difficulty.rounds.filter((round) => round.status?.toLowerCase() === "completed").length}
-              /{difficulty.rounds.length} rondas completadas
-            </span>
-          </header>
-          {difficulty.rounds.length === 0 ? (
-            <p className="empty-inline">Sin rondas guardadas.</p>
-          ) : (
-            <div className="round-list">
-              {difficulty.rounds.map((round) => (
-                <RoundCard key={round.id} round={round} sceneId={sceneId} showMissing={showMissing} />
-              ))}
-            </div>
-          )}
-        </div>
-      ))}
-    </section>
+      </summary>
+      <div className="scene-content">
+        {scene.difficulties.map((difficulty) => {
+          const completedRounds = difficulty.rounds.filter(
+            (round) => round.status?.toLowerCase() === "completed",
+          ).length;
+          const isComplete = difficulty.rounds.length > 0 &&
+            completedRounds === difficulty.rounds.length;
+
+          return (
+            <details
+              className={`difficulty-group difficulty-color-${Number(difficulty.difficulty || difficulty.id)}`}
+              key={difficulty.id}
+            >
+              <summary className="difficulty-heading">
+                <span className="difficulty-marker" aria-hidden="true">
+                  {difficulty.difficulty || difficulty.id}
+                </span>
+                <span className="difficulty-copy">
+                  <strong>{difficulty.difficulty_name || `Dificultad ${difficulty.difficulty || difficulty.id}`}</strong>
+                  <small>{completedRounds}/{difficulty.rounds.length} rondas completadas</small>
+                </span>
+                <span className={`difficulty-status${isComplete ? " complete" : ""}`}>
+                  {isComplete
+                    ? "Completa"
+                    : difficulty.rounds.length > 0
+                      ? "Incompleta"
+                      : "Sin rondas"}
+                </span>
+              </summary>
+              <div className="difficulty-content">
+                {difficulty.rounds.length === 0 ? (
+                  <p className="empty-inline">Sin rondas guardadas.</p>
+                ) : (
+                  <div className="round-list">
+                    {difficulty.rounds.map((round) => (
+                      <RoundCard key={round.id} round={round} sceneId={sceneId} showMissing={showMissing} />
+                    ))}
+                  </div>
+                )}
+              </div>
+            </details>
+          );
+        })}
+      </div>
+    </details>
   );
 }
 
@@ -975,32 +994,47 @@ export default function App() {
                   <p>Revisa que la app haya guardado datos en la estructura actual de Firestore.</p>
                 </div>
               ) : (
-                <div className="scene-list">
-                  {scenes.map((scene) => (
-                    <SceneSection key={scene.id} scene={scene} showMissing={showMissing} />
-                  ))}
-                  {sessionData?.legacyRounds.length > 0 && (
-                    <section className="scene-section">
-                      <header className="scene-heading">
-                        <div className="scene-title">
-                          <span className="scene-icon" aria-hidden="true">📋</span>
-                          <div><h3>Rondas sin clasificar</h3><p className="scene-progress">Estructura anterior</p></div>
-                        </div>
-                        <span className="count-pill">{sessionData.legacyRounds.length} rondas</span>
-                      </header>
-                      <div className="round-list">
-                        {sessionData.legacyRounds.map((round) => (
-                          <RoundCard
-                            key={round.id}
-                            round={round}
-                            sceneId={round.scenario_id || ""}
-                            showMissing={showMissing}
-                          />
-                        ))}
-                      </div>
-                    </section>
+                <>
+                  {scenes.length > 0 && (
+                    <div className="scene-list-heading">
+                      <h3>Escenas de la sesión</h3>
+                      <span>Selecciona una escena para ver sus dificultades y métricas.</span>
+                    </div>
                   )}
-                </div>
+                  <div className="scene-list">
+                    {scenes.map((scene, index) => (
+                      <SceneSection
+                        key={scene.id}
+                        index={index + 1}
+                        scene={scene}
+                        showMissing={showMissing}
+                      />
+                    ))}
+                    {sessionData?.legacyRounds.length > 0 && (
+                      <section className="scene-section">
+                        <header className="scene-heading">
+                          <div className="scene-title">
+                            <span className="scene-icon" aria-hidden="true">📋</span>
+                            <div><h3>Rondas sin clasificar</h3><p className="scene-progress">Estructura anterior</p></div>
+                          </div>
+                          <span className="count-pill">{sessionData.legacyRounds.length} rondas</span>
+                        </header>
+                        <div className="difficulty-content">
+                          <div className="round-list">
+                            {sessionData.legacyRounds.map((round) => (
+                              <RoundCard
+                                key={round.id}
+                                round={round}
+                                sceneId={round.scenario_id || ""}
+                                showMissing={showMissing}
+                              />
+                            ))}
+                          </div>
+                        </div>
+                      </section>
+                    )}
+                  </div>
+                </>
               )}
             </>
           )}

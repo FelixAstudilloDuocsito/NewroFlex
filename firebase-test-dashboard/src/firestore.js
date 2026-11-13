@@ -13,6 +13,8 @@ export const SCENES = {
   puzzle: "Biblioteca",
 };
 
+const SCENE_ORDER = ["puzzle", "memory", "pigeons"];
+
 function timestampMillis(timestamp) {
   return timestamp && typeof timestamp.toDate === "function"
     ? timestamp.toDate().getTime()
@@ -69,8 +71,18 @@ export async function fetchSessionRounds(firestore, sessionId) {
   );
 
   scenes.sort((left, right) => {
-    const leftName = SCENES[left.id] || left.scenario_name || left.id;
-    const rightName = SCENES[right.id] || right.scenario_name || right.id;
+    const leftId = left.scenario_id || left.id;
+    const rightId = right.scenario_id || right.id;
+    const leftRank = SCENE_ORDER.indexOf(leftId);
+    const rightRank = SCENE_ORDER.indexOf(rightId);
+    if (leftRank !== rightRank) {
+      if (leftRank === -1) return 1;
+      if (rightRank === -1) return -1;
+      return leftRank - rightRank;
+    }
+
+    const leftName = SCENES[leftId] || left.scenario_name || leftId;
+    const rightName = SCENES[rightId] || right.scenario_name || rightId;
     return leftName.localeCompare(rightName, "es");
   });
 

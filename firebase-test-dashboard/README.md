@@ -91,6 +91,9 @@ guarda sólo en este equipo.
 Las etiquetas personalizadas se guardan en este equipo y no se suben a Firebase.
 Las métricas se ordenan por escena, los campos vacíos se ocultan por defecto y
 pueden mostrarse con el botón correspondiente.
+Las escenas se presentan como una lista vertical en el orden Biblioteca,
+Memoria y Palomas. Cada escena y dificultad se puede desplegar para consultar
+sus rondas y métricas sin ocupar toda la pantalla.
 
 ## Referencias
 
