@@ -1,0 +1,67 @@
+using UnityEngine;
+using UnityEngine.Networking;
+using System.Collections;
+using System.Text;
+
+public class API_Neuroflex : MonoBehaviour
+{
+    // --- CONFIGURACIÓN ---
+    string clientId = "332crj9p27t5823jbcda9aqcho"; 
+    string region = "us-east-1";
+    string apiUrl = "https://4gesdz7435.execute-api.us-east-1.amazonaws.com/v1/sessions";
+    
+    string username = "equipo.unity@neuroflex.test";
+    string password = "Neuroflex2024!";
+
+    void Start()
+    {
+        StartCoroutine(AutenticarYObtenerDatos());
+    }
+
+    IEnumerator AutenticarYObtenerDatos()
+    {
+        // 1. Obtener el Token de Cognito
+        string authUrl = $"https://cognito-idp.{region}.amazonaws.com/";
+        string jsonBody = "{\"AuthFlow\":\"USER_PASSWORD_AUTH\",\"ClientId\":\"" + clientId + "\",\"AuthParameters\":{\"USERNAME\":\"" + username + "\",\"PASSWORD\":\"" + password + "\"}}";
+
+        UnityWebRequest authReq = new UnityWebRequest(authUrl, "POST");
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonBody);
+        authReq.uploadHandler = new UploadHandlerRaw(bodyRaw);
+        authReq.downloadHandler = new DownloadHandlerBuffer();
+        authReq.SetRequestHeader("Content-Type", "application/x-amz-json-1.1");
+        authReq.SetRequestHeader("X-Amz-Target", "AWSCognitoIdentityProviderService.InitiateAuth");
+
+        yield return authReq.SendWebRequest();
+
+        if (authReq.result != UnityWebRequest.Result.Success) {
+            Debug.LogError("Error en Login: " + authReq.error);
+            yield break;
+        }
+
+        // Extraer el token (sin usar librerías JSON externas para simplificar)
+        string responseText = authReq.downloadHandler.text;
+        string token = ExtractToken(responseText);
+        Debug.Log("Token obtenido con éxito.");
+
+        // 2. Hacer el GET a la API usando el Token
+        UnityWebRequest apiReq = UnityWebRequest.Get(apiUrl);
+        apiReq.SetRequestHeader("Authorization", "Bearer " + token);
+
+        yield return apiReq.SendWebRequest();
+
+        if (apiReq.result == UnityWebRequest.Result.Success) {
+            Debug.Log("Sesiones obtenidas: " + apiReq.downloadHandler.text);
+        } else {
+            Debug.LogError("Error en API: " + apiReq.error + " - " + apiReq.downloadHandler.text);
+        }
+    }
+
+    // Función rápida para sacar el IdToken del JSON de respuesta sin librerías
+    string ExtractToken(string json)
+    {
+        string key = "\"IdToken\":\"";
+        int start = json.IndexOf(key) + key.Length;
+        int end = json.IndexOf("\"", start);
+        return json.Substring(start, end - start);
+    }
+}

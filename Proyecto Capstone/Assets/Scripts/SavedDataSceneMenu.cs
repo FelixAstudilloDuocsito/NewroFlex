@@ -63,7 +63,7 @@ namespace NeuroFlexVR
             ThemedSceneMenu.Bind(contextTab, () => { showContext = true; RenderDetail(); });
             ThemedSceneMenu.Bind(refreshButton, Reload);
             ThemedSceneMenu.Bind(retrySaveButton, () => PatientSession.RetryPending());
-            ThemedSceneMenu.Bind(backButton, () => SceneManager.LoadScene("Recepción"));
+            ThemedSceneMenu.Bind(backButton, NeuroFlexSceneNavigation.LeaveActivity);
             PatientSession.SaveStateChanged += Reload;
             Reload();
         }

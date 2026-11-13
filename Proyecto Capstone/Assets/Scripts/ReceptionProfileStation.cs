@@ -179,11 +179,14 @@ namespace NeuroFlexVR
         private void RefreshActiveProfile()
         {
             var profile = PatientSession.ActiveProfile;
-            activeProfileText.text = profile == null ? "Selecciona un perfil o crea uno nuevo" : "Perfil activo: " + profile.alias + (profile.age > 0 ? " - " + profile.age + " años" : " - Edad sin registrar");
+            activeProfileText.text = profile == null ? "Sesión anónima" : "Perfil local: " + profile.alias + (profile.age > 0 ? " - " + profile.age + " años" : " - Edad sin registrar");
             frontProfileText.text = profile == null
-                ? "Gira: crea o elige tu perfil en el panel detrás de ti para jugar."
+                ? "Sesión anónima activa. Elige una escena para comenzar."
                 : "Perfil: " + profile.alias + " · Elige una escena. Puedes cambiar de perfil detrás de ti.";
-            foreach (Button button in sceneButtons) button.interactable = profile != null;
+            string[] scenarios = { "pigeons", "memory", "puzzle" };
+            for (int i = 0; i < sceneButtons.Length; i++)
+                sceneButtons[i].interactable = i < scenarios.Length &&
+                    NeuroFlexSessionProgress.IsSceneAvailable(scenarios[i]);
         }
     }
 }

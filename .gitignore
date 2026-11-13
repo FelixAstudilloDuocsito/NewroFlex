@@ -52,3 +52,6 @@ Pesos_IA/model/**/*.safetensors
 Pesos_IA/model/**/*.bin
 Pesos_IA/model/**/*.pt
 Pesos_IA/model/**/*.pth
+
+# Credenciales temporales locales
+aws.txt

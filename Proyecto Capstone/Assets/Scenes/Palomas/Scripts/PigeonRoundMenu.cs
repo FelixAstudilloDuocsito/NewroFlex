@@ -68,7 +68,7 @@ namespace NeuroFlexVR
             if (receptionButtons != null)
                 foreach (Button button in receptionButtons)
                 {
-                    ThemedSceneMenu.ReplaceAction(button, () => SceneManager.LoadScene("Recepción"));
+                    ThemedSceneMenu.ReplaceAction(button, NeuroFlexSceneNavigation.LeaveActivity);
                     button.GetComponentInChildren<TMP_Text>(true).text = "Salir";
                 }
             ThemedSceneMenu.Bind(retrySave, () => PatientSession.RetryPending());

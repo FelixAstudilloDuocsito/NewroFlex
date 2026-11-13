@@ -101,7 +101,7 @@ namespace NeuroFlexVR
             resultsView.primaryButton.GetComponentInChildren<TMP_Text>(true).text = "Siguiente";
             foreach (Button button in receptionButtons)
             {
-                ThemedSceneMenu.ReplaceAction(button, () => SceneManager.LoadScene("Recepción"));
+                ThemedSceneMenu.ReplaceAction(button, NeuroFlexSceneNavigation.LeaveActivity);
                 button.GetComponentInChildren<TMP_Text>(true).text = "Salir";
             }
             ThemedSceneMenu.Bind(tutorialButton, ShowTutorial);

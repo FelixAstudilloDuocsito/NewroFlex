@@ -176,8 +176,11 @@ namespace NeuroFlexVR
         {
             ShowOnly(homeView);
             activeProfileText.text = PatientSession.ActiveProfile == null
-                ? "Sin perfil seleccionado" : "Perfil: " + PatientSession.ActiveProfile.alias;
-            foreach (Button button in homeView.optionButtons) button.interactable = PatientSession.ActiveProfile != null;
+                ? "Sesión anónima" : "Perfil local: " + PatientSession.ActiveProfile.alias;
+            string[] scenarios = { "pigeons", "memory", "puzzle" };
+            for (int i = 0; i < homeView.optionButtons.Length; i++)
+                homeView.optionButtons[i].interactable = i < scenarios.Length &&
+                    NeuroFlexSessionProgress.IsSceneAvailable(scenarios[i]);
             historyButton.interactable = PatientSession.ActiveProfile != null;
         }
 
@@ -266,7 +269,9 @@ namespace NeuroFlexVR
 
         private void EnterScene(string scene)
         {
-            if (loading || PatientSession.ActiveProfile == null) return;
+            if (loading) return;
+            string scenario = scene == "Palomas" ? "pigeons" : scene == "Juego De Memoria" ? "memory" : "puzzle";
+            if (!NeuroFlexSessionProgress.IsSceneAvailable(scenario)) return;
             if (!Application.CanStreamedLevelBeLoaded(scene)) { activeProfileText.text = "La escena no está incluida en la compilación."; return; }
             loading = true;
             SceneManager.LoadSceneAsync(scene);

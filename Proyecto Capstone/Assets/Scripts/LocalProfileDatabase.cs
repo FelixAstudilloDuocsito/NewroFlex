@@ -301,6 +301,19 @@ namespace NeuroFlexVR
         private static bool pendingLoaded;
         [Serializable] private sealed class PendingFile { public List<PatientResult> results = new List<PatientResult>(); }
         private static string PendingPath => Path.Combine(Application.persistentDataPath, "NeuroFlex", "pending-results.json");
+        public static event Action<PatientResult> ResultStored;
+        public static List<PatientResult> PendingResults
+        {
+            get
+            {
+                try { LoadPending(); }
+                catch (Exception exception)
+                {
+                    Debug.LogError("[NeuroFlex] No se pudo leer el respaldo pendiente: " + exception.Message);
+                }
+                return new List<PatientResult>(Pending);
+            }
+        }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void Reset()
@@ -310,6 +323,7 @@ namespace NeuroFlexVR
             Pending.Clear();
             pendingLoaded = false;
             SaveStateChanged = null;
+            ResultStored = null;
         }
 
         public static string DatabasePath
@@ -330,29 +344,25 @@ namespace NeuroFlexVR
 
         public static bool IsDifficultyUnlocked(string scenario, int difficulty)
         {
-            if (difficulty == 1) return true;
-            if (difficulty < 1 || difficulty > 3 || ActiveProfile == null) return false;
-            try
-            {
-                using (var db = OpenDatabase())
-                    for (int level = 1; level < difficulty; level++)
-                        if (db.CountResults(ActiveProfile.id, scenario, level, "completed") == 0 &&
-                            !Pending.Exists(r => r.profileId == ActiveProfile.id && r.scenarioId == scenario && r.difficulty == level && r.status == "completed"))
-                            return false;
-                return true;
-            }
-            catch (Exception ex) { Debug.LogWarning("[NeuroFlex] No se pudo leer el progreso: " + ex.Message); return false; }
+            return NeuroFlexSessionProgress.IsDifficultyUnlocked(scenario, difficulty);
         }
 
         public static bool Save(PatientResult result)
         {
             try { LoadPending(); }
             catch (Exception ex) { Debug.LogError("[NeuroFlex] No se pudo leer el respaldo pendiente: " + ex.Message); }
+            if (result == null)
+                throw new ArgumentNullException(nameof(result));
             if (string.IsNullOrEmpty(result.profileId))
             {
-                LastSaveMessage = "Sin perfil: el resultado no se ha guardado.";
+                Pending.Add(result);
+                try { if (pendingLoaded) PersistPending(); }
+                catch (Exception ex) { Debug.LogWarning("[NeuroFlex] No se pudo escribir el respaldo anónimo: " + ex.Message); }
+                NeuroFlexSessionProgress.Register(result);
+                ResultStored?.Invoke(result);
+                LastSaveMessage = "Resultado anónimo guardado en la sesión.";
                 SaveStateChanged?.Invoke();
-                return false;
+                return true;
             }
             Pending.Add(result);
             try { if (pendingLoaded) PersistPending(); }
@@ -389,14 +399,32 @@ namespace NeuroFlexVR
 
         public static bool RetryPending()
         {
+            var storedResults = new List<PatientResult>();
             try
             {
                 LoadPending();
                 using (var db = OpenDatabase())
-                    while (Pending.Count > 0) { db.SaveResult(Pending[0]); Pending.RemoveAt(0); }
+                    for (int i = 0, count = Pending.Count; i < count && Pending.Count > 0; i++)
+                    {
+                        PatientResult result = Pending[0];
+                        if (string.IsNullOrEmpty(result.profileId))
+                        {
+                            Pending.RemoveAt(0);
+                            Pending.Add(result);
+                            continue;
+                        }
+                        db.SaveResult(result);
+                        storedResults.Add(result);
+                        Pending.RemoveAt(0);
+                    }
                 PersistPending();
                 LastSaveMessage = "Resultados guardados en el perfil.";
                 SaveStateChanged?.Invoke();
+                foreach (PatientResult result in storedResults)
+                {
+                    NeuroFlexSessionProgress.Register(result);
+                    ResultStored?.Invoke(result);
+                }
                 return true;
             }
             catch (Exception exception)

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1063176052862",
+    "project_id": "newroflex",
+    "storage_bucket": "newroflex.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1063176052862:android:da58a3aadd5df42759f82f",
+        "android_client_info": {
+          "package_name": "com.UnityTechnologies.com.unity.template.urpblank"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDIatXucdZp0s4hepv1Gzdlz44v3ZBLkTo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
