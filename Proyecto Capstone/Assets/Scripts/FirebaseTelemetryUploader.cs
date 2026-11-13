@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Firebase;
 using Firebase.Extensions;
 using Firebase.Firestore;
@@ -16,9 +17,15 @@ namespace NeuroFlexVR
     {
         private const string CollectionName = "sessions";
         private static FirebaseTelemetryUploader instance;
+        private static string initializationError;
         private FirebaseFirestore firestore;
         private bool ready;
         private readonly List<PatientResult> waitingResults = new List<PatientResult>();
+
+        public static event Action<string, bool, string> UploadCompleted;
+        public static event Action<string> InitializationFailed;
+        public static bool IsAvailable => instance != null;
+        public static string InitializationError => initializationError;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void CreateInstance()
@@ -31,12 +38,13 @@ namespace NeuroFlexVR
 
         private void Awake()
         {
-            if (instance != this)
+            if (instance != null && instance != this)
             {
                 Destroy(gameObject);
                 return;
             }
 
+            instance = this;
             PatientSession.ResultStored += Upload;
             InitializeFirebase();
         }
@@ -48,28 +56,50 @@ namespace NeuroFlexVR
 
         private void InitializeFirebase()
         {
-            FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task =>
+            try
             {
-                if (task.IsCanceled || task.IsFaulted)
+                FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task =>
                 {
-                    Debug.LogError("[NeuroFlex] No se pudieron verificar las dependencias de Firebase.");
-                    return;
-                }
+                    if (task.IsCanceled || task.IsFaulted)
+                    {
+                        FailInitialization(task.Exception?.GetBaseException().Message ?? "La verificación de dependencias fue cancelada.");
+                        return;
+                    }
 
-                if (task.Result != DependencyStatus.Available)
-                {
-                    Debug.LogError("[NeuroFlex] Dependencias de Firebase no disponibles: " + task.Result);
-                    return;
-                }
+                    if (task.Result != DependencyStatus.Available)
+                    {
+                        FailInitialization("Dependencias de Firebase no disponibles: " + task.Result);
+                        return;
+                    }
 
-                firestore = FirebaseFirestore.DefaultInstance;
-                ready = true;
-                Debug.Log("[NeuroFlex] Firebase Firestore inicializado.");
-                foreach (PatientResult result in waitingResults)
-                    Upload(result);
-                waitingResults.Clear();
-                UploadExistingResults();
-            });
+                    try
+                    {
+                        firestore = FirebaseFirestore.DefaultInstance;
+                        initializationError = null;
+                        ready = true;
+                        Debug.Log("[NeuroFlex] Firebase Firestore inicializado.");
+                        foreach (PatientResult result in waitingResults)
+                            Upload(result);
+                        waitingResults.Clear();
+                        UploadExistingResults();
+                    }
+                    catch (Exception exception)
+                    {
+                        FailInitialization(exception.Message);
+                    }
+                });
+            }
+            catch (Exception exception)
+            {
+                FailInitialization(exception.Message);
+            }
+        }
+
+        private static void FailInitialization(string error)
+        {
+            initializationError = error;
+            Debug.LogError("[NeuroFlex] No se pudo inicializar Firebase Firestore: " + error);
+            InitializationFailed?.Invoke(error);
         }
 
         private void UploadExistingResults()
@@ -119,22 +149,57 @@ namespace NeuroFlexVR
                 return;
             }
             JObject metrics;
+            string sceneName;
             try
             {
                 metrics = ParseMetrics(result.metricsJson);
+                sceneName = SceneName(result.scenarioId);
+                if (result.difficulty < 1 || result.difficulty > 3)
+                    throw new FormatException("La dificultad de la ronda debe estar entre 1 y 3.");
             }
             catch (FormatException exception)
             {
                 Debug.LogError("[NeuroFlex] No se subió la métrica " + result.id + ": " + exception.Message);
+                UploadCompleted?.Invoke(result.id, false, exception.Message);
                 return;
             }
 
-            var data = new Dictionary<string, object>
+            string sessionId = string.IsNullOrWhiteSpace(result.sessionId)
+                ? NeuroFlexSession.SessionId
+                : result.sessionId;
+            string difficultyId = result.difficulty.ToString(System.Globalization.CultureInfo.InvariantCulture);
+
+            DocumentReference sessionDocument = firestore.Collection(CollectionName).Document(sessionId);
+            DocumentReference sceneDocument = sessionDocument.Collection("scenes").Document(result.scenarioId);
+            DocumentReference difficultyDocument = sceneDocument.Collection("difficulties").Document(difficultyId);
+            DocumentReference roundDocument = difficultyDocument.Collection("rounds").Document(result.id);
+
+            var sessionData = new Dictionary<string, object>
             {
-                ["session_id"] = result.sessionId ?? NeuroFlexSession.SessionId,
-                ["round_id"] = result.id,
-                ["scenario_id"] = result.scenarioId ?? "",
+                ["session_id"] = sessionId,
+                ["anonymous"] = string.IsNullOrEmpty(result.profileId),
+                ["updated_at"] = Timestamp.GetCurrentTimestamp()
+            };
+            var sceneData = new Dictionary<string, object>
+            {
+                ["scenario_id"] = result.scenarioId,
+                ["scenario_name"] = sceneName,
+                ["updated_at"] = Timestamp.GetCurrentTimestamp()
+            };
+            var difficultyData = new Dictionary<string, object>
+            {
                 ["difficulty"] = result.difficulty,
+                ["difficulty_name"] = "Nivel " + result.difficulty,
+                ["updated_at"] = Timestamp.GetCurrentTimestamp()
+            };
+            var roundData = new Dictionary<string, object>
+            {
+                ["session_id"] = sessionId,
+                ["round_id"] = result.id,
+                ["scenario_id"] = result.scenarioId,
+                ["scenario_name"] = sceneName,
+                ["difficulty"] = result.difficulty,
+                ["difficulty_name"] = "Nivel " + result.difficulty,
                 ["status"] = result.status ?? "",
                 ["started_at"] = result.startedAt ?? "",
                 ["ended_at"] = result.endedAt ?? "",
@@ -143,33 +208,70 @@ namespace NeuroFlexVR
                 ["uploaded_at"] = Timestamp.GetCurrentTimestamp()
             };
 
-            DocumentReference sessionDocument = firestore.Collection(CollectionName)
-                .Document(result.sessionId ?? NeuroFlexSession.SessionId);
-            sessionDocument.SetAsync(new Dictionary<string, object>
+            try
             {
-                ["session_id"] = result.sessionId ?? NeuroFlexSession.SessionId,
-                ["anonymous"] = true,
-                ["updated_at"] = Timestamp.GetCurrentTimestamp()
-            }, SetOptions.MergeAll).ContinueWithOnMainThread(task =>
+                ContinueWrite(sessionDocument.SetAsync(sessionData, SetOptions.MergeAll), result, attempt, () =>
+                    ContinueWrite(sceneDocument.SetAsync(sceneData, SetOptions.MergeAll), result, attempt, () =>
+                        ContinueWrite(difficultyDocument.SetAsync(difficultyData, SetOptions.MergeAll), result, attempt, () =>
+                            ContinueWrite(roundDocument.SetAsync(roundData), result, attempt, () =>
+                            {
+                                Debug.Log("[NeuroFlex] Métrica guardada en Firestore: " + result.id);
+                                UploadCompleted?.Invoke(result.id, true, "");
+                            }))));
+            }
+            catch (Exception exception)
+            {
+                HandleUploadFailure(result, attempt, exception.Message);
+            }
+        }
+
+        private void ContinueWrite(Task writeTask, PatientResult result, int attempt, Action onSuccess)
+        {
+            writeTask.ContinueWithOnMainThread(task =>
             {
                 if (task.IsCanceled || task.IsFaulted)
-                    Debug.LogError("[NeuroFlex] No se pudo crear la sesión en Firestore: " +
-                        task.Exception?.GetBaseException().Message);
-            });
-            CollectionReference session = sessionDocument.Collection("rounds");
-            session.Document(result.id).SetAsync(data)
-                .ContinueWithOnMainThread(task =>
                 {
-                    if (task.IsCanceled || task.IsFaulted)
-                    {
-                        Debug.LogError("[NeuroFlex] No se pudo guardar la métrica en Firestore: " +
-                            task.Exception?.GetBaseException().Message);
-                        if (attempt < 3) StartCoroutine(RetryUpload(result, attempt + 1));
-                        return;
-                    }
+                    HandleUploadFailure(result, attempt, TaskError(task));
+                    return;
+                }
 
-                    Debug.Log("[NeuroFlex] Métrica guardada en Firestore: " + result.id);
-                });
+                try
+                {
+                    onSuccess();
+                }
+                catch (Exception exception)
+                {
+                    HandleUploadFailure(result, attempt, exception.Message);
+                }
+            });
+        }
+
+        private static string SceneName(string scenarioId)
+        {
+            switch (scenarioId)
+            {
+                case "pigeons": return "Palomas";
+                case "memory": return "Memoria";
+                case "puzzle": return "Biblioteca";
+                default: throw new FormatException("Escenario no reconocido: " + scenarioId);
+            }
+        }
+
+        private void HandleUploadFailure(PatientResult result, int attempt, string error)
+        {
+            Debug.LogError("[NeuroFlex] No se pudo guardar la métrica en Firestore (" + result.id + "): " + error);
+            if (attempt < 3)
+            {
+                StartCoroutine(RetryUpload(result, attempt + 1));
+                return;
+            }
+
+            UploadCompleted?.Invoke(result.id, false, error);
+        }
+
+        private static string TaskError(Task task)
+        {
+            return task.Exception?.GetBaseException().Message ?? "La escritura en Firestore fue cancelada.";
         }
 
         private IEnumerator RetryUpload(PatientResult result, int attempt)

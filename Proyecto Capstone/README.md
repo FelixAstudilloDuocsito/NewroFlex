@@ -241,6 +241,26 @@ scenes:
 }
 ```
 
+### Guardado en Firebase y prueba desde Recepción
+
+Las escenas Palomas, Memoria y Biblioteca guardan cada ronda mediante `PatientSession`.
+`FirebaseTelemetryUploader` escucha esos guardados y escribe cada ronda en
+`sessions/{sessionId}/scenes/{scenarioId}/difficulties/{difficulty}/rounds/{roundId}`
+de Cloud Firestore. Cada ronda incluye el nombre de la escena, su nivel y el
+objeto `metrics` con las métricas originales; los datos locales se mantienen
+como respaldo. Las rondas subidas antes de esta estructura permanecen en la
+ruta anterior `sessions/{sessionId}/rounds`.
+
+El botón **Prueba Datos** de Recepción genera nueve rondas sintéticas (tres
+escenarios por tres dificultades), todas con el mismo ID de una sesión de
+prueba nueva. Así, las tres escenas y sus dificultades quedan agrupadas bajo
+una única sesión. El mensaje final confirma cuántas escrituras aceptó Firestore;
+si Firebase no está disponible o Firestore rechaza una escritura, las rondas
+permanecen locales y el error se registra en la consola de Unity. El cargador
+también sincroniza el historial local existente al iniciar, por lo que puede
+reaparecer junto a la sesión de prueba si aún hay rondas locales. Para probarlo,
+configura Firestore y sus reglas de escritura en el proyecto Firebase correspondiente.
+
 Estos datos alimentan el **pipeline de IA** (`entrenamiento_modelo_ia/`) que, mediante distintos *prompts* o *semillas*, genera resúmenes descriptivos del rendimiento —siempre sin interpretación clínica— usando modelos locales vía Ollama.
 
 ---

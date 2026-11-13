@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -15,6 +16,11 @@ namespace NeuroFlexVR
         [SerializeField] private TMPro.TMP_Text statusText;
 
         private Button button;
+        private readonly HashSet<string> expectedUploads = new HashSet<string>();
+        private readonly List<string> uploadErrors = new List<string>();
+        private int successfulUploads;
+        private bool awaitingUploads;
+        private string testSessionId;
 
         private void Awake()
         {
@@ -25,6 +31,7 @@ namespace NeuroFlexVR
         private void OnDestroy()
         {
             if (button != null) button.onClick.RemoveListener(RunTestSession);
+            StopWatchingUploads();
         }
 
         public void RunTestSession()
@@ -35,34 +42,114 @@ namespace NeuroFlexVR
                 return;
             }
 
+            button.interactable = false;
             try
             {
-                string sessionId = NeuroFlexSession.SessionId;
+                testSessionId = "s-test-" + Guid.NewGuid().ToString("N");
                 string[] scenarios = { "pigeons", "memory", "puzzle" };
-                int uploaded = 0;
+                var results = new List<PatientResult>();
                 foreach (string scenario in scenarios)
                     for (int difficulty = 1; difficulty <= 3; difficulty++)
-                    {
-                        PatientSession.Save(CreateResult(sessionId, scenario, difficulty));
-                        uploaded++;
-                    }
+                        results.Add(CreateResult(testSessionId, scenario, difficulty));
 
-                SetStatus("Sesión de prueba creada: " + uploaded + " rondas.");
-                Debug.Log("[NeuroFlex] Sesión de prueba anónima creada con " + uploaded + " rondas.");
+                expectedUploads.Clear();
+                uploadErrors.Clear();
+                successfulUploads = 0;
+                foreach (PatientResult result in results) expectedUploads.Add(result.id);
+                awaitingUploads = true;
+                FirebaseTelemetryUploader.UploadCompleted += OnUploadCompleted;
+                FirebaseTelemetryUploader.InitializationFailed += OnInitializationFailed;
+
+                foreach (PatientResult result in results)
+                    if (!PatientSession.Save(result))
+                        throw new InvalidOperationException("No se pudo guardar localmente la ronda " + result.id + ".");
+
+                Debug.Log("[NeuroFlex] Sesión de prueba " + testSessionId +
+                    " creada con " + results.Count + " rondas.");
+                if (!FirebaseTelemetryUploader.IsAvailable)
+                {
+                    FinishWithError("El cargador de Firebase no está activo. Las rondas quedaron guardadas localmente.");
+                    return;
+                }
+
+                if (!string.IsNullOrEmpty(FirebaseTelemetryUploader.InitializationError))
+                {
+                    FinishWithError("Firebase no está disponible. Las rondas quedaron guardadas localmente.");
+                    return;
+                }
+
+                SetStatus("Enviando " + results.Count + " rondas a Firebase...");
             }
             catch (Exception exception)
             {
+                StopWatchingUploads();
+                button.interactable = true;
                 SetStatus("No se pudo crear la sesión de prueba.");
                 Debug.LogError("[NeuroFlex] Error en sesión de prueba: " + exception);
             }
         }
 
+        private void OnUploadCompleted(string resultId, bool succeeded, string error)
+        {
+            if (!awaitingUploads || !expectedUploads.Remove(resultId)) return;
+            if (succeeded) successfulUploads++;
+            else uploadErrors.Add(error);
+
+            if (expectedUploads.Count > 0)
+            {
+                SetStatus("Firebase confirmó " + successfulUploads + "/" +
+                    (successfulUploads + expectedUploads.Count + uploadErrors.Count) + " rondas...");
+                return;
+            }
+
+            int total = successfulUploads + uploadErrors.Count;
+            if (uploadErrors.Count == 0)
+            {
+                SetStatus("Firebase confirmó las " + total + " métricas de la sesión " + testSessionId + ".");
+                Debug.Log("[NeuroFlex] Firebase confirmó las " + total +
+                    " métricas de la sesión de prueba " + testSessionId + ".");
+            }
+            else
+            {
+                SetStatus("Firebase guardó " + successfulUploads + "/" + total +
+                    " rondas. Revisa la consola para ver el error.");
+                Debug.LogError("[NeuroFlex] Firebase no guardó " + uploadErrors.Count +
+                    " ronda(s) de prueba. Último error: " + uploadErrors[uploadErrors.Count - 1]);
+            }
+
+            StopWatchingUploads();
+            button.interactable = true;
+        }
+
+        private void OnInitializationFailed(string error)
+        {
+            if (!awaitingUploads) return;
+            FinishWithError("Firebase no está disponible. Las rondas quedaron guardadas localmente.");
+            Debug.LogError("[NeuroFlex] No se pudieron subir las métricas de prueba: " + error);
+        }
+
+        private void FinishWithError(string message)
+        {
+            StopWatchingUploads();
+            SetStatus(message);
+            if (button != null) button.interactable = true;
+        }
+
+        private void StopWatchingUploads()
+        {
+            FirebaseTelemetryUploader.UploadCompleted -= OnUploadCompleted;
+            FirebaseTelemetryUploader.InitializationFailed -= OnInitializationFailed;
+            awaitingUploads = false;
+            expectedUploads.Clear();
+        }
+
         private static PatientResult CreateResult(string sessionId, string scenario, int difficulty)
         {
             string now = LocalProfileDatabase.UtcNow();
+            string id = "test-" + scenario + "-d" + difficulty + "-" + Guid.NewGuid().ToString("N");
             return new PatientResult
             {
-                id = "test-" + scenario + "-d" + difficulty + "-" + Guid.NewGuid().ToString("N"),
+                id = id,
                 profileId = null,
                 sessionId = sessionId,
                 scenarioId = scenario,
@@ -70,17 +157,17 @@ namespace NeuroFlexVR
                 status = "completed",
                 startedAt = now,
                 endedAt = now,
-                metricsJson = Metrics(scenario, difficulty)
+                metricsJson = Metrics(sessionId, id, scenario, difficulty)
             };
         }
 
-        private static string Metrics(string scenario, int difficulty)
+        private static string Metrics(string sessionId, string roundId, string scenario, int difficulty)
         {
             if (scenario == "pigeons")
             {
                 return "{\"request\":{\"contractVersion\":\"scenes-v1\",\"rounds\":[{" +
-                    "\"participantId\":null,\"sessionId\":\"" + NeuroFlexSession.SessionId +
-                    "\",\"roundId\":\"test-pigeons-d" + difficulty +
+                    "\"participantId\":null,\"sessionId\":\"" + sessionId +
+                    "\",\"roundId\":\"" + roundId +
                     "\",\"scenarioId\":\"pigeons\",\"difficultyLevel\":" + difficulty +
                     ",\"startedAt\":\"" + LocalProfileDatabase.UtcNow() +
                     "\",\"endedAt\":\"" + LocalProfileDatabase.UtcNow() +
