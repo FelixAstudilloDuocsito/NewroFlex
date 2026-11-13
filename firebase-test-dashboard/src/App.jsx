@@ -30,14 +30,22 @@ function originalSessionDate(session) {
   return date && !Number.isNaN(date.getTime()) ? date : null;
 }
 
+function uploadedSessionDate(session) {
+  const date = timestampDate(session?.updated_at);
+  return date && !Number.isNaN(date.getTime()) ? date : null;
+}
+
 function sessionDate(session) {
   const startedAt = originalSessionDate(session);
   if (startedAt) return startedAt;
-  const updatedAt = timestampDate(session?.updated_at);
-  return updatedAt && !Number.isNaN(updatedAt.getTime()) ? updatedAt : null;
+  return uploadedSessionDate(session);
 }
 
-function sessionDateLabel(session) {
+function sessionDateLabel(session, showUploadDate = false) {
+  const uploadedAt = uploadedSessionDate(session);
+  if (showUploadDate && uploadedAt) {
+    return `Última carga · ${dateLabel(uploadedAt)}`;
+  }
   const date = sessionDate(session);
   if (!date) return "Fecha no disponible";
   return originalSessionDate(session)
@@ -64,6 +72,20 @@ function sessionDateGroupLabel(date, key) {
 }
 
 const SESSION_TAGS_STORAGE_KEY = "neuroflex.firebaseViewer.sessionTags.v1";
+const SESSION_CUTOFF_STORAGE_KEY = "neuroflex.firebaseViewer.sessionCutoff.v1";
+
+function loadSessionCutoff() {
+  try {
+    const stored = localStorage.getItem(SESSION_CUTOFF_STORAGE_KEY) || "";
+    if (stored && Number.isNaN(new Date(stored).getTime())) {
+      throw new Error("La fecha de corte guardada no es válida.");
+    }
+    return stored;
+  } catch (error) {
+    console.error("No se pudo cargar la fecha de corte local.", error);
+    return "";
+  }
+}
 
 function loadSessionTags() {
   try {
@@ -344,7 +366,7 @@ function SetupNotice() {
   );
 }
 
-function SessionRow({ session, displayCode, tag, selected, onSelect }) {
+function SessionRow({ session, displayCode, tag, selected, onSelect, showUploadDate }) {
   const isTestSession = session.id.startsWith("s-test-");
 
   return (
@@ -357,7 +379,7 @@ function SessionRow({ session, displayCode, tag, selected, onSelect }) {
       <span className="session-icon">S</span>
       <span className="session-copy">
         <strong title={displayCode}>{displayCode}</strong>
-        <small>{sessionDateLabel(session)}</small>
+        <small>{sessionDateLabel(session, showUploadDate)}</small>
         {tag ? (
           <span className="session-tag" style={{ "--tag-color": tag.color }}>{tag.name}</span>
         ) : isTestSession ? (
@@ -428,7 +450,7 @@ function SceneSection({ scene, showMissing }) {
   ).length;
 
   return (
-    <section className="scene-section">
+    <section className={`scene-section scene-theme-${sceneIcons[sceneId] ? sceneId : "default"}`}>
       <header className="scene-heading">
         <div className="scene-title">
           <span className="scene-icon" aria-hidden="true">{sceneIcons[sceneId] || "◉"}</span>
@@ -444,8 +466,11 @@ function SceneSection({ scene, showMissing }) {
         </span>
       </header>
       {scene.difficulties.map((difficulty) => (
-        <div className="difficulty-group" key={difficulty.id}>
-          <header className={`difficulty-heading difficulty-color-${Number(difficulty.difficulty || difficulty.id)}`}>
+        <div
+          className={`difficulty-group difficulty-color-${Number(difficulty.difficulty || difficulty.id)}`}
+          key={difficulty.id}
+        >
+          <header className="difficulty-heading">
             <span className="difficulty-marker" aria-hidden="true">
               {difficulty.difficulty || difficulty.id}
             </span>
@@ -482,6 +507,8 @@ export default function App() {
   const [lastRefresh, setLastRefresh] = useState(null);
   const [detailRefreshKey, setDetailRefreshKey] = useState(0);
   const [sessionTags, setSessionTags] = useState(loadSessionTags);
+  const [cutoffValue, setCutoffValue] = useState(loadSessionCutoff);
+  const [cutoffError, setCutoffError] = useState("");
   const [tagEditorOpen, setTagEditorOpen] = useState(false);
   const [tagNameDraft, setTagNameDraft] = useState("");
   const [tagColorDraft, setTagColorDraft] = useState("#a99cf2");
@@ -551,14 +578,14 @@ export default function App() {
         session.session_code,
         session.id.startsWith("s-test-") ? "prueba anterior" : "sesión anterior",
         tag?.name,
-        sessionDateLabel(session),
+        sessionDateLabel(session, Boolean(cutoffValue)),
         session.id.startsWith("s-test-") ? "prueba" : "",
       ];
       return values.some((value) =>
         value?.toLocaleLowerCase("es-CL").includes(term),
       );
     });
-  }, [sessions, search, sessionTags]);
+  }, [sessions, search, sessionTags, cutoffValue]);
 
   const legacySessionLabels = useMemo(() => {
     let historicalIndex = 0;
@@ -576,16 +603,31 @@ export default function App() {
   }, [sessions]);
 
   const sessionGroups = useMemo(() => {
+    const cutoffDate = cutoffValue ? new Date(cutoffValue) : null;
+    const hasCutoff = cutoffDate && !Number.isNaN(cutoffDate.getTime());
     const groups = new Map();
     for (const session of filteredSessions) {
-      const date = originalSessionDate(session);
-      const key = date
-        ? localDateKey(date)
-        : "historical";
+      const date = hasCutoff
+        ? uploadedSessionDate(session) || originalSessionDate(session)
+        : originalSessionDate(session);
+      const dateKey = date ? localDateKey(date) : "";
+      const period = hasCutoff && date
+        ? date.getTime() >= cutoffDate.getTime() ? "after" : "before"
+        : null;
+      const key = hasCutoff
+        ? date ? `${period}:${dateKey}` : "unknown"
+        : date ? dateKey : "historical";
       if (!groups.has(key)) {
         groups.set(key, {
           key,
-          label: date ? sessionDateGroupLabel(date, key) : "Historial anterior · fecha original no registrada",
+          period,
+          label: hasCutoff && date
+            ? `${period === "before" ? "Historial anterior al corte" : "Pruebas desde el corte"} · ${sessionDateGroupLabel(date, dateKey)}`
+            : hasCutoff
+              ? "Sin fecha para clasificar"
+              : date
+                ? sessionDateGroupLabel(date, dateKey)
+                : "Historial anterior · fecha original no registrada",
           sessions: [],
         });
       }
@@ -600,11 +642,17 @@ export default function App() {
       }))
       .sort((left, right) => {
         if (left.key === right.key) return 0;
+        if (hasCutoff && left.period !== right.period) {
+          const periodOrder = { before: 0, after: 1, null: 2 };
+          return periodOrder[left.period] - periodOrder[right.period];
+        }
+        if (hasCutoff && left.period === null) return 1;
+        if (hasCutoff && right.period === null) return -1;
         if (left.key === "historical") return 1;
         if (right.key === "historical") return -1;
         return right.key.localeCompare(left.key);
       });
-  }, [filteredSessions]);
+  }, [filteredSessions, cutoffValue]);
 
   const selectedSession = sessions.find((session) => session.id === selectedId);
   const selectedDisplayCode = selectedSession?.session_code ||
@@ -694,6 +742,21 @@ export default function App() {
     if (persistSessionTags(nextTags)) setTagEditorOpen(false);
   }
 
+  function updateCutoff(value) {
+    setCutoffValue(value);
+    try {
+      if (value) {
+        localStorage.setItem(SESSION_CUTOFF_STORAGE_KEY, value);
+      } else {
+        localStorage.removeItem(SESSION_CUTOFF_STORAGE_KEY);
+      }
+      setCutoffError("");
+    } catch (error) {
+      console.error("No se pudo guardar la fecha de corte local.", error);
+      setCutoffError("No se pudo guardar la fecha de corte en este equipo.");
+    }
+  }
+
   if (missingConfig.length > 0) return <SetupNotice />;
 
   return (
@@ -737,13 +800,46 @@ export default function App() {
               onChange={(event) => setSearch(event.target.value)}
             />
           </label>
+          <div className="cutoff-control">
+            <label htmlFor="session-cutoff">Fecha y hora de corte</label>
+            <div className="cutoff-input-row">
+              <input
+                id="session-cutoff"
+                type="datetime-local"
+                step="60"
+                value={cutoffValue}
+                onChange={(event) => updateCutoff(event.target.value)}
+              />
+              {cutoffValue && (
+                <button
+                  aria-label="Quitar fecha de corte"
+                  className="cutoff-clear"
+                  onClick={() => updateCutoff("")}
+                  title="Quitar fecha de corte"
+                  type="button"
+                >
+                  ×
+                </button>
+              )}
+            </div>
+            <p className="cutoff-help">
+              {cutoffValue
+                ? "Separa por la última carga registrada en Firestore. La hora se interpreta localmente."
+                : "Opcional: elige cuándo comienzan las pruebas para separarlas del historial."}
+            </p>
+            {cutoffError && <p className="error-banner cutoff-error">{cutoffError}</p>}
+          </div>
           <p className="list-hint">
-            {filteredSessions.length} de {sessions.length} sesiones · agrupadas por fecha
+            {filteredSessions.length} de {sessions.length} sesiones · {cutoffValue ? "separadas por corte" : "agrupadas por fecha"}
           </p>
           {sessionError && <p className="error-banner compact">{sessionError}</p>}
           <div className="session-list">
             {sessionGroups.map((group) => (
-              <details className="session-date-group" key={group.key} open>
+              <details
+                className={`session-date-group${group.period ? ` cutoff-${group.period}` : ""}${cutoffValue && group.period === null ? " cutoff-unknown" : ""}`}
+                key={group.key}
+                open
+              >
                 <summary>
                   <span>{group.label}</span>
                   <small>{group.sessions.length}</small>
@@ -756,6 +852,7 @@ export default function App() {
                       displayCode={session.session_code || legacySessionLabels.get(session.id)}
                       tag={sessionTags[session.id]}
                       selected={session.id === selectedId}
+                      showUploadDate={Boolean(cutoffValue)}
                       onSelect={() => setSelectedId(session.id)}
                     />
                   ))}
