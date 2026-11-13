@@ -84,10 +84,12 @@ original de la sesión. Las sesiones antiguas que aún no tienen
 `session_started_at` se separan en **Historial anterior** en vez de atribuirlas
 a hoy; `updated_at` se muestra sólo como fecha de última carga de referencia.
 El campo **Fecha y hora de corte** permite separar la lista entre historial
-anterior y pruebas desde el corte (incluido). Al configurarlo, se compara con
-`updated_at` de Firestore —o con `session_started_at` si falta— y se conservan
-los subgrupos por día. La fecha se interpreta en la zona horaria local y se
-guarda sólo en este equipo.
+anterior y pruebas desde el corte (incluido). Al configurarlo, se compara
+primero con `session_started_at`; sólo si falta se usa `updated_at` de Firestore.
+Así, una resincronización no reclasifica las sesiones que ya tienen su fecha
+original; las que aún no la tienen usan la última carga hasta que Unity la
+complete. Se conservan los subgrupos por día; la fecha se interpreta en la zona
+horaria local y se guarda sólo en este equipo.
 Las etiquetas personalizadas se guardan en este equipo y no se suben a Firebase.
 Las métricas se ordenan por escena, los campos vacíos se ocultan por defecto y
 pueden mostrarse con el botón correspondiente.

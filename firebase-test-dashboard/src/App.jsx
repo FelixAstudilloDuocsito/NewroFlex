@@ -42,15 +42,16 @@ function sessionDate(session) {
 }
 
 function sessionDateLabel(session, showUploadDate = false) {
+  const startedAt = originalSessionDate(session);
   const uploadedAt = uploadedSessionDate(session);
-  if (showUploadDate && uploadedAt) {
-    return `Última carga · ${dateLabel(uploadedAt)}`;
+  if (startedAt) {
+    return showUploadDate
+      ? `Sesión · ${dateLabel(startedAt)}`
+      : dateLabel(startedAt);
   }
-  const date = sessionDate(session);
-  if (!date) return "Fecha no disponible";
-  return originalSessionDate(session)
-    ? dateLabel(date)
-    : `Última carga · ${dateLabel(date)}`;
+  return uploadedAt
+    ? `Última carga · ${dateLabel(uploadedAt)}`
+    : "Fecha no disponible";
 }
 
 function localDateKey(date) {
@@ -626,9 +627,8 @@ export default function App() {
     const hasCutoff = cutoffDate && !Number.isNaN(cutoffDate.getTime());
     const groups = new Map();
     for (const session of filteredSessions) {
-      const date = hasCutoff
-        ? uploadedSessionDate(session) || originalSessionDate(session)
-        : originalSessionDate(session);
+      const date = originalSessionDate(session) ||
+        (hasCutoff ? uploadedSessionDate(session) : null);
       const dateKey = date ? localDateKey(date) : "";
       const period = hasCutoff && date
         ? date.getTime() >= cutoffDate.getTime() ? "after" : "before"
@@ -843,7 +843,7 @@ export default function App() {
             </div>
             <p className="cutoff-help">
               {cutoffValue
-                ? "Separa por la última carga registrada en Firestore. La hora se interpreta localmente."
+                ? "Separa por la fecha original de la sesión; si falta, usa la última carga. Hora local."
                 : "Opcional: elige cuándo comienzan las pruebas para separarlas del historial."}
             </p>
             {cutoffError && <p className="error-banner cutoff-error">{cutoffError}</p>}
