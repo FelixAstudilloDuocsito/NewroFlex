@@ -128,6 +128,7 @@ namespace NeuroFlexVR
                             if (results.Count < pageSize) break;
                         }
                     }
+                }
             }
             catch (Exception exception)
             {
