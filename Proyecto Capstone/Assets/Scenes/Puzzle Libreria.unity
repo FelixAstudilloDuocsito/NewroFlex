@@ -284,7 +284,7 @@ MonoBehaviour:
   - {fileID: 836191709}
   - {fileID: 758430676}
   puzzleVisuales: {fileID: 992467852}
-  pregunta: "\xBFQue animales estan jugando a las cartas?"
+  pregunta: "\xBFQu\xE9 animales est\xE1n jugando a las cartas?"
   opciones:
   - Perros
   - Patos
@@ -1315,7 +1315,7 @@ GameObject:
   - component: {fileID: 166174504}
   - component: {fileID: 166174503}
   m_Layer: 5
-  m_Name: Texto_Pregunta
+  m_Name: Texto_Pregunta_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1337,8 +1337,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 41, y: 179}
-  m_SizeDelta: {x: 200, y: 50}
+  m_AnchoredPosition: {x: 41, y: 203}
+  m_SizeDelta: {x: 200, y: 141.3}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &166174503
 MonoBehaviour:
@@ -1360,7 +1360,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\xBFQu\xE9 est\xE1 haciendo la persona del centro?"
+  m_text: "\xBFQu\xE9 est\xE1 haciendo la persona?"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1387,14 +1387,14 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 57.4
+  m_fontSizeBase: 57.4
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_HorizontalAlignment: 1
+  m_HorizontalAlignment: 2
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
@@ -2053,7 +2053,7 @@ MonoBehaviour:
   colorCorrecto: {r: 0.15, g: 0.8, b: 0.25, a: 1}
   colorIncorrecto: {r: 0.85, g: 0.15, b: 0.15, a: 1}
   tiempoOscuro: 0
-  tiempoResultado: 1.4
+  tiempoResultado: 2
   onRespuestaCorrecta:
     m_PersistentCalls:
       m_Calls: []
@@ -3738,7 +3738,7 @@ GameObject:
   - component: {fileID: 352770673}
   - component: {fileID: 352770676}
   m_Layer: 5
-  m_Name: Boton_C
+  m_Name: Boton_C_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3863,7 +3863,7 @@ MonoBehaviour:
   colorCorrecto: {r: 0.15, g: 0.8, b: 0.25, a: 1}
   colorIncorrecto: {r: 0.85, g: 0.15, b: 0.15, a: 1}
   tiempoOscuro: 0
-  tiempoResultado: 1.4
+  tiempoResultado: 2
   onRespuestaCorrecta:
     m_PersistentCalls:
       m_Calls: []
@@ -4108,7 +4108,7 @@ GameObject:
   - component: {fileID: 390295897}
   - component: {fileID: 390295900}
   m_Layer: 5
-  m_Name: Boton_D
+  m_Name: Boton_D_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4233,7 +4233,7 @@ MonoBehaviour:
   colorCorrecto: {r: 0.15, g: 0.8, b: 0.25, a: 1}
   colorIncorrecto: {r: 0.85, g: 0.15, b: 0.15, a: 1}
   tiempoOscuro: 0
-  tiempoResultado: 1.4
+  tiempoResultado: 2
   onRespuestaCorrecta:
     m_PersistentCalls:
       m_Calls: []
@@ -4773,7 +4773,7 @@ GameObject:
   - component: {fileID: 537815920}
   - component: {fileID: 537815923}
   m_Layer: 5
-  m_Name: Boton_B
+  m_Name: Boton_B_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4898,7 +4898,7 @@ MonoBehaviour:
   colorCorrecto: {r: 0.15, g: 0.8, b: 0.25, a: 1}
   colorIncorrecto: {r: 0.85, g: 0.15, b: 0.15, a: 1}
   tiempoOscuro: 0
-  tiempoResultado: 1.4
+  tiempoResultado: 2
   onRespuestaCorrecta:
     m_PersistentCalls:
       m_Calls: []
@@ -6596,18 +6596,18 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 662885407}
-  m_LocalRotation: {x: -0, y: 0.21643952, z: -0, w: 0.97629607}
-  m_LocalPosition: {x: 0, y: 0, z: -36036}
-  m_LocalScale: {x: 441.81998, y: 441.82, z: 441.81998}
-  m_ConstrainProportionsScale: 0
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 1941844074}
   m_Father: {fileID: 883914227}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 74988, y: 39415.008}
-  m_SizeDelta: {x: 160, y: 30}
+  m_AnchoredPosition: {x: 0, y: -57.3}
+  m_SizeDelta: {x: 200, y: 90}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &662885409
 MonoBehaviour:
@@ -6685,9 +6685,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
-  m_PreserveAspect: 0
+  m_Sprite: {fileID: 3986207492681619973, guid: 96923c9eba5433d80a4b1e720e8b165e, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1
@@ -10223,7 +10223,7 @@ GameObject:
   - component: {fileID: 758430676}
   - component: {fileID: 758430679}
   m_Layer: 5
-  m_Name: Boton_D
+  m_Name: Boton_D_3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10348,7 +10348,7 @@ MonoBehaviour:
   colorCorrecto: {r: 0.15, g: 0.8, b: 0.25, a: 1}
   colorIncorrecto: {r: 0.85, g: 0.15, b: 0.15, a: 1}
   tiempoOscuro: 0
-  tiempoResultado: 1.4
+  tiempoResultado: 2
   onRespuestaCorrecta:
     m_PersistentCalls:
       m_Calls: []
@@ -10498,7 +10498,7 @@ GameObject:
   - component: {fileID: 833566085}
   - component: {fileID: 833566088}
   m_Layer: 5
-  m_Name: Boton_A
+  m_Name: Boton_A_3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10623,7 +10623,7 @@ MonoBehaviour:
   colorCorrecto: {r: 0.15, g: 0.8, b: 0.25, a: 1}
   colorIncorrecto: {r: 0.85, g: 0.15, b: 0.15, a: 1}
   tiempoOscuro: 0
-  tiempoResultado: 1.4
+  tiempoResultado: 2
   onRespuestaCorrecta:
     m_PersistentCalls:
       m_Calls: []
@@ -10932,7 +10932,7 @@ GameObject:
   - component: {fileID: 836191709}
   - component: {fileID: 836191712}
   m_Layer: 5
-  m_Name: Boton_C
+  m_Name: Boton_C_3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11057,7 +11057,7 @@ MonoBehaviour:
   colorCorrecto: {r: 0.15, g: 0.8, b: 0.25, a: 1}
   colorIncorrecto: {r: 0.85, g: 0.15, b: 0.15, a: 1}
   tiempoOscuro: 0
-  tiempoResultado: 1.4
+  tiempoResultado: 2
   onRespuestaCorrecta:
     m_PersistentCalls:
       m_Calls: []
@@ -11272,7 +11272,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.392}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -11304,19 +11304,19 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 883914224}
-  m_LocalRotation: {x: -0, y: -0.21643952, z: -0, w: 0.97629607}
-  m_LocalPosition: {x: 0, y: 0, z: 4.84}
-  m_LocalScale: {x: 0.0050000004, y: 0.005, z: 0.0050000004}
-  m_ConstrainProportionsScale: 0
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.01, y: 0.01, z: 0.01}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 1459355611}
   - {fileID: 662885408}
   m_Father: {fileID: 1733280144}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -415.95996, y: -286.33}
-  m_SizeDelta: {x: 358.80005, y: 221.40002}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 500, y: 500}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &903033226
 GameObject:
@@ -15131,7 +15131,7 @@ GameObject:
   - component: {fileID: 1095857308}
   - component: {fileID: 1095857307}
   m_Layer: 5
-  m_Name: Texto_Pregunta
+  m_Name: Texto_Pregunta_3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -15153,8 +15153,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 41, y: 218}
-  m_SizeDelta: {x: 200, y: 50}
+  m_AnchoredPosition: {x: 41, y: 198}
+  m_SizeDelta: {x: 200, y: 114.2}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1095857307
 MonoBehaviour:
@@ -16181,7 +16181,7 @@ MonoBehaviour:
   colorCorrecto: {r: 0.15, g: 0.8, b: 0.25, a: 1}
   colorIncorrecto: {r: 0.85, g: 0.15, b: 0.15, a: 1}
   tiempoOscuro: 0
-  tiempoResultado: 1.4
+  tiempoResultado: 2
   onRespuestaCorrecta:
     m_PersistentCalls:
       m_Calls: []
@@ -17317,7 +17317,7 @@ MonoBehaviour:
   colorCorrecto: {r: 0.15, g: 0.8, b: 0.25, a: 1}
   colorIncorrecto: {r: 0.85, g: 0.15, b: 0.15, a: 1}
   tiempoOscuro: 0
-  tiempoResultado: 1.4
+  tiempoResultado: 2
   onRespuestaCorrecta:
     m_PersistentCalls:
       m_Calls: []
@@ -17702,17 +17702,17 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1459355610}
-  m_LocalRotation: {x: -0, y: 0.21643952, z: -0, w: 0.97629607}
-  m_LocalPosition: {x: 0, y: 0, z: -36035.75}
-  m_LocalScale: {x: 495.57996, y: 495.58002, z: 495.57996}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 883914227}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 74988.47, y: 76448}
-  m_SizeDelta: {x: 200, y: 50}
+  m_AnchoredPosition: {x: 0, y: 92.1}
+  m_SizeDelta: {x: 373.9, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1459355612
 MonoBehaviour:
@@ -17761,15 +17761,15 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 56.5
+  m_fontSizeBase: 56.5
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
-  m_HorizontalAlignment: 1
-  m_VerticalAlignment: 256
+  m_fontStyle: 1
+  m_HorizontalAlignment: 2
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_characterHorizontalScale: 1
@@ -18323,7 +18323,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.3584906, g: 0.3584906, b: 0.3584906, a: 0.9529412}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -19627,16 +19627,16 @@ RectTransform:
   m_GameObject: {fileID: 1733280140}
   m_LocalRotation: {x: -0, y: -0.60219115, z: -0, w: 0.798352}
   m_LocalPosition: {x: 0, y: 0, z: 4.3706226}
-  m_LocalScale: {x: 0.007801514, y: 0.007801514, z: 0.007801514}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 883914227}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: -74.054, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 42.307953, y: 3.2373}
-  m_SizeDelta: {x: 921.2, y: 430.6}
+  m_AnchoredPosition: {x: 42.307953, y: 2.53}
+  m_SizeDelta: {x: 5, y: 5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1733280145
 MonoBehaviour:
@@ -20243,7 +20243,7 @@ MonoBehaviour:
   - {fileID: 352770673}
   - {fileID: 390295897}
   puzzleVisuales: {fileID: 875048141}
-  pregunta: "\xBFQue esta haciendo la persona del centro?"
+  pregunta: "\xBFQu\xE9 est\xE1 haciendo la persona del centro?"
   opciones:
   - Durmiendo
   - Llorando
@@ -21152,8 +21152,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4281479730
-  m_fontColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -21170,8 +21170,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 24
-  m_fontSizeBase: 24
+  m_fontSize: 38
+  m_fontSizeBase: 38
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -21237,12 +21237,12 @@ GameObject:
   - component: {fileID: 1955051990}
   - component: {fileID: 1955051989}
   m_Layer: 5
-  m_Name: Canvas_Pregunta
+  m_Name: Canvas_Pregunta_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1955051988
 RectTransform:
   m_ObjectHideFlags: 0
@@ -21428,7 +21428,7 @@ GameObject:
   - component: {fileID: 2007185401}
   - component: {fileID: 2007185404}
   m_Layer: 5
-  m_Name: Boton_B
+  m_Name: Boton_B_3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -21553,7 +21553,7 @@ MonoBehaviour:
   colorCorrecto: {r: 0.15, g: 0.8, b: 0.25, a: 1}
   colorIncorrecto: {r: 0.85, g: 0.15, b: 0.15, a: 1}
   tiempoOscuro: 0
-  tiempoResultado: 1.4
+  tiempoResultado: 2
   onRespuestaCorrecta:
     m_PersistentCalls:
       m_Calls: []
@@ -24604,7 +24604,7 @@ MonoBehaviour:
   colorCorrecto: {r: 0.15, g: 0.8, b: 0.25, a: 1}
   colorIncorrecto: {r: 0.85, g: 0.15, b: 0.15, a: 1}
   tiempoOscuro: 0
-  tiempoResultado: 1.4
+  tiempoResultado: 2
   onRespuestaCorrecta:
     m_PersistentCalls:
       m_Calls: []
@@ -26410,7 +26410,7 @@ GameObject:
   - component: {fileID: 2116554417}
   - component: {fileID: 2116554420}
   m_Layer: 5
-  m_Name: Boton_A
+  m_Name: Boton_A_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -26535,7 +26535,7 @@ MonoBehaviour:
   colorCorrecto: {r: 0.15, g: 0.8, b: 0.25, a: 1}
   colorIncorrecto: {r: 0.85, g: 0.15, b: 0.15, a: 1}
   tiempoOscuro: 0
-  tiempoResultado: 1.4
+  tiempoResultado: 2
   onRespuestaCorrecta:
     m_PersistentCalls:
       m_Calls: []
@@ -26630,12 +26630,12 @@ GameObject:
   - component: {fileID: 2132419978}
   - component: {fileID: 2132419977}
   m_Layer: 5
-  m_Name: Canvas_Pregunta
+  m_Name: Canvas_Pregunta_3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2132419976
 RectTransform:
   m_ObjectHideFlags: 0
