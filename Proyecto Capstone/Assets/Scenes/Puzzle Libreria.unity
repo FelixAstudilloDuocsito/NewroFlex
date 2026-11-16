@@ -2503,9 +2503,9 @@ Rigidbody:
   m_ImplicitTensor: 1
   m_UseGravity: 0
   m_IsKinematic: 1
-  m_Interpolate: 1
+  m_Interpolate: 0
   m_Constraints: 2
-  m_CollisionDetection: 1
+  m_CollisionDetection: 0
 --- !u!114 &232984423
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2520,7 +2520,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PuzzlePiece
   pieceID: 5
   currentSlotIndex: 0
-  returnSpeed: 6
+  returnSpeed: 10
   desplazamientoAdelante: -0.02
 --- !u!1 &247065196
 GameObject:
@@ -3450,9 +3450,9 @@ Rigidbody:
   m_ImplicitTensor: 1
   m_UseGravity: 0
   m_IsKinematic: 1
-  m_Interpolate: 1
+  m_Interpolate: 0
   m_Constraints: 2
-  m_CollisionDetection: 1
+  m_CollisionDetection: 0
 --- !u!114 &307278710
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3467,7 +3467,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PuzzlePiece
   pieceID: 2
   currentSlotIndex: 0
-  returnSpeed: 6
+  returnSpeed: 10
   desplazamientoAdelante: -0.02
 --- !u!1 &310214949
 GameObject:
@@ -20627,9 +20627,9 @@ Rigidbody:
   m_ImplicitTensor: 1
   m_UseGravity: 0
   m_IsKinematic: 1
-  m_Interpolate: 1
+  m_Interpolate: 0
   m_Constraints: 2
-  m_CollisionDetection: 1
+  m_CollisionDetection: 0
 --- !u!114 &1795147177
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20644,7 +20644,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PuzzlePiece
   pieceID: 1
   currentSlotIndex: 0
-  returnSpeed: 6
+  returnSpeed: 10
   desplazamientoAdelante: -0.02
 --- !u!1 &1802647335
 GameObject:
@@ -25651,9 +25651,9 @@ Rigidbody:
   m_ImplicitTensor: 1
   m_UseGravity: 0
   m_IsKinematic: 1
-  m_Interpolate: 1
+  m_Interpolate: 0
   m_Constraints: 2
-  m_CollisionDetection: 1
+  m_CollisionDetection: 0
 --- !u!114 &2101668887
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -25668,7 +25668,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PuzzlePiece
   pieceID: 4
   currentSlotIndex: 0
-  returnSpeed: 6
+  returnSpeed: 10
   desplazamientoAdelante: -0.02
 --- !u!1001 &2105771470
 PrefabInstance:
@@ -26265,9 +26265,9 @@ Rigidbody:
   m_ImplicitTensor: 1
   m_UseGravity: 0
   m_IsKinematic: 1
-  m_Interpolate: 1
+  m_Interpolate: 0
   m_Constraints: 2
-  m_CollisionDetection: 1
+  m_CollisionDetection: 0
 --- !u!114 &2107883610
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26282,7 +26282,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PuzzlePiece
   pieceID: 0
   currentSlotIndex: 0
-  returnSpeed: 6
+  returnSpeed: 10
   desplazamientoAdelante: -0.02
 --- !u!1 &2116134158
 GameObject:
@@ -27146,9 +27146,9 @@ Rigidbody:
   m_ImplicitTensor: 1
   m_UseGravity: 0
   m_IsKinematic: 1
-  m_Interpolate: 1
+  m_Interpolate: 0
   m_Constraints: 2
-  m_CollisionDetection: 1
+  m_CollisionDetection: 0
 --- !u!114 &2138285295
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27163,7 +27163,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PuzzlePiece
   pieceID: 3
   currentSlotIndex: 0
-  returnSpeed: 6
+  returnSpeed: 10
   desplazamientoAdelante: -0.02
 --- !u!1 &2146525464
 GameObject:
