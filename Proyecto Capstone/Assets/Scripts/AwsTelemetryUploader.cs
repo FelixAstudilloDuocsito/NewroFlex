@@ -11,25 +11,29 @@ using UnityEngine.Networking;
 namespace NeuroFlexVR
 {
     /// <summary>
-    /// Sends locally persisted rounds to the API Gateway telemetry endpoint.
-    /// Local records remain the source of truth and are never deleted here.
+    /// Sube las métricas de rondas guardadas en la base local directamente a AWS API Gateway / SQS.
+    /// Funciona en paralelo con FirebaseTelemetryUploader mientras ambos convivan.
+    /// Mantiene cola en disco para resiliencia offline.
     /// </summary>
     public sealed class AwsTelemetryUploader : MonoBehaviour
     {
         private const string EndpointKey = "NeuroFlex.TelemetryEndpoint";
         private const string TenantKey = "NeuroFlex.TelemetryTenant";
-        private const string DefaultEndpoint = "https://4gesdz7435.execute-api.us-east-1.amazonaws.com/telemetry";
-        private const string DefaultTenant = "lab";
+        public const string DefaultEndpoint = "https://4gesdz7435.execute-api.us-east-1.amazonaws.com/v1/sessions";
+        public const string DefaultTenant = "habaA";
         private const string QueueDirectoryName = "NeuroFlexTelemetry/cloud-pending";
 
         private static AwsTelemetryUploader instance;
         private readonly Queue<string> queue = new Queue<string>();
         private bool sending;
 
+        public static event Action<string, bool, string> UploadCompleted;
+
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void CreateInstance()
         {
-            if (PlayerPrefs.GetInt("NeuroFlex.UseAwsTelemetry", 0) != 1) return;
+            // Por defecto activo (1) para convivir con Firebase
+            if (PlayerPrefs.GetInt("NeuroFlex.UseAwsTelemetry", 1) != 1) return;
             if (instance != null) return;
             var gameObject = new GameObject("NeuroFlex AWS Telemetry");
             instance = gameObject.AddComponent<AwsTelemetryUploader>();
@@ -64,15 +68,16 @@ namespace NeuroFlexVR
 
         private void Awake()
         {
-            if (instance != this)
+            if (instance != null && instance != this)
             {
                 Destroy(gameObject);
                 return;
             }
 
+            instance = this;
             PatientSession.ResultStored += Enqueue;
             LoadQueue();
-            QueueLocalHistory();
+            // QueueLocalHistory(); // Desactivado para no re-encolar todo el historial previo
             ProcessQueue();
         }
 
@@ -95,7 +100,7 @@ namespace NeuroFlexVR
             }
             catch (Exception exception)
             {
-                Debug.LogError("[NeuroFlex] No se pudo preparar la métrica para AWS: " + exception.Message);
+                Debug.LogError("[NeuroFlex AWS] No se pudo preparar la métrica para AWS: " + exception.Message);
             }
         }
 
@@ -109,7 +114,7 @@ namespace NeuroFlexVR
             }
             catch (Exception exception)
             {
-                Debug.LogError("[NeuroFlex] No se pudo leer la cola local de AWS: " + exception.Message);
+                Debug.LogError("[NeuroFlex AWS] No se pudo leer la cola local de AWS: " + exception.Message);
             }
         }
 
@@ -124,7 +129,7 @@ namespace NeuroFlexVR
             }
             catch (Exception exception)
             {
-                Debug.LogWarning("[NeuroFlex] No se pudo preparar el historial local para AWS: " + exception.Message);
+                Debug.LogWarning("[NeuroFlex AWS] No se pudo preparar el historial local para AWS: " + exception.Message);
             }
         }
 
@@ -133,10 +138,20 @@ namespace NeuroFlexVR
             if (!isActiveAndEnabled || sending || queue.Count == 0) return;
             if (string.IsNullOrWhiteSpace(Endpoint))
             {
-                Debug.LogWarning("[NeuroFlex] Configura el endpoint de telemetría antes de enviar métricas.");
+                Debug.LogWarning("[NeuroFlex AWS] Configura el endpoint de telemetría antes de enviar métricas.");
                 return;
             }
-            StartCoroutine(SendNext());
+
+            // Asegurar autenticación Cognito antes de transmitir a API Gateway
+            AwsAuthService.Instance.EnsureAuthenticated((authSuccess, authMsg) =>
+            {
+                if (!authSuccess)
+                {
+                    Debug.LogWarning("[NeuroFlex AWS] Esperando autenticación para enviar métricas: " + authMsg);
+                    return;
+                }
+                StartCoroutine(SendNext());
+            });
         }
 
         private IEnumerator SendNext()
@@ -150,7 +165,7 @@ namespace NeuroFlexVR
             }
             catch (Exception exception)
             {
-                Debug.LogError("[NeuroFlex] No se pudo leer una métrica pendiente: " + exception.Message);
+                Debug.LogError("[NeuroFlex AWS] No se pudo leer una métrica pendiente: " + exception.Message);
                 queue.Dequeue();
                 sending = false;
                 ProcessQueue();
@@ -163,6 +178,8 @@ namespace NeuroFlexVR
                 request.uploadHandler = new UploadHandlerRaw(bytes);
                 request.downloadHandler = new DownloadHandlerBuffer();
                 request.SetRequestHeader("Content-Type", "application/json");
+                request.SetRequestHeader("Authorization", "Bearer " + AwsAuthService.Instance.AccessToken);
+
                 yield return request.SendWebRequest();
 
                 if (request.result == UnityWebRequest.Result.Success &&
@@ -172,17 +189,20 @@ namespace NeuroFlexVR
                     {
                         File.Delete(path);
                         queue.Dequeue();
-                        Debug.Log("[NeuroFlex] Métrica enviada a AWS: " + Path.GetFileNameWithoutExtension(path));
+                        string roundId = Path.GetFileNameWithoutExtension(path);
+                        Debug.Log("[NeuroFlex AWS] Métrica enviada exitosamente a AWS: " + roundId);
+                        UploadCompleted?.Invoke(roundId, true, "");
                     }
                     catch (Exception exception)
                     {
-                        Debug.LogError("[NeuroFlex] AWS respondió correctamente, pero no se pudo actualizar la cola local: " + exception.Message);
+                        Debug.LogError("[NeuroFlex AWS] AWS respondió correctamente, pero error en cola local: " + exception.Message);
                     }
                 }
                 else
                 {
-                    Debug.LogWarning("[NeuroFlex] No se pudo enviar la métrica a AWS. Se reintentará: " +
-                        request.responseCode + " " + request.error);
+                    string err = $"HTTP {request.responseCode}: {request.error} - {request.downloadHandler.text}";
+                    Debug.LogWarning("[NeuroFlex AWS] Reintentando envío a AWS: " + err);
+                    UploadCompleted?.Invoke(Path.GetFileNameWithoutExtension(path), false, err);
                 }
             }
 
@@ -195,28 +215,51 @@ namespace NeuroFlexVR
             JToken metrics;
             try
             {
-                metrics = JToken.Parse(result.metricsJson ?? "{}");
+                metrics = JToken.Parse(string.IsNullOrWhiteSpace(result.metricsJson) ? "{}" : result.metricsJson);
             }
             catch (JsonException exception)
             {
                 throw new FormatException("Las métricas locales no son JSON válido.", exception);
             }
 
+            string sessionId = string.IsNullOrWhiteSpace(result.sessionId) ? NeuroFlexSession.SessionId : result.sessionId;
+            string participantId = string.IsNullOrWhiteSpace(result.profileId) ? "P001" : result.profileId;
+
+            // Formato scenes-v1 compatible con el worker Lambda y DynamoDB multi-tenant
+            var roundItem = new JObject
+            {
+                ["participantId"] = participantId,
+                ["sessionId"] = sessionId,
+                ["roundId"] = result.id,
+                ["scenarioId"] = result.scenarioId,
+                ["difficultyLevel"] = result.difficulty,
+                ["status"] = result.status,
+                ["startedAt"] = result.startedAt,
+                ["endedAt"] = result.endedAt
+            };
+
+            // Incorporar campos específicos de métricas si existen
+            if (metrics is JObject metricsObj)
+            {
+                foreach (var prop in metricsObj.Properties())
+                {
+                    roundItem[prop.Name] = prop.Value;
+                }
+            }
+
             var payload = new JObject
             {
-                ["tenant_id"] = Tenant,
-                // The round ID is unique; app_session_id keeps the launch/session relation.
-                ["session_id"] = result.id,
-                ["app_session_id"] = result.sessionId,
-                ["participant_id"] = result.profileId,
-                ["round_id"] = result.id,
-                ["scenario_id"] = result.scenarioId,
-                ["difficulty"] = result.difficulty,
-                ["status"] = result.status,
-                ["started_at"] = result.startedAt,
-                ["ended_at"] = result.endedAt,
-                ["metrics"] = metrics
+                ["sesion_id"] = sessionId,
+                ["participante_id"] = participantId,
+                ["experiencia"] = "neuroflex",
+                ["scene_config_id"] = "REC-PARK-LVL-FACIL-V1",
+                ["duracion_seg"] = 60,
+                ["contractVersion"] = "scenes-v1",
+                ["tenantId"] = Tenant,
+                ["rounds"] = new JArray { roundItem },
+                ["metricas"] = metrics
             };
+
             return payload.ToString(Formatting.None);
         }
     }

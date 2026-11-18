@@ -13,6 +13,10 @@ namespace NeuroFlexVR
         public static string SessionId { get; private set; } = "s-" + Guid.NewGuid().ToString("N");
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void Reset() { SessionId = "s-" + Guid.NewGuid().ToString("N"); }
+        public static void SetSessionId(string id)
+        {
+            if (!string.IsNullOrEmpty(id)) SessionId = id;
+        }
     }
 
     /// <summary>

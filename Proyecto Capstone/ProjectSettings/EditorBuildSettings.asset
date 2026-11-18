@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/PantallaDeEsperaVR.unity
+    guid: 9876543210abcdef0123456789abcdef
+  - enabled: 1
     path: "Assets/Scenes/Recepci\xF3n.unity"
     guid: 2d6a088678976d1a7941f1ee6f6d282b
   - enabled: 1

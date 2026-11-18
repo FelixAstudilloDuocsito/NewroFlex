@@ -88,7 +88,7 @@ namespace NeuroFlexVR
                         foreach (PatientResult result in waitingResults)
                             Upload(result);
                         waitingResults.Clear();
-                        UploadExistingResults();
+                        // UploadExistingResults(); // Desactivado para no subir el historial local completo en cada inicio.
                     }
                     catch (Exception exception)
                     {
