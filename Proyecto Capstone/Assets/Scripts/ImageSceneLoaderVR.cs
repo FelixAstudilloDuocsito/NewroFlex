@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using TMPro; // Necesario para TextMeshPro
+using TMPro;
 
 public class ImageSceneLoaderVR : MonoBehaviour, IPointerDownHandler, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
@@ -19,12 +19,15 @@ public class ImageSceneLoaderVR : MonoBehaviour, IPointerDownHandler, IPointerCl
     public string mensajeSeleccion = "Cargando escena seleccionada...";
 
     [Header("Configuración de Transición (Fade)")]
-    [Tooltip("El GameObject del Canvas o Panel de la pantalla en negro que estará desactivado al inicio.")]
+    [Tooltip("El GameObject del Canvas o Panel de la pantalla en negro.")]
     public GameObject objetoCanvasFade;
-    [Tooltip("Panel o CanvasGroup que se oscurecerá al presionar")]
+    [Tooltip("CanvasGroup del panel negro que subirá de alpha 0 a 1.")]
     public CanvasGroup panelFade;
-    [Tooltip("Tiempo en segundos que tardará el fundido")]
-    public float tiempoFade = 1.0f;
+    [Tooltip("Tiempo en segundos que tardará el fundido de 0 a 1.")]
+    [Min(0.05f)]
+    public float tiempoFade = 3.0f;
+    [Tooltip("Usa tiempo real (no afectado por Time.timeScale).")]
+    public bool usarTiempoReal = true;
 
     [Header("Feedback Visual del Botón")]
     public bool usarEfectoHover = true;
@@ -44,22 +47,21 @@ public class ImageSceneLoaderVR : MonoBehaviour, IPointerDownHandler, IPointerCl
         if (imagen != null) imagen.color = colorNormal;
         yaCargando = false;
 
-        // Asegurar que el mensaje comience oculto si está asignado
         if (textoMensaje != null)
         {
             textoMensaje.gameObject.SetActive(false);
-        }
-
-        // Asegurar que el canvas/panel de fundido comience DESACTIVADO e invisible al iniciar la escena
-        if (objetoCanvasFade != null)
-        {
-            objetoCanvasFade.SetActive(false);
         }
 
         if (panelFade != null)
         {
             panelFade.alpha = 0f;
             panelFade.blocksRaycasts = false;
+            panelFade.interactable = false;
+        }
+
+        if (objetoCanvasFade != null)
+        {
+            objetoCanvasFade.SetActive(false);
         }
     }
 
@@ -91,6 +93,7 @@ public class ImageSceneLoaderVR : MonoBehaviour, IPointerDownHandler, IPointerCl
     public void EjecutarCarga()
     {
         if (yaCargando) return;
+
         if (requierePerfil && NeuroFlexVR.PatientSession.ActiveProfile == null)
         {
             if (textoMensaje != null)
@@ -113,40 +116,42 @@ public class ImageSceneLoaderVR : MonoBehaviour, IPointerDownHandler, IPointerCl
 
     private IEnumerator TransicionYCargar()
     {
-        // 1. Mostrar el texto de confirmación arriba
         if (textoMensaje != null)
         {
             textoMensaje.text = mensajeSeleccion;
             textoMensaje.gameObject.SetActive(true);
         }
 
-        // 2. ACTIVAR EL CANVAS DE FADE AQUÍ MISMO AL CLICKEAR
         if (objetoCanvasFade != null)
         {
             objetoCanvasFade.SetActive(true);
         }
 
-        // 3. Fundido a Negro (Fade Out) progresivo
         if (panelFade != null)
         {
-            panelFade.blocksRaycasts = true; // Bloquea nuevos clics
-            float tiempoInicial = 0f;
+            panelFade.gameObject.SetActive(true);
+            panelFade.alpha = 0f;
+            panelFade.blocksRaycasts = true;
+            panelFade.interactable = false;
 
-            while (tiempoInicial < tiempoFade)
+            float transcurrido = 0f;
+            float duracion = Mathf.Max(0.05f, tiempoFade);
+
+            while (transcurrido < duracion)
             {
-                tiempoInicial += Time.deltaTime;
-                panelFade.alpha = Mathf.Clamp01(tiempoInicial / tiempoFade);
+                transcurrido += usarTiempoReal ? Time.unscaledDeltaTime : Time.deltaTime;
+                panelFade.alpha = Mathf.Clamp01(transcurrido / duracion);
                 yield return null;
             }
+
             panelFade.alpha = 1f;
         }
         else
         {
-            // Pausa breve si no usas panelFade para que el usuario alcance a ver el texto
-            yield return new WaitForSeconds(0.8f);
+            Debug.LogWarning($"[ImageSceneLoaderVR] 'panelFade' (CanvasGroup) no está asignado en {gameObject.name}.");
+            yield return usarTiempoReal ? new WaitForSecondsRealtime(tiempoFade) : new WaitForSeconds(tiempoFade);
         }
 
-        // 4. Carga asíncrona de la escena en segundo plano
         AsyncOperation operacionCarga = SceneManager.LoadSceneAsync(nombreEscena);
         operacionCarga.allowSceneActivation = false;
 
@@ -155,7 +160,7 @@ public class ImageSceneLoaderVR : MonoBehaviour, IPointerDownHandler, IPointerCl
             yield return null;
         }
 
-        yield return new WaitForSeconds(0.2f);
+        yield return usarTiempoReal ? new WaitForSecondsRealtime(0.2f) : new WaitForSeconds(0.2f);
         operacionCarga.allowSceneActivation = true;
     }
 }
