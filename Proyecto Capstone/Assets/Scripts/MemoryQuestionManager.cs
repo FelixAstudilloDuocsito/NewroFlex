@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using CircuitVRion; // Para acceder a GuiaMunecaPuzzleLibreria
 
 public class MemoryQuestionManager : MonoBehaviour
 {
@@ -11,9 +12,13 @@ public class MemoryQuestionManager : MonoBehaviour
     public TextMeshProUGUI textoFeedback;
     public Button[] botonesOpciones; // 4 botones
 
-    [Header("Ocultar Puzzle")]
+    [Header("Ocultar Puzzle y Guía de Muñeca")]
     [Tooltip("El objeto que agrupa las piezas o el tablero para ocultarlo al preguntar")]
     public GameObject puzzleVisuales;
+    [Tooltip("Componente de guía en la muñeca izquierda para ocultar/bloquear al preguntar y actualizar al avanzar")]
+    public GuiaMunecaPuzzleLibreria guiaMuneca;
+    [Tooltip("Nivel que corresponde a 'siguienteNivel' cuando se avance tras responder bien")]
+    public GuiaMunecaPuzzleLibreria.NivelPuzzle nivelSiguienteGuia = GuiaMunecaPuzzleLibreria.NivelPuzzle.Intermedio;
 
     [Header("Configuración de la Pregunta")]
     [TextArea(2, 4)]
@@ -48,6 +53,12 @@ public class MemoryQuestionManager : MonoBehaviour
         if (puzzleVisuales != null)
         {
             puzzleVisuales.SetActive(false);
+        }
+
+        // Bloquear y ocultar la guía de la muñeca para evitar trampas durante la pregunta
+        if (guiaMuneca != null)
+        {
+            guiaMuneca.AlMostrarPregunta();
         }
 
         if (textoPregunta != null) textoPregunta.text = pregunta;
@@ -102,6 +113,16 @@ public class MemoryQuestionManager : MonoBehaviour
 
         if (panelCanvas != null) panelCanvas.SetActive(false);
         if (nivelActual != null) nivelActual.SetActive(false);
-        if (siguienteNivel != null) siguienteNivel.SetActive(true);
+
+        if (siguienteNivel != null)
+        {
+            siguienteNivel.SetActive(true);
+
+            // Actualiza el sprite de la muñeca y vuelve a habilitar su visualización para el nuevo nivel
+            if (guiaMuneca != null)
+            {
+                guiaMuneca.IniciarNivel(nivelSiguienteGuia);
+            }
+        }
     }
 }
