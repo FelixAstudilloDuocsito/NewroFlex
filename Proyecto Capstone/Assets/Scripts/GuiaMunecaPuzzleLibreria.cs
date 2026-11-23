@@ -72,6 +72,12 @@ namespace CircuitVRion
         [Range(1, 120)]
         [SerializeField] private int intervaloFrames = 20;
 
+        [Range(-1f, 1f)]
+        [SerializeField] private float alineacionMinima = -0.05f;
+
+        [Range(-1f, 1f)]
+        [SerializeField] private float alineacionMaxima = 0.55f;
+
         private Vector3 escalaOriginalCanvas;
         private Quaternion rotacionOriginalCanvas;
         private CanvasGroup canvasGroup;
@@ -126,13 +132,17 @@ namespace CircuitVRion
                 float alineacion = Vector3.Dot(eje.normalized, referencia.normalized);
                 float umbralApagado = umbralGiro - margenApagado;
 
+                float margen = Mathf.Max(0.02f, margenApagado);
+
                 bool dentroDeZona =
-                    alineacion >= umbralGiro &&
+                    alineacion >= alineacionMinima &&
+                    alineacion <= alineacionMaxima &&
                     distancia <= distanciaMaxima &&
                     anguloFrenteCamara <= anguloMaximoFrenteCamara;
 
                 bool fueraDeZona =
-                    alineacion < umbralApagado ||
+                    alineacion < (alineacionMinima - margen) ||
+                    alineacion > (alineacionMaxima + margen) ||
                     distancia > distanciaMaxima + 0.15f ||
                     anguloFrenteCamara > anguloMaximoFrenteCamara + 10f;
 

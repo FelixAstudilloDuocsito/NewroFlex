@@ -7126,14 +7126,16 @@ MonoBehaviour:
   ejeDeMuneca: 0
   invertirEje: 1
   compararContra: 0
-  umbralGiro: 0.25
-  margenApagado: 0.12
+  umbralGiro: 0.18
+  margenApagado: 0.1
   anguloMaximoFrenteCamara: 30
   distanciaMaxima: 0.85
   velocidadAnimacion: 12
   forzarMirarCamara: 0
   mostrarDebugLog: 1
   intervaloFrames: 30
+  alineacionMinima: -0.05
+  alineacionMaxima: 0.55
 --- !u!1 &692957214
 GameObject:
   m_ObjectHideFlags: 0
@@ -16127,16 +16129,16 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1168272695}
-  m_LocalRotation: {x: -0, y: -0.099929124, z: 0.000000029802319, w: 0.99499464}
-  m_LocalPosition: {x: 0, y: 0, z: 0.064}
-  m_LocalScale: {x: 0.001242961, y: 0.001242961, z: 0.001242961}
+  m_LocalRotation: {x: -0, y: -0.99499476, z: 0, w: -0.09992744}
+  m_LocalPosition: {x: 0, y: 0, z: -0.039}
+  m_LocalScale: {x: 0.0010455408, y: 0.0010455408, z: 0.0010455408}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 1274124}
-  m_LocalEulerAnglesHint: {x: 0, y: -11.47, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -191.47, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.084999084, y: 0.07600021}
+  m_AnchoredPosition: {x: -0.063999176, y: 0.048000336}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1168272697
