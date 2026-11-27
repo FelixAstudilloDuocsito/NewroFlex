@@ -4,13 +4,18 @@ Aplicación de escritorio para explorar las sesiones de prueba de NeuroFlex en
 Cloud Firestore y asignarles tags compartidos. Es independiente del dashboard
 Expo del proyecto.
 
-La interfaz consulta todas las sesiones, paginándolas en grupos, y carga las
-escenas, dificultades y rondas sólo cuando se selecciona una sesión. Los tags
+La interfaz consulta todas las sesiones y las muestra paginadas en la barra
+lateral (por defecto 50 por página, configurable entre 25, 50 y 100); carga las
+escenas, dificultades y rondas sólo cuando se selecciona una sesión, y consulta
+en la página actual cuántas escenas tiene cada sesión para mostrar su ícono en
+rojo (1 escena), amarillo (2 escenas) o verde (3 escenas). Los tags
 se guardan en el campo `tag` del documento `sessions/{sessionId}` y se leen
 desde Firestore; así quedan disponibles para todos los usuarios del visor. La
 fecha de corte y los grupos visuales se guardan localmente en este equipo.
 Las sesiones pueden archivarse y restaurarse desde Firestore; archivarlas sólo
-las mueve al listado separado, sin borrar métricas ni rondas.
+las mueve al listado separado, sin borrar métricas ni rondas. También es posible
+eliminar sesiones completas o rondas individuales mediante un flujo de triple
+confirmación.
 
 ## Requisitos
 
@@ -34,10 +39,11 @@ las mueve al listado separado, sin borrar métricas ni rondas.
    En PowerShell puedes copiar la plantilla con
    `Copy-Item .env.example .env.local`; luego reemplaza esos valores con la
    configuración de la aplicación Web registrada.
-3. Comprueba que las reglas de Firestore permitan leer sesiones y actualizar
-   sus tags y estado de archivado desde el visor, además de las escrituras de
-   Unity. Unity reserva códigos de sesión mediante una transacción sobre
-   `metadata/sessionCodeCounter` y necesita poder leer y escribir ese documento.
+3. Comprueba que las reglas de Firestore permitan leer sesiones, actualizar
+   sus tags y estado de archivado, y eliminar sesiones o rondas desde el visor,
+   además de las escrituras de Unity. Unity reserva códigos de sesión mediante
+   una transacción sobre `metadata/sessionCodeCounter` y necesita poder leer y
+   escribir ese documento.
 
 La configuración Web de Firebase se incluye en el paquete del cliente y no es
 una credencial de servidor; el acceso real depende de las reglas de Firestore.

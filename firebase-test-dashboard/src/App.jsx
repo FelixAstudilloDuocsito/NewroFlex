@@ -1,9 +1,12 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { firestore, missingConfig } from "./firebase.js";
 import {
-  fetchSessions,
-  fetchSessionRounds,
   archiveSession as saveSessionArchive,
+  deleteRound as removeRoundFromFirestore,
+  deleteSession as removeSessionFromFirestore,
+  fetchSessionRounds,
+  fetchSessionSceneCounts,
+  fetchSessions,
   removeSessionTag as deleteSessionTag,
   restoreSession as clearSessionArchive,
   saveSessionTag as writeSessionTag,
@@ -81,6 +84,82 @@ function sessionDateGroupLabel(date, key) {
 }
 
 const SESSION_CUTOFF_STORAGE_KEY = "neuroflex.firebaseViewer.sessionCutoff.v1";
+const PAGE_SIZE_OPTIONS = [25, 50, 100];
+
+function sessionSceneBadge(sceneCount) {
+  if (typeof sceneCount !== "number") {
+    return { className: "scene-count-loading", text: "·", title: "Consultando escenas..." };
+  }
+  if (sceneCount <= 0) {
+    return { className: "scene-count-0", text: "0", title: "Sin escenas registradas" };
+  }
+  if (sceneCount === 1) {
+    return { className: "scene-count-1", text: "1", title: "1 escena" };
+  }
+  if (sceneCount === 2) {
+    return { className: "scene-count-2", text: "2", title: "2 escenas" };
+  }
+  return { className: "scene-count-3", text: String(sceneCount), title: `${sceneCount} escenas` };
+}
+
+function groupAndOrderSessions(sessionList, cutoffValue) {
+  const cutoffDate = cutoffValue ? new Date(cutoffValue) : null;
+  const hasCutoff = cutoffDate && !Number.isNaN(cutoffDate.getTime());
+  const groups = new Map();
+
+  for (const session of sessionList) {
+    const date = originalSessionDate(session) ||
+      (hasCutoff ? uploadedSessionDate(session) : null);
+    const dateKey = date ? localDateKey(date) : "";
+    const period = hasCutoff && date
+      ? date.getTime() >= cutoffDate.getTime() ? "after" : "before"
+      : null;
+    const key = hasCutoff
+      ? date ? `${period}:${dateKey}` : "unknown"
+      : date ? dateKey : "historical";
+
+    if (!groups.has(key)) {
+      groups.set(key, {
+        key,
+        period,
+        label: hasCutoff && date
+          ? `${period === "before" ? "Historial anterior al corte" : "Pruebas desde el corte"} · ${sessionDateGroupLabel(date, dateKey)}`
+          : hasCutoff
+            ? "Sin fecha para clasificar"
+            : date
+              ? sessionDateGroupLabel(date, dateKey)
+              : "Historial anterior · fecha original no registrada",
+        sessions: [],
+      });
+    }
+    groups.get(key).sessions.push(session);
+  }
+
+  const sortedGroups = Array.from(groups.values())
+    .map((group) => ({
+      ...group,
+      sessions: group.sessions.sort((left, right) =>
+        (sessionDate(right)?.getTime() || 0) - (sessionDate(left)?.getTime() || 0),
+      ),
+    }))
+    .sort((left, right) => {
+      if (left.key === right.key) return 0;
+      if (hasCutoff && left.period !== right.period) {
+        const periodOrder = { before: 0, after: 1, null: 2 };
+        return periodOrder[left.period] - periodOrder[right.period];
+      }
+      if (hasCutoff && left.period === null) return 1;
+      if (hasCutoff && right.period === null) return -1;
+      if (left.key === "historical") return 1;
+      if (right.key === "historical") return -1;
+      return right.key.localeCompare(left.key);
+    });
+
+  return {
+    groups: sortedGroups,
+    orderedSessions: sortedGroups.flatMap((group) => group.sessions),
+  };
+}
 
 function loadSessionCutoff() {
   try {
@@ -360,8 +439,9 @@ function SetupNotice() {
   );
 }
 
-function SessionRow({ session, displayCode, tag, selected, onSelect, showUploadDate }) {
+function SessionRow({ session, displayCode, tag, sceneCount, selected, onSelect, showUploadDate }) {
   const isTestSession = session.id.startsWith("s-test-");
+  const badge = sessionSceneBadge(sceneCount);
 
   return (
     <button
@@ -370,7 +450,13 @@ function SessionRow({ session, displayCode, tag, selected, onSelect, showUploadD
       onClick={onSelect}
       type="button"
     >
-      <span className="session-icon">S</span>
+      <span
+        aria-label={badge.title}
+        className={`session-icon ${badge.className}`}
+        title={badge.title}
+      >
+        {badge.text}
+      </span>
       <span className="session-copy">
         <strong title={displayCode}>{displayCode}</strong>
         <small>{sessionDateLabel(session, showUploadDate)}</small>
@@ -384,7 +470,7 @@ function SessionRow({ session, displayCode, tag, selected, onSelect, showUploadD
   );
 }
 
-function RoundCard({ round, sceneId, showMissing }) {
+function RoundCard({ round, sceneId, showMissing, onDelete }) {
   const metrics = useMemo(() => metricsForRound(round, sceneId), [round, sceneId]);
   const status = round.status || "sin estado";
   const statusLabel = {
@@ -402,7 +488,20 @@ function RoundCard({ round, sceneId, showMissing }) {
           <strong>Métricas de la ronda</strong>
           <span className="round-status">{statusLabel}</span>
         </div>
-        <span className="round-date">{dateLabel(round.ended_at)}</span>
+        <div className="round-actions">
+          <span className="round-date">{dateLabel(round.ended_at)}</span>
+          {onDelete && (
+            <button
+              aria-label="Eliminar ronda de métricas"
+              className="quiet-button round-delete-button"
+              onClick={() => onDelete(round, statusLabel)}
+              title="Eliminar esta entrada de métricas"
+              type="button"
+            >
+              Eliminar
+            </button>
+          )}
+        </div>
       </header>
       {visibleMetrics.length > 0 ? (
         <dl className="metric-list">
@@ -430,7 +529,7 @@ function RoundCard({ round, sceneId, showMissing }) {
   );
 }
 
-function SceneSection({ scene, index, showMissing }) {
+function SceneSection({ scene, index, showMissing, onRequestDeleteRound }) {
   const sceneId = scene.scenario_id || scene.id;
   const sceneName = scene.scenario_name || SCENES[sceneId] || sceneId;
   const roundCount = scene.difficulties.reduce(
@@ -495,7 +594,22 @@ function SceneSection({ scene, index, showMissing }) {
                 ) : (
                   <div className="round-list">
                     {difficulty.rounds.map((round) => (
-                      <RoundCard key={round.id} round={round} sceneId={sceneId} showMissing={showMissing} />
+                      <RoundCard
+                        key={round.id}
+                        round={round}
+                        sceneId={sceneId}
+                        showMissing={showMissing}
+                        onDelete={(targetRound, statusLabel) =>
+                          onRequestDeleteRound({
+                            sceneId: scene.id,
+                            sceneName,
+                            difficultyId: difficulty.id,
+                            difficultyLabel: difficulty.difficulty_name || `Dificultad ${difficulty.difficulty || difficulty.id}`,
+                            round: targetRound,
+                            statusLabel,
+                          })
+                        }
+                      />
                     ))}
                   </div>
                 )}
@@ -505,6 +619,148 @@ function SceneSection({ scene, index, showMissing }) {
         })}
       </div>
     </details>
+  );
+}
+
+function DeleteConfirmModal({
+  target,
+  step,
+  confirmText,
+  deleting,
+  error,
+  onConfirmTextChange,
+  onStepChange,
+  onCancel,
+  onConfirm,
+}) {
+  if (!target) return null;
+
+  const isSession = target.type === "session";
+  const canSubmit = confirmText.trim().toUpperCase() === "ELIMINAR" && !deleting;
+
+  function handleFormSubmit(event) {
+    event.preventDefault();
+    if (step === 3 && canSubmit) {
+      onConfirm();
+    }
+  }
+
+  return (
+    <div
+      className="modal-backdrop"
+      onClick={(event) => {
+        if (event.target === event.currentTarget && !deleting) onCancel();
+      }}
+      role="presentation"
+    >
+      <div
+        aria-labelledby="delete-modal-title"
+        aria-modal="true"
+        className="confirm-modal"
+        role="dialog"
+      >
+        <span className="confirm-step-pill">Confirmación {step} de 3</span>
+        <h3 id="delete-modal-title">
+          {step === 1 && (isSession ? "¿Eliminar esta sesión?" : "¿Eliminar esta entrada de métricas?")}
+          {step === 2 && "¿Estás completamente seguro?"}
+          {step === 3 && "Confirmación final"}
+        </h3>
+
+        <div className="confirm-target-box">
+          {isSession ? (
+            <>
+              <strong>{target.displayCode}</strong>
+              <span>
+                {target.sceneCount} {target.sceneCount === 1 ? "escena" : "escenas"} ·{" "}
+                {target.roundCount} {target.roundCount === 1 ? "ronda" : "rondas"}
+              </span>
+            </>
+          ) : (
+            <>
+              <strong>{target.sceneName} · {target.difficultyLabel}</strong>
+              <span>
+                Estado: {target.statusLabel} · {target.roundDateLabel}
+              </span>
+            </>
+          )}
+        </div>
+
+        {step === 1 && (
+          <>
+            <p className="muted">
+              {isSession
+                ? "Esta acción borrará la sesión junto con todas sus escenas, dificultades y rondas de métricas en Firebase."
+                : "Esta acción borrará esta ronda y sus métricas de Firebase."}
+            </p>
+            {isSession && (
+              <p className="confirm-warning">
+                Si solo quieres ocultarla de la lista principal sin perder datos, cancela y usa{" "}
+                <strong>Archivar sesión</strong>.
+              </p>
+            )}
+            <div className="confirm-actions">
+              <button className="quiet-button" onClick={onCancel} type="button">
+                Cancelar
+              </button>
+              <button className="danger-button" onClick={() => onStepChange(2)} type="button">
+                Continuar
+              </button>
+            </div>
+          </>
+        )}
+
+        {step === 2 && (
+          <>
+            <p className="confirm-warning">
+              {isSession
+                ? "Se eliminarán permanentemente todos los documentos de esta sesión en Firestore. No se puede deshacer."
+                : "Esta ronda de métricas se eliminará permanentemente de Firestore y no se podrá recuperar."}
+            </p>
+            <div className="confirm-actions">
+              <button className="quiet-button" onClick={onCancel} type="button">
+                Cancelar
+              </button>
+              <button className="quiet-button" onClick={() => onStepChange(1)} type="button">
+                Volver
+              </button>
+              <button className="danger-button" onClick={() => onStepChange(3)} type="button">
+                Sí, estoy seguro
+              </button>
+            </div>
+          </>
+        )}
+
+        {step === 3 && (
+          <form onSubmit={handleFormSubmit}>
+            <p className="muted">
+              Para evitar eliminaciones por accidente, escribe <code>ELIMINAR</code> y luego confirma.
+            </p>
+            <label className="confirm-input-label">
+              Escribe ELIMINAR
+              <input
+                autoFocus
+                disabled={deleting}
+                onChange={(event) => onConfirmTextChange(event.target.value)}
+                placeholder="ELIMINAR"
+                value={confirmText}
+              />
+            </label>
+            {error && <p className="error-banner">{error}</p>}
+            <div className="confirm-actions">
+              <button className="quiet-button" disabled={deleting} onClick={onCancel} type="button">
+                Cancelar
+              </button>
+              <button className="quiet-button" disabled={deleting} onClick={() => onStepChange(2)} type="button">
+                Volver
+              </button>
+              <button className="danger-button solid" disabled={!canSubmit} type="submit">
+                {deleting ? "Eliminando..." : "Eliminar definitivamente"}
+              </button>
+            </div>
+          </form>
+        )}
+      </div>
+    </div>
   );
 }
 
@@ -530,6 +786,16 @@ export default function App() {
   const [tagError, setTagError] = useState("");
   const [savingTag, setSavingTag] = useState(false);
   const [showMissing, setShowMissing] = useState(false);
+  const [pageSize, setPageSize] = useState(50);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [sceneCountsById, setSceneCountsById] = useState({});
+  const sceneCountsRef = useRef({});
+  const inFlightSceneCountsRef = useRef(new Set());
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [deleteStep, setDeleteStep] = useState(1);
+  const [deleteConfirmText, setDeleteConfirmText] = useState("");
+  const [deletingEntry, setDeletingEntry] = useState(false);
+  const [deleteError, setDeleteError] = useState("");
 
   const refreshSessions = useCallback(async () => {
     if (!firestore) return;
@@ -537,6 +803,9 @@ export default function App() {
     setSessionError("");
     try {
       const result = await fetchSessions(firestore);
+      sceneCountsRef.current = {};
+      inFlightSceneCountsRef.current.clear();
+      setSceneCountsById({});
       setSessions(result);
       setLastRefresh(new Date());
       setSelectedId((current) =>
@@ -564,6 +833,17 @@ export default function App() {
   }, [selectedId]);
 
   useEffect(() => {
+    if (!deleteTarget) return undefined;
+    function onKeyDown(event) {
+      if (event.key === "Escape" && !deletingEntry) {
+        setDeleteTarget(null);
+      }
+    }
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [deleteTarget, deletingEntry]);
+
+  useEffect(() => {
     if (!selectedId || !firestore) {
       setSessionData(null);
       return undefined;
@@ -574,7 +854,19 @@ export default function App() {
     setDetailError("");
     fetchSessionRounds(firestore, selectedId)
       .then((data) => {
-        if (active) setSessionData(data);
+        if (!active) return;
+        setSessionData(data);
+        let count = data.scenes.length;
+        if (count === 0 && data.legacyRounds.length > 0) {
+          const legacyScenes = new Set(
+            data.legacyRounds.map((round) => round.scenario_id).filter(Boolean),
+          );
+          count = legacyScenes.size || 1;
+        }
+        sceneCountsRef.current[selectedId] = count;
+        setSceneCountsById((prev) =>
+          prev[selectedId] === count ? prev : { ...prev, [selectedId]: count },
+        );
       })
       .catch((error) => {
         if (active) setDetailError(errorMessage(error));
@@ -626,56 +918,65 @@ export default function App() {
     );
   }, [sessions]);
 
-  const sessionGroups = useMemo(() => {
-    const cutoffDate = cutoffValue ? new Date(cutoffValue) : null;
-    const hasCutoff = cutoffDate && !Number.isNaN(cutoffDate.getTime());
-    const groups = new Map();
-    for (const session of filteredSessions) {
-      const date = originalSessionDate(session) ||
-        (hasCutoff ? uploadedSessionDate(session) : null);
-      const dateKey = date ? localDateKey(date) : "";
-      const period = hasCutoff && date
-        ? date.getTime() >= cutoffDate.getTime() ? "after" : "before"
-        : null;
-      const key = hasCutoff
-        ? date ? `${period}:${dateKey}` : "unknown"
-        : date ? dateKey : "historical";
-      if (!groups.has(key)) {
-        groups.set(key, {
-          key,
-          period,
-          label: hasCutoff && date
-            ? `${period === "before" ? "Historial anterior al corte" : "Pruebas desde el corte"} · ${sessionDateGroupLabel(date, dateKey)}`
-            : hasCutoff
-              ? "Sin fecha para clasificar"
-              : date
-                ? sessionDateGroupLabel(date, dateKey)
-                : "Historial anterior · fecha original no registrada",
-          sessions: [],
-        });
-      }
-      groups.get(key).sessions.push(session);
+  const { orderedSessions } = useMemo(
+    () => groupAndOrderSessions(filteredSessions, cutoffValue),
+    [filteredSessions, cutoffValue],
+  );
+  const totalPages = Math.max(1, Math.ceil(orderedSessions.length / pageSize));
+  const safePage = Math.min(currentPage, totalPages);
+  const pageStartIndex = (safePage - 1) * pageSize;
+
+  const pagedSessions = useMemo(
+    () => orderedSessions.slice(pageStartIndex, pageStartIndex + pageSize),
+    [orderedSessions, pageStartIndex, pageSize],
+  );
+
+  const { groups: sessionGroups } = useMemo(
+    () => groupAndOrderSessions(pagedSessions, cutoffValue),
+    [pagedSessions, cutoffValue],
+  );
+
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
     }
-    return Array.from(groups.values())
-      .map((group) => ({
-        ...group,
-        sessions: group.sessions.sort((left, right) =>
-          (sessionDate(right)?.getTime() || 0) - (sessionDate(left)?.getTime() || 0),
-        ),
-      }))
-      .sort((left, right) => {
-        if (left.key === right.key) return 0;
-        if (hasCutoff && left.period !== right.period) {
-          const periodOrder = { before: 0, after: 1, null: 2 };
-          return periodOrder[left.period] - periodOrder[right.period];
+  }, [currentPage, totalPages]);
+
+  useEffect(() => {
+    if (!firestore || pagedSessions.length === 0) return undefined;
+    const missingIds = pagedSessions
+      .map((session) => session.id)
+      .filter((id) => !(id in sceneCountsRef.current) && !inFlightSceneCountsRef.current.has(id));
+
+    if (missingIds.length === 0) return undefined;
+
+    for (const id of missingIds) {
+      inFlightSceneCountsRef.current.add(id);
+    }
+
+    let active = true;
+    fetchSessionSceneCounts(firestore, missingIds).then((counts) => {
+      for (const id of missingIds) {
+        inFlightSceneCountsRef.current.delete(id);
+      }
+      if (!active) return;
+
+      const validCounts = {};
+      for (const [id, count] of Object.entries(counts)) {
+        if (typeof count === "number") {
+          sceneCountsRef.current[id] = count;
+          validCounts[id] = count;
         }
-        if (hasCutoff && left.period === null) return 1;
-        if (hasCutoff && right.period === null) return -1;
-        if (left.key === "historical") return 1;
-        if (right.key === "historical") return -1;
-        return right.key.localeCompare(left.key);
-      });
-  }, [filteredSessions, cutoffValue]);
+      }
+      if (Object.keys(validCounts).length > 0) {
+        setSceneCountsById((prev) => ({ ...prev, ...validCounts }));
+      }
+    });
+
+    return () => {
+      active = false;
+    };
+  }, [pagedSessions]);
 
   const selectedSession = sessions.find((session) => session.id === selectedId);
   const activeSessionCount = sessions.filter((session) => session.archived !== true).length;
@@ -732,9 +1033,72 @@ export default function App() {
 
   function changeArchiveView(archived) {
     setShowArchived(archived);
+    setCurrentPage(1);
     setSelectedId(
       sessions.find((session) => (session.archived === true) === archived)?.id || "",
     );
+  }
+
+  function requestDeleteSession() {
+    if (!selectedSession) return;
+    setDeleteTarget({
+      type: "session",
+      sessionId: selectedSession.id,
+      displayCode: selectedDisplayCode,
+      sceneCount: scenes.length,
+      roundCount: totalRounds,
+    });
+    setDeleteStep(1);
+    setDeleteConfirmText("");
+    setDeleteError("");
+  }
+
+  function requestDeleteRound({ sceneId, sceneName, difficultyId, difficultyLabel, round, statusLabel }) {
+    if (!selectedId || !round?._ref) return;
+    setDeleteTarget({
+      type: "round",
+      sessionId: selectedId,
+      sceneId,
+      sceneName,
+      difficultyId,
+      difficultyLabel,
+      round,
+      roundDateLabel: dateLabel(round.ended_at),
+      statusLabel,
+    });
+    setDeleteStep(1);
+    setDeleteConfirmText("");
+    setDeleteError("");
+  }
+
+  async function executeDelete() {
+    if (!firestore || !deleteTarget || deletingEntry) return;
+    setDeletingEntry(true);
+    setDeleteError("");
+    try {
+      if (deleteTarget.type === "session") {
+        const removedId = deleteTarget.sessionId;
+        await removeSessionFromFirestore(firestore, removedId);
+        delete sceneCountsRef.current[removedId];
+        setDeleteTarget(null);
+        await refreshSessions();
+      } else {
+        await removeRoundFromFirestore(firestore, {
+          sessionId: deleteTarget.sessionId,
+          sceneId: deleteTarget.sceneId,
+          difficultyId: deleteTarget.difficultyId,
+          roundRef: deleteTarget.round._ref,
+        });
+        delete sceneCountsRef.current[deleteTarget.sessionId];
+        setDeleteTarget(null);
+        setDetailRefreshKey((key) => key + 1);
+      }
+    } catch (error) {
+      console.error("No se pudo eliminar el registro en Firebase.", error);
+      setDeleteError(`No se pudo eliminar en Firebase. ${errorMessage(error)}`);
+    } finally {
+      setDeletingEntry(false);
+    }
   }
 
   async function toggleSelectedArchive() {
@@ -808,6 +1172,7 @@ export default function App() {
 
   function updateCutoff(value) {
     setCutoffValue(value);
+    setCurrentPage(1);
     try {
       if (value) {
         localStorage.setItem(SESSION_CUTOFF_STORAGE_KEY, value);
@@ -879,7 +1244,10 @@ export default function App() {
             <input
               placeholder="Buscar código, tag o fecha..."
               value={search}
-              onChange={(event) => setSearch(event.target.value)}
+              onChange={(event) => {
+                setSearch(event.target.value);
+                setCurrentPage(1);
+              }}
             />
           </label>
           <div className="cutoff-control">
@@ -914,6 +1282,17 @@ export default function App() {
           <p className="list-hint">
             {filteredSessions.length} de {visibleSessions.length} {showArchived ? "archivadas" : "activas"} · {sessions.length} en total
           </p>
+          <div className="scene-legend" aria-label="Leyenda de escenas por sesión">
+            <span className="scene-legend-item">
+              <span className="scene-legend-dot scene-count-1" />1 escena
+            </span>
+            <span className="scene-legend-item">
+              <span className="scene-legend-dot scene-count-2" />2 escenas
+            </span>
+            <span className="scene-legend-item">
+              <span className="scene-legend-dot scene-count-3" />3 escenas
+            </span>
+          </div>
           {sessionError && <p className="error-banner compact">{sessionError}</p>}
           <div className="session-list">
             {sessionGroups.map((group) => (
@@ -933,6 +1312,7 @@ export default function App() {
                       session={session}
                       displayCode={session.session_code || legacySessionLabels.get(session.id)}
                       tag={session.tag}
+                      sceneCount={sceneCountsById[session.id]}
                       selected={session.id === selectedId}
                       showUploadDate={Boolean(cutoffValue)}
                       onSelect={() => setSelectedId(session.id)}
@@ -951,6 +1331,51 @@ export default function App() {
               </p>
             )}
           </div>
+          {orderedSessions.length > 0 && (
+            <div className="pagination-bar">
+              <div className="pagination-summary">
+                <span>
+                  Mostrando {pageStartIndex + 1}–{Math.min(pageStartIndex + pageSize, orderedSessions.length)} de {orderedSessions.length}
+                </span>
+                <select
+                  aria-label="Sesiones por página"
+                  className="page-size-select"
+                  onChange={(event) => {
+                    setPageSize(Number(event.target.value));
+                    setCurrentPage(1);
+                  }}
+                  value={pageSize}
+                >
+                  {PAGE_SIZE_OPTIONS.map((size) => (
+                    <option key={size} value={size}>
+                      {size} / pág.
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="pagination-controls">
+                <button
+                  className="quiet-button"
+                  disabled={safePage <= 1}
+                  onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
+                  type="button"
+                >
+                  ‹ Anterior
+                </button>
+                <span className="pagination-page-label">
+                  Página {safePage} de {totalPages}
+                </span>
+                <button
+                  className="quiet-button"
+                  disabled={safePage >= totalPages}
+                  onClick={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}
+                  type="button"
+                >
+                  Siguiente ›
+                </button>
+              </div>
+            </div>
+          )}
           <p className="refresh-time">
             {lastRefresh
               ? `Actualizado ${lastRefresh.toLocaleTimeString("es-CL")}`
@@ -1000,6 +1425,14 @@ export default function App() {
                   </button>
                   <button className="quiet-button" onClick={openTagEditor} type="button">
                     {selectedTag ? "Editar tag" : "Añadir tag"}
+                  </button>
+                  <button
+                    className="danger-button"
+                    disabled={loadingDetails || deletingEntry}
+                    onClick={requestDeleteSession}
+                    type="button"
+                  >
+                    Eliminar sesión
                   </button>
                   <button
                     className="primary-button"
@@ -1093,6 +1526,7 @@ export default function App() {
                         index={index + 1}
                         scene={scene}
                         showMissing={showMissing}
+                        onRequestDeleteRound={requestDeleteRound}
                       />
                     ))}
                     {sessionData?.legacyRounds.length > 0 && (
@@ -1112,6 +1546,16 @@ export default function App() {
                                 round={round}
                                 sceneId={round.scenario_id || ""}
                                 showMissing={showMissing}
+                                onDelete={(targetRound, statusLabel) =>
+                                  requestDeleteRound({
+                                    sceneId: null,
+                                    sceneName: SCENES[targetRound.scenario_id] || "Estructura anterior",
+                                    difficultyId: null,
+                                    difficultyLabel: "Ronda sin clasificar",
+                                    round: targetRound,
+                                    statusLabel,
+                                  })
+                                }
                               />
                             ))}
                           </div>
@@ -1125,6 +1569,23 @@ export default function App() {
           )}
         </section>
       </main>
+      <DeleteConfirmModal
+        confirmText={deleteConfirmText}
+        deleting={deletingEntry}
+        error={deleteError}
+        onCancel={() => {
+          if (!deletingEntry) setDeleteTarget(null);
+        }}
+        onConfirm={executeDelete}
+        onConfirmTextChange={setDeleteConfirmText}
+        onStepChange={(nextStep) => {
+          setDeleteStep(nextStep);
+          setDeleteError("");
+          if (nextStep !== 3) setDeleteConfirmText("");
+        }}
+        step={deleteStep}
+        target={deleteTarget}
+      />
     </div>
   );
 }

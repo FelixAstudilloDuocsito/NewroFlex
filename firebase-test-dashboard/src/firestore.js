@@ -1,14 +1,16 @@
 import {
   collection,
-  documentId,
+  deleteDoc,
   deleteField,
   doc,
+  documentId,
   getDocs,
   limit,
   orderBy,
   query,
   startAfter,
   updateDoc,
+  writeBatch,
 } from "firebase/firestore";
 
 export const SCENES = {
@@ -70,6 +72,98 @@ export async function archiveSession(firestore, sessionId) {
 
 export async function restoreSession(firestore, sessionId) {
   await updateDoc(doc(firestore, "sessions", sessionId), { archived: deleteField() });
+}
+
+export async function fetchSessionSceneCount(firestore, sessionId) {
+  const sessionRef = doc(firestore, "sessions", sessionId);
+  const sceneSnapshots = await getDocs(collection(sessionRef, "scenes"));
+  if (!sceneSnapshots.empty) {
+    return sceneSnapshots.size;
+  }
+
+  const legacySnapshot = await getDocs(collection(sessionRef, "rounds"));
+  if (legacySnapshot.empty) return 0;
+
+  const legacySceneIds = new Set();
+  for (const roundDoc of legacySnapshot.docs) {
+    const scenarioId = roundDoc.data()?.scenario_id;
+    if (scenarioId) legacySceneIds.add(scenarioId);
+  }
+  return legacySceneIds.size || 1;
+}
+
+export async function fetchSessionSceneCounts(firestore, sessionIds) {
+  const entries = await Promise.all(
+    sessionIds.map(async (sessionId) => {
+      try {
+        const count = await fetchSessionSceneCount(firestore, sessionId);
+        return [sessionId, count];
+      } catch (error) {
+        console.error(`No se pudo leer la cantidad de escenas de ${sessionId}.`, error);
+        return [sessionId, null];
+      }
+    }),
+  );
+
+  return Object.fromEntries(entries);
+}
+
+async function deleteReferencesInBatches(firestore, refs) {
+  const BATCH_LIMIT = 450;
+  for (let index = 0; index < refs.length; index += BATCH_LIMIT) {
+    const batch = writeBatch(firestore);
+    for (const ref of refs.slice(index, index + BATCH_LIMIT)) {
+      batch.delete(ref);
+    }
+    await batch.commit();
+  }
+}
+
+export async function deleteRound(firestore, { sessionId, sceneId, difficultyId, roundRef }) {
+  if (!roundRef) {
+    throw new Error("No se encontró la referencia de la ronda en Firestore.");
+  }
+
+  await deleteDoc(roundRef);
+
+  if (sessionId && sceneId && difficultyId) {
+    const sceneRef = doc(firestore, "sessions", sessionId, "scenes", sceneId);
+    const difficultyRef = doc(sceneRef, "difficulties", difficultyId);
+    const remainingRounds = await getDocs(query(collection(difficultyRef, "rounds"), limit(1)));
+    if (remainingRounds.empty) {
+      await deleteDoc(difficultyRef);
+      const remainingDifficulties = await getDocs(query(collection(sceneRef, "difficulties"), limit(1)));
+      if (remainingDifficulties.empty) {
+        await deleteDoc(sceneRef);
+      }
+    }
+  }
+}
+
+export async function deleteSession(firestore, sessionId) {
+  const sessionRef = doc(firestore, "sessions", sessionId);
+  const refsToDelete = [];
+
+  const sceneSnapshots = await getDocs(collection(sessionRef, "scenes"));
+  for (const sceneSnapshot of sceneSnapshots.docs) {
+    const difficultySnapshots = await getDocs(collection(sceneSnapshot.ref, "difficulties"));
+    for (const difficultySnapshot of difficultySnapshots.docs) {
+      const roundSnapshots = await getDocs(collection(difficultySnapshot.ref, "rounds"));
+      for (const roundSnapshot of roundSnapshots.docs) {
+        refsToDelete.push(roundSnapshot.ref);
+      }
+      refsToDelete.push(difficultySnapshot.ref);
+    }
+    refsToDelete.push(sceneSnapshot.ref);
+  }
+
+  const legacyRoundSnapshots = await getDocs(collection(sessionRef, "rounds"));
+  for (const legacyRoundSnapshot of legacyRoundSnapshots.docs) {
+    refsToDelete.push(legacyRoundSnapshot.ref);
+  }
+
+  refsToDelete.push(sessionRef);
+  await deleteReferencesInBatches(firestore, refsToDelete);
 }
 
 export async function fetchSessionRounds(firestore, sessionId) {
