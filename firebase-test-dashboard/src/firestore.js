@@ -1,10 +1,14 @@
 import {
   collection,
+  documentId,
+  deleteField,
   doc,
   getDocs,
   limit,
   orderBy,
   query,
+  startAfter,
+  updateDoc,
 } from "firebase/firestore";
 
 export const SCENES = {
@@ -14,6 +18,7 @@ export const SCENES = {
 };
 
 const SCENE_ORDER = ["puzzle", "memory", "pigeons"];
+const SESSION_PAGE_SIZE = 500;
 
 function timestampMillis(timestamp) {
   return timestamp && typeof timestamp.toDate === "function"
@@ -26,17 +31,45 @@ function documentRecord(snapshot) {
 }
 
 export async function fetchSessions(firestore) {
-  const result = await getDocs(
-    query(
-      collection(firestore, "sessions"),
-      orderBy("updated_at", "desc"),
-      limit(50),
-    ),
+  const sessionsCollection = collection(firestore, "sessions");
+  const sessions = [];
+  let pageQuery = query(
+    sessionsCollection,
+    orderBy(documentId()),
+    limit(SESSION_PAGE_SIZE),
   );
 
-  return result.docs
-    .map(documentRecord)
+  while (true) {
+    const result = await getDocs(pageQuery);
+    sessions.push(...result.docs.map(documentRecord));
+    if (result.docs.length < SESSION_PAGE_SIZE) break;
+
+    pageQuery = query(
+      sessionsCollection,
+      orderBy(documentId()),
+      startAfter(result.docs[result.docs.length - 1]),
+      limit(SESSION_PAGE_SIZE),
+    );
+  }
+
+  return sessions
     .sort((left, right) => timestampMillis(right.updated_at) - timestampMillis(left.updated_at));
+}
+
+export async function saveSessionTag(firestore, sessionId, tag) {
+  await updateDoc(doc(firestore, "sessions", sessionId), { tag });
+}
+
+export async function removeSessionTag(firestore, sessionId) {
+  await updateDoc(doc(firestore, "sessions", sessionId), { tag: deleteField() });
+}
+
+export async function archiveSession(firestore, sessionId) {
+  await updateDoc(doc(firestore, "sessions", sessionId), { archived: true });
+}
+
+export async function restoreSession(firestore, sessionId) {
+  await updateDoc(doc(firestore, "sessions", sessionId), { archived: deleteField() });
 }
 
 export async function fetchSessionRounds(firestore, sessionId) {

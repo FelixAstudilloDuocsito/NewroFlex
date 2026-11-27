@@ -57,6 +57,10 @@ h1, h2, h3, h4, p { margin-top: 0; }
 .icon-button { width: 36px; height: 36px; color: var(--accent-bright); font-size: 23px; }
 .icon-button:hover, .quiet-button:hover { border-color: #6053a7; background: #242437; }
 .icon-button:disabled { opacity: .6; cursor: default; }
+.session-view-switch { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 0 18px 10px; }
+.session-view-button { display: flex; align-items: center; justify-content: space-between; min-height: 34px; }
+.session-view-button span { color: #78879b; }
+.session-view-button.active { border-color: #7669c2; background: #282640; color: #e4dfff; }
 .search-box {
   display: flex; align-items: center; gap: 9px; margin: 0 18px 10px;
   padding: 0 11px; height: 40px; border: 1px solid var(--border);

@@ -1,11 +1,19 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { firestore, missingConfig } from "./firebase.js";
-import { fetchSessions, fetchSessionRounds, SCENES } from "./firestore.js";
+import {
+  fetchSessions,
+  fetchSessionRounds,
+  archiveSession as saveSessionArchive,
+  removeSessionTag as deleteSessionTag,
+  restoreSession as clearSessionArchive,
+  saveSessionTag as writeSessionTag,
+  SCENES,
+} from "./firestore.js";
 
 function errorMessage(error) {
   const code = error?.code || "";
   if (code.includes("permission-denied")) {
-    return "Firestore denegó la lectura. Revisa las reglas de acceso de la base de datos.";
+    return "Firestore denegó el acceso. Revisa las reglas de lectura y escritura de la base de datos.";
   }
   if (code.includes("network-request-failed")) {
     return "No se pudo conectar. Comprueba internet y vuelve a intentar.";
@@ -72,7 +80,6 @@ function sessionDateGroupLabel(date, key) {
   });
 }
 
-const SESSION_TAGS_STORAGE_KEY = "neuroflex.firebaseViewer.sessionTags.v1";
 const SESSION_CUTOFF_STORAGE_KEY = "neuroflex.firebaseViewer.sessionCutoff.v1";
 
 function loadSessionCutoff() {
@@ -85,21 +92,6 @@ function loadSessionCutoff() {
   } catch (error) {
     console.error("No se pudo cargar la fecha de corte local.", error);
     return "";
-  }
-}
-
-function loadSessionTags() {
-  try {
-    const stored = localStorage.getItem(SESSION_TAGS_STORAGE_KEY);
-    if (!stored) return {};
-    const tags = JSON.parse(stored);
-    if (!tags || typeof tags !== "object" || Array.isArray(tags)) {
-      throw new Error("El formato de etiquetas guardado no es válido.");
-    }
-    return tags;
-  } catch (error) {
-    console.error("No se pudieron cargar las etiquetas locales de sesiones.", error);
-    return {};
   }
 }
 
@@ -335,10 +327,10 @@ function SetupNotice() {
         <p className="eyebrow">VISOR DE PRUEBAS FIREBASE</p>
         <h1>Configura la conexión</h1>
         <p>
-          Este visor usa una app web registrada en el proyecto Firebase y sólo
-          consulta Firestore. No guardes contraseñas ni claves de cuenta de
-          servicio en esta aplicación. Unity también necesita permiso para
-          reservar códigos de sesión en Firestore.
+          Este visor usa una app web registrada en el proyecto Firebase para
+          consultar sesiones y guardar sus tags en Firestore. No guardes
+          contraseñas ni claves de cuenta de servicio en esta aplicación.
+          Unity también necesita permiso para reservar códigos de sesión.
         </p>
         <ol>
           <li>
@@ -350,8 +342,9 @@ function SetupNotice() {
             <code> .env.example</code> como plantilla.
           </li>
           <li>
-            Verifica que las reglas de Firestore permitan lectura al visor y
-            lectura/escritura de <code>metadata/sessionCodeCounter</code> a Unity.
+            Verifica que las reglas de Firestore permitan leer sesiones y
+            actualizar sus tags, además de leer/escribir{" "}
+            <code>metadata/sessionCodeCounter</code> a Unity.
           </li>
         </ol>
         {missingConfig.length > 0 && (
@@ -523,16 +516,19 @@ export default function App() {
   const [loadingDetails, setLoadingDetails] = useState(false);
   const [sessionError, setSessionError] = useState("");
   const [detailError, setDetailError] = useState("");
+  const [archiveError, setArchiveError] = useState("");
   const [search, setSearch] = useState("");
+  const [showArchived, setShowArchived] = useState(false);
+  const [savingArchive, setSavingArchive] = useState(false);
   const [lastRefresh, setLastRefresh] = useState(null);
   const [detailRefreshKey, setDetailRefreshKey] = useState(0);
-  const [sessionTags, setSessionTags] = useState(loadSessionTags);
   const [cutoffValue, setCutoffValue] = useState(loadSessionCutoff);
   const [cutoffError, setCutoffError] = useState("");
   const [tagEditorOpen, setTagEditorOpen] = useState(false);
   const [tagNameDraft, setTagNameDraft] = useState("");
   const [tagColorDraft, setTagColorDraft] = useState("#a99cf2");
   const [tagError, setTagError] = useState("");
+  const [savingTag, setSavingTag] = useState(false);
   const [showMissing, setShowMissing] = useState(false);
 
   const refreshSessions = useCallback(async () => {
@@ -546,7 +542,9 @@ export default function App() {
       setSelectedId((current) =>
         result.some((session) => session.id === current)
           ? current
-          : result[0]?.id || "",
+          : result.find((session) => session.archived !== true)?.id ||
+            result[0]?.id ||
+            "",
       );
     } catch (error) {
       setSessionError(errorMessage(error));
@@ -562,6 +560,7 @@ export default function App() {
   useEffect(() => {
     setTagEditorOpen(false);
     setTagError("");
+    setArchiveError("");
   }, [selectedId]);
 
   useEffect(() => {
@@ -589,11 +588,16 @@ export default function App() {
     };
   }, [selectedId, detailRefreshKey]);
 
+  const visibleSessions = useMemo(
+    () => sessions.filter((session) => (session.archived === true) === showArchived),
+    [sessions, showArchived],
+  );
+
   const filteredSessions = useMemo(() => {
     const term = search.trim().toLocaleLowerCase("es-CL");
-    if (!term) return sessions;
-    return sessions.filter((session) => {
-      const tag = sessionTags[session.id];
+    if (!term) return visibleSessions;
+    return visibleSessions.filter((session) => {
+      const tag = session.tag;
       const values = [
         session.session_code,
         session.id.startsWith("s-test-") ? "prueba anterior" : "sesión anterior",
@@ -605,7 +609,7 @@ export default function App() {
         value?.toLocaleLowerCase("es-CL").includes(term),
       );
     });
-  }, [sessions, search, sessionTags, cutoffValue]);
+  }, [visibleSessions, search, cutoffValue]);
 
   const legacySessionLabels = useMemo(() => {
     let historicalIndex = 0;
@@ -674,10 +678,12 @@ export default function App() {
   }, [filteredSessions, cutoffValue]);
 
   const selectedSession = sessions.find((session) => session.id === selectedId);
+  const activeSessionCount = sessions.filter((session) => session.archived !== true).length;
+  const archivedSessionCount = sessions.length - activeSessionCount;
   const selectedDisplayCode = selectedSession?.session_code ||
     legacySessionLabels.get(selectedId) ||
     "Sesión";
-  const selectedTag = sessionTags[selectedId];
+  const selectedTag = selectedSession?.tag;
   const scenes = sessionData?.scenes || [];
   const totalRounds = scenes.reduce(
     (total, scene) =>
@@ -716,16 +722,40 @@ export default function App() {
   );
   const isTestSession = selectedSession?.id.startsWith("s-test-") || false;
 
-  function persistSessionTags(nextTags) {
+  useEffect(() => {
+    if (selectedSession && (selectedSession.archived === true) !== showArchived) {
+      setSelectedId(
+        visibleSessions.find((session) => (session.archived === true) === showArchived)?.id || "",
+      );
+    }
+  }, [selectedSession, showArchived, visibleSessions]);
+
+  function changeArchiveView(archived) {
+    setShowArchived(archived);
+    setSelectedId(
+      sessions.find((session) => (session.archived === true) === archived)?.id || "",
+    );
+  }
+
+  async function toggleSelectedArchive() {
+    if (!selectedSession) return;
+    const shouldArchive = selectedSession.archived !== true;
+    setSavingArchive(true);
+    setArchiveError("");
     try {
-      localStorage.setItem(SESSION_TAGS_STORAGE_KEY, JSON.stringify(nextTags));
-      setSessionTags(nextTags);
-      setTagError("");
-      return true;
+      if (shouldArchive) {
+        await saveSessionArchive(firestore, selectedId);
+      } else {
+        await clearSessionArchive(firestore, selectedId);
+      }
+      await refreshSessions();
     } catch (error) {
-      console.error("No se pudieron guardar las etiquetas locales de sesiones.", error);
-      setTagError("No se pudo guardar la etiqueta en este equipo.");
-      return false;
+      console.error("No se pudo actualizar el archivo de la sesión en Firebase.", error);
+      setArchiveError(
+        `No se pudo ${shouldArchive ? "archivar" : "restaurar"} la sesión. ${errorMessage(error)}`,
+      );
+    } finally {
+      setSavingArchive(false);
     }
   }
 
@@ -736,7 +766,7 @@ export default function App() {
     setTagEditorOpen(true);
   }
 
-  function saveSessionTag(event) {
+  async function saveSessionTag(event) {
     event.preventDefault();
     const name = tagNameDraft.trim();
     if (!name) {
@@ -747,18 +777,33 @@ export default function App() {
       setTagError("El color de la etiqueta no es válido.");
       return;
     }
-    if (persistSessionTags({
-      ...sessionTags,
-      [selectedId]: { name, color: tagColorDraft },
-    })) {
+    setSavingTag(true);
+    setTagError("");
+    try {
+      await writeSessionTag(firestore, selectedId, { name, color: tagColorDraft });
       setTagEditorOpen(false);
+      await refreshSessions();
+    } catch (error) {
+      console.error("No se pudo guardar el tag en Firebase.", error);
+      setTagError(`No se pudo guardar el tag en Firebase. ${errorMessage(error)}`);
+    } finally {
+      setSavingTag(false);
     }
   }
 
-  function removeSessionTag() {
-    const nextTags = { ...sessionTags };
-    delete nextTags[selectedId];
-    if (persistSessionTags(nextTags)) setTagEditorOpen(false);
+  async function removeSessionTag() {
+    setSavingTag(true);
+    setTagError("");
+    try {
+      await deleteSessionTag(firestore, selectedId);
+      setTagEditorOpen(false);
+      await refreshSessions();
+    } catch (error) {
+      console.error("No se pudo quitar el tag de Firebase.", error);
+      setTagError(`No se pudo quitar el tag de Firebase. ${errorMessage(error)}`);
+    } finally {
+      setSavingTag(false);
+    }
   }
 
   function updateCutoff(value) {
@@ -805,10 +850,28 @@ export default function App() {
               className="icon-button"
               disabled={loadingSessions}
               onClick={refreshSessions}
-              title="Actualizar sesiones (máximo 50)"
+              title="Actualizar todas las sesiones"
               type="button"
             >
               {loadingSessions ? <span className="spinner small-spinner" /> : "↻"}
+            </button>
+          </div>
+          <div className="session-view-switch" role="group" aria-label="Filtrar sesiones">
+            <button
+              aria-pressed={!showArchived}
+              className={`quiet-button session-view-button${showArchived ? "" : " active"}`}
+              onClick={() => changeArchiveView(false)}
+              type="button"
+            >
+              Activas <span>{activeSessionCount}</span>
+            </button>
+            <button
+              aria-pressed={showArchived}
+              className={`quiet-button session-view-button${showArchived ? " active" : ""}`}
+              onClick={() => changeArchiveView(true)}
+              type="button"
+            >
+              Archivadas <span>{archivedSessionCount}</span>
             </button>
           </div>
           <label className="search-box">
@@ -849,7 +912,7 @@ export default function App() {
             {cutoffError && <p className="error-banner cutoff-error">{cutoffError}</p>}
           </div>
           <p className="list-hint">
-            {filteredSessions.length} de {sessions.length} sesiones · {cutoffValue ? "separadas por corte" : "agrupadas por fecha"}
+            {filteredSessions.length} de {visibleSessions.length} {showArchived ? "archivadas" : "activas"} · {sessions.length} en total
           </p>
           {sessionError && <p className="error-banner compact">{sessionError}</p>}
           <div className="session-list">
@@ -869,7 +932,7 @@ export default function App() {
                       key={session.id}
                       session={session}
                       displayCode={session.session_code || legacySessionLabels.get(session.id)}
-                      tag={sessionTags[session.id]}
+                      tag={session.tag}
                       selected={session.id === selectedId}
                       showUploadDate={Boolean(cutoffValue)}
                       onSelect={() => setSelectedId(session.id)}
@@ -880,14 +943,18 @@ export default function App() {
             ))}
             {!loadingSessions && sessionGroups.length === 0 && (
               <p className="empty-state">
-                {search ? "No hay sesiones que coincidan." : "No hay sesiones cargadas."}
+                {search
+                  ? "No hay sesiones que coincidan."
+                  : showArchived
+                    ? "No hay sesiones archivadas."
+                    : "No hay sesiones activas."}
               </p>
             )}
           </div>
           <p className="refresh-time">
             {lastRefresh
               ? `Actualizado ${lastRefresh.toLocaleTimeString("es-CL")}`
-              : "Pulsa actualizar para leer Firestore."}
+          : "Pulsa actualizar para leer todas las sesiones."}
           </p>
         </aside>
 
@@ -906,6 +973,7 @@ export default function App() {
                   <h2>{selectedDisplayCode}</h2>
                   <p className="muted">
                     {isTestSession ? "Sesión de prueba" : selectedSession?.anonymous === false ? "Perfil" : "Anónima"}
+                    {selectedSession?.archived === true ? " · Archivada" : ""}
                     {" · "}
                     {originalSessionDate(selectedSession)
                       ? `Fecha de sesión: ${dateLabel(sessionDate(selectedSession))}`
@@ -918,6 +986,18 @@ export default function App() {
                   )}
                 </div>
                 <div className="detail-actions">
+                  <button
+                    className="quiet-button"
+                    disabled={savingArchive}
+                    onClick={toggleSelectedArchive}
+                    type="button"
+                  >
+                    {savingArchive
+                      ? "Guardando..."
+                      : selectedSession?.archived === true
+                        ? "Restaurar sesión"
+                        : "Archivar sesión"}
+                  </button>
                   <button className="quiet-button" onClick={openTagEditor} type="button">
                     {selectedTag ? "Editar tag" : "Añadir tag"}
                   </button>
@@ -931,6 +1011,7 @@ export default function App() {
                   </button>
                 </div>
               </header>
+              {archiveError && <p className="error-banner">{archiveError}</p>}
               {tagEditorOpen && (
                 <form className="tag-editor" onSubmit={saveSessionTag}>
                   <label>
@@ -941,6 +1022,7 @@ export default function App() {
                       value={tagNameDraft}
                       onChange={(event) => setTagNameDraft(event.target.value)}
                       placeholder="Ej.: Prueba de hoy"
+                      disabled={savingTag}
                       required
                     />
                   </label>
@@ -951,16 +1033,19 @@ export default function App() {
                       type="color"
                       value={tagColorDraft}
                       onChange={(event) => setTagColorDraft(event.target.value)}
+                      disabled={savingTag}
                     />
                   </label>
-                  <p className="tag-help">El tag se guarda solo en este equipo.</p>
-                  <button className="primary-button" type="submit">Guardar tag</button>
+                  <p className="tag-help">El tag se guarda en Firebase y se comparte con todos.</p>
+                  <button className="primary-button" disabled={savingTag} type="submit">
+                    {savingTag ? "Guardando..." : "Guardar tag"}
+                  </button>
                   {selectedTag && (
-                    <button className="quiet-button" onClick={removeSessionTag} type="button">
-                      Quitar tag
+                    <button className="quiet-button" disabled={savingTag} onClick={removeSessionTag} type="button">
+                      {savingTag ? "Guardando..." : "Quitar tag"}
                     </button>
                   )}
-                  <button className="quiet-button" onClick={() => setTagEditorOpen(false)} type="button">
+                  <button className="quiet-button" disabled={savingTag} onClick={() => setTagEditorOpen(false)} type="button">
                     Cancelar
                   </button>
                   {tagError && <p className="error-banner tag-error">{tagError}</p>}
